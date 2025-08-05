@@ -49,3 +49,8 @@ void AMovingOutCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 }
+
+void AMovingOutCharacter::Walk()
+{
+	
+}
