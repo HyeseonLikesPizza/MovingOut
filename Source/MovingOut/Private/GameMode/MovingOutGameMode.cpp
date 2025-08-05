@@ -1,13 +1,13 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "GameMode/MovingOutGameMode.h"
-#include "Controller/MovingOutPlayerController.h"
+#include "Controller/ExPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 AMovingOutGameMode::AMovingOutGameMode()
 {
 	// use our custom PlayerController class
-	PlayerControllerClass = AMovingOutPlayerController::StaticClass();
+	PlayerControllerClass = AExPlayerController::StaticClass();
 
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownCharacter"));
