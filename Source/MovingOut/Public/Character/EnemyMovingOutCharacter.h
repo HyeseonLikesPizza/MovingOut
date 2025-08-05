@@ -6,12 +6,20 @@
 #include "Character/MovingOutCharacter.h"
 #include "EnemyMovingOutCharacter.generated.h"
 
-/**
- * 
- */
 UCLASS()
+
 class MOVINGOUT_API AEnemyMovingOutCharacter : public AMovingOutCharacter
 {
 	GENERATED_BODY()
 	
-};
+public:
+	AEnemyMovingOutCharacter();
+	void Tick(float DeltaSeconds) override;
+
+
+private:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UArrowComponent* Arrow;
+}
+;
