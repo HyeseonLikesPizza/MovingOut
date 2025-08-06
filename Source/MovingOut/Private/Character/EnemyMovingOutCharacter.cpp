@@ -40,11 +40,11 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
 	FRotator CurrentRotation = GetActorRotation();
 	CurrentRotation.Yaw -= 45.f;
 	SetActorRotation(CurrentRotation);
-	// 이후 y 축 방향으로 튼다
-	FVector CurrentDirection = GetActorLocation();
-	FVector Direction = FVector(0.0f, 1.0f, 0.0f);
-	AddMovementInput(Direction, 1.0f);
-	SetActorLocation(CurrentDirection);
+	 // 이후 y 축 방향으로 튼다
+	 // FVector CurrentDirection = GetActorLocation();
+	 // FVector Direction = FVector(0.0f, 1.0f, 0.0f);
+	 // AddMovementInput(Direction, 1.0f);
+	 // SetActorLocation(CurrentDirection);
 
 	// 게임 화면에 출력 (Debug)
 	if (GEngine)
