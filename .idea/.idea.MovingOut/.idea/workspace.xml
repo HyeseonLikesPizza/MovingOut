@@ -20,13 +20,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="변경">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/VT/RDYC3WB90S7TUNHFIKD1ZP.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/VT/RDYC3WB90S7TUNHFIKD1ZP.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/P1/0M7UUCKIQ2S56SBHF9KUE9.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/P1/0M7UUCKIQ2S56SBHF9KUE9.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Character/EnemyMovingOutCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Character/EnemyMovingOutCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Character/EnemyMovingOutCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Character/EnemyMovingOutCharacter.h" afterDir="false" />
-    </list>
+    <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="변경" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
