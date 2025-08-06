@@ -1,8 +1,11 @@
 
 #include "MovingOutGameplayTags.h"
+#include "GameplayTagsManager.h"
 
-namespace MovingOutGameplayTags
+FMovingOutGameplayTags FMovingOutGameplayTags::GameplayTags;
+
+void FMovingOutGameplayTags::InitializeNativeGameplayTags()
 {
 	/* Breakable Actors */
-	UE_DEFINE_GAMEPLAY_TAG(Breakable_Window, "Breakable.Window");
+	GameplayTags.Breakable_Window = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Breakable.Window"), FString("창문"));
 }

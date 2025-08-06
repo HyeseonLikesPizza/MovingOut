@@ -1,10 +1,20 @@
-
 #pragma once
-#include "NativeGameplayTags.h"
 
-namespace MovingOutGameplayTags
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
+
+struct FMovingOutGameplayTags
 {
+public:
+	static const FMovingOutGameplayTags& Get() { return GameplayTags;  }
+	static void InitializeNativeGameplayTags();
+
+
 	/* Breakable Actors */
-	MovingOut_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Breakable_Window);
+	FGameplayTag Breakable_Window;
 	
-}
+
+private:
+	static FMovingOutGameplayTags GameplayTags;
+};
