@@ -32,7 +32,7 @@ void AEnemyMovingOutCharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Enemy에 캡슐 컴포넌트가 없습니다!"));
 	}
 }
-<<<<<<< HEAD
+
 // 에너미 캐릭터가 hit 돼고 로고 text 띄어지게 만들어줌
 void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -46,8 +46,6 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
 	 // FVector Direction = FVector(0.0f, 1.0f, 0.0f);
 	 // AddMovementInput(Direction, 1.0f);
 	 // SetActorLocation(CurrentDirection);
-=======
->>>>>>> parent of 2cad3b7 (에너미 캐릭터 로테이션 쿨다운 + lerp 로 돌아가게)
 
 // 에너미 캐릭터가 hit 돼고 로고 text 띄어지게 만들어줌
 
