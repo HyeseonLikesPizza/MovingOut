@@ -25,12 +25,6 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
-	// 닿았을때 false 인 boolean
-	bool Bhashit = false;
-
-	// 헤더에서 타이머 생성
-	FTimerHandle RotationCooldownTimer;
-	void ResetRotationCooldown();
 
 	// 에너미에 힛 포인트를 불러온다
 	UFUNCTION()
