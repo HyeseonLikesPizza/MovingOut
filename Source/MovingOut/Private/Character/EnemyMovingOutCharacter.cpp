@@ -32,6 +32,7 @@ void AEnemyMovingOutCharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Enemy에 캡슐 컴포넌트가 없습니다!"));
 	}
 }
+<<<<<<< HEAD
 // 에너미 캐릭터가 hit 돼고 로고 text 띄어지게 만들어줌
 void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -45,14 +46,54 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
 	 // FVector Direction = FVector(0.0f, 1.0f, 0.0f);
 	 // AddMovementInput(Direction, 1.0f);
 	 // SetActorLocation(CurrentDirection);
+=======
+>>>>>>> parent of 2cad3b7 (에너미 캐릭터 로테이션 쿨다운 + lerp 로 돌아가게)
 
-	// 게임 화면에 출력 (Debug)
-	if (GEngine)
+// 에너미 캐릭터가 hit 돼고 로고 text 띄어지게 만들어줌
+
+	void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("왼쪽으로 회전!"));
-	}
-}
+		UE_LOG(LogTemp, Warning, TEXT("Enemy가 %s와 충돌했습니다!"), *OtherActor->GetName());
 	
+		// boolean 불러옴
+		if (Bhashit)
+		{
+			return;
+		
+		}
+		if (OtherActor && OtherActor != this)
+		{
+			
+
+			// 현재 Rotation 가져오기 n'도로 회전
+			FRotator TargetRotation = GetActorRotation();
+			TargetRotation.Yaw -= 75.f;
+			FRotator CurrentRotation = GetActorRotation();
+			float DeltaTime = GetWorld()->GetDeltaSeconds();  //월드에서 시간 가져오고 fps
+			float InterpSpeed = 17.5f;  // 값이 높을수록 빠르게 회전
+
+			FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, InterpSpeed);
+			SetActorRotation(NewRotation);
+
+			
+
+			// 게임 화면에 출력 (Debug)
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("회전!"));
+			}
+		}
+		//n초짜리 타이머 생성
+		Bhashit = true;
+		GetWorld()->GetTimerManager().SetTimer(RotationCooldownTimer, this, &AEnemyMovingOutCharacter::ResetRotationCooldown, 0.2f, false);
+	
+	}
+
+// 다시 처음으로 돌아가게
+void AEnemyMovingOutCharacter::ResetRotationCooldown()
+{
+	Bhashit = false;
+}
 // 애로우 컴포넌트 추가 밑에서 변수 넣으면 활용가능
 AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
 {
@@ -67,12 +108,8 @@ void AEnemyMovingOutCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	// 틱마다 fVector x 축으로 쭉 간다
-	FVector Direction = FVector(1.0f, 0.0f, 0.0f);
+	FVector Direction = GetActorForwardVector();
 	AddMovementInput(Direction, 1.0f);
-	if (AddMovementInput);
-	{
-		
-	}
 	
 	
 }
