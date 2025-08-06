@@ -6,16 +6,22 @@
 #include "Character/MovingOutCharacter.h"
 #include "PlayerMovingOutCharacter.generated.h"
 
-/**
- * 
- */
+class UPhysicsHandleComponent;
+struct FInputActionValue;
+
 UCLASS()
 class MOVINGOUT_API APlayerMovingOutCharacter : public AMovingOutCharacter
 {
 	GENERATED_BODY()
 
 public:
-	void Walk();
 
+	APlayerMovingOutCharacter();
 	
+	void HandleMove(const FInputActionValue& Value);
+	void TryGrab();
+	void TryRelease();
+
+private:
+	UPhysicsHandleComponent* PhysicsHandle;
 };
