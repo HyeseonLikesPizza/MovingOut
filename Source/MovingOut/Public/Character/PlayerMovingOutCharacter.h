@@ -22,6 +22,15 @@ public:
 	void TryGrab();
 	void TryRelease();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Grab)
+	float GrabTraceDistance;
+
+	UPROPERTY(EditDefaultsOnly, Category=Grab)
+	FName GrabBoneName;
+
 private:
+	
+	bool bIsGrabbing;
+	
 	UPhysicsHandleComponent* PhysicsHandle;
 };

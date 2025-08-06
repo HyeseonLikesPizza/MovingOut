@@ -7,7 +7,7 @@
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle"));
-	
+	GrabTraceDistance = 200.f;
 }
 
 void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
@@ -29,6 +29,29 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 void APlayerMovingOutCharacter::TryGrab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
+
+	if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
+
+	FVector Start = GetActorLocation();
+	FVector End = GetActorForwardVector() * GrabTraceDistance;
+
+	FHitResult Hit;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_PhysicsBody, Params))
+	{
+		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
+		{
+			PhysicsHandle->GrabComponentAtLocationWithRotation(
+				HitComp,
+				GrabBoneName,
+				HitComp->GetComponentLocation(),
+				HitComp->GetComponentRotation());
+
+			bIsGrabbing = true;
+		}
+	}
 }
 
 void APlayerMovingOutCharacter::TryRelease()
