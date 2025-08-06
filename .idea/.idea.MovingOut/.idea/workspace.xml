@@ -5,7 +5,6 @@
     <projectFile profileName="EpicGames.AspNet">../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.AspNet/EpicGames.AspNet.csproj</projectFile>
     <projectFile kind="Docker">../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/EpicGames.Perforce.Fixture.csproj</projectFile>
     <projectFile>../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.csproj</projectFile>
-    <projectFile kind="Docker">../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/EpicGames.Perforce.Fixture.csproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/MovingOut.vcxproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
@@ -13,12 +12,73 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
+    <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="" />
+=======
     <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEditor.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEditor.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultInput.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultInput.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/TopDown/Blueprints/BP_TopDownPlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/TopDown/Blueprints/BP_TopDownPlayerController.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/TopDown/Input/Actions/IA_SetDestination_Click.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/TopDown/Input/Actions/IA_SetDestination_Touch.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/TopDown/Input/IMC_Default.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/TopDown/Maps/TopDownMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/TopDown/Maps/TopDownMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Mannequin_UE4/Rigs/IK_UE4_Mannequin.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Mannequins/Rigs/IK_Mannequin.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/0/LX/0E642ESQ3RUQUNB2EILCRM.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/0/NY/Z0209R44CGCSUMXNTZ8E18.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/0/SM/2DQL3237V8RMLGIXN4ENUP.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/1/3I/HUF5L9BWDT1RZCJQZVWW5S.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/1/3L/YC7702H6PJKOTK3LX45SEZ.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/1/E0/6OSWIWH21LV0W00LNYJHLY.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/2/DL/XSLM5EWTIR61E68K62747X.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/2/FU/Y6FTP2YKP2Z6X0GUEPAZWB.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/2/MQ/2Y9WH9GTH60M4SDPYQLXBE.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/2/VW/4PB3KESKALRXGBROSCTQTU.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/2/Z7/P2W7G7XJCK1UDNO6VWL9DR.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/3/BZ/L93KXZ2FO1T3MACKBUPS6V.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/3/FL/0NUJ557YMFXSSLGH3L316S.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/4/C0/K5VQMY0564D2LSDDMKSETR.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/4/J9/SSY6DBUGAY9R6SQS4XYSQC.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/4/JK/NXTQ2NZBX8ADRHD083RKPF.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/4/MO/WTVA9EHCUDUZE64CCGKE84.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/5/EH/TT3E9TQA4TEISX6HDEQYXE.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/5/OS/ROSYCG4DL0VR8YN4YXEGNO.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/5/YK/RMT9BMPQOLOM8DBI5LGK23.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/6/5B/QVDHAA9ETYV57IG9JCFSYR.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/6/QG/3XB6D91ONHS89MH7GP07U8.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/7/E2/U6S2WD3NPQY7G9WLYTF5K0.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/7/VY/CGCTQ3233PQU4WVU7R202N.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/7/ZX/645QP4SVBL424CYQFN4ID2.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/9/23/7HRFM886AN76EZEBZ2XWWE.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/9/AA/RN2A3SMO8P0D63KONMTF1N.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/9/V4/J9I9CJXKO611QGTXJ01VYS.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/2E/9SZSJ6L8TIGBOCEABLBX9B.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/8I/6GEGYL0I17Z4JKINKSJRMQ.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/FN/RZ1AXK5A7WEQQG3ERTJFUU.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/VM/4TQ56Z26NOMGGTGBFOBBJ2.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/B/NT/JHFF1BHZO4JM8CZQC618VW.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/B/R7/SNAQC6AWV1SYK79O9Z0IZO.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/B/Z0/NXSLLW0K5DPG6LA3VRPVOQ.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/BP/WLKZO99WD6ZVAORAZD2BKX.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/HR/UX5SGFE8AODREV9GKU35IZ.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/KD/X929IL6F853WPM3SXYK61J.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/P8/S0SC7YQWCR7W4M5YILHEC9.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/D/I3/VXMAXMY2G4PKZ10V0PVUAA.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/E/X9/UFEEF36PRWJI59W0X5ZL27.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalObjects__/Assets/TopDown/Maps/TopDownMap/1/R7/J373DEDU3K9Z84LM49CZD9.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalObjects__/Assets/TopDown/Maps/TopDownMap/5/R8/C11LKWXY8GU142U8HS3CC9.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalObjects__/Assets/TopDown/Maps/TopDownMap/8/AD/XCFD7EOPOAOQXC26AMJ5E8.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalObjects__/Assets/TopDown/Maps/TopDownMap/A/4U/M8ANYFYLKLT5R8J09S4KXY.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalObjects__/Assets/TopDown/Maps/TopDownMap/D/MB/8DI4XOMZCEX31M13CXJKQZ.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/MovingOut.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/MovingOut.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/ExPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/GameMode/MovingOutGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/GameMode/MovingOutGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/ExPlayerController.h" afterDir="false" />
     </list>
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,14 +87,24 @@
   <component name="DpaMonitoringSettings">
     <option name="firstShow" value="false" />
   </component>
+<<<<<<< Updated upstream
+=======
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/Actor.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Actor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/LogVisualizer/Private/VisualLoggerCameraController.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/LogVisualizer/Private/VisualLoggerCameraController.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Math/Rotator.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/Actor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerController.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Controller.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Private/Character/MovingOutPlayerCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Public/Character/MovingOutPlayerCharacter.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="NamedScopeManager">
@@ -42,6 +112,7 @@
       <scope name="MovingOut" />
     </order>
   </component>
+>>>>>>> Stashed changes
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -51,20 +122,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;C/C++ 프로젝트.MovingOut.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;EH&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.scopes&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "C/C++ 프로젝트.MovingOut.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "editor.preferences.completion",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> Stashed changes
   }
 }</component>
   <component name="RunManager" selected="C/C++ 프로젝트.MovingOut">
@@ -164,17 +248,6 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
-    <configuration name="EpicGames.Perforce.Fixture/Dockerfile (1)" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
-      <deployment type="dockerfile">
-        <settings>
-          <option name="containerName" value="epicgames.perforce.fixture" />
-          <option name="contextFolderPath" value="C:\Unreal_Project\MovingOut" />
-          <option name="sourceFilePath" value="../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/Dockerfile" />
-        </settings>
-      </deployment>
-      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
-      <method v="2" />
-    </configuration>
     <configuration name="EpicGames.Perforce.Fixture/Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -195,18 +268,16 @@
       <option name="presentableId" value="Default" />
       <updated>1754374484758</updated>
       <workItem from="1754374486186" duration="302000" />
-      <workItem from="1754375020391" duration="2422000" />
-      <workItem from="1754381820466" duration="6529000" />
-      <workItem from="1754438035676" duration="2530000" />
-      <workItem from="1754440887188" duration="2749000" />
-      <workItem from="1754454864110" duration="3002000" />
+<<<<<<< Updated upstream
+=======
+      <workItem from="1754375020391" duration="17741000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
@@ -226,11 +297,12 @@
           <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
           <option name="timeStamp" value="3" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h</url>
+          <line>25</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
   </component>
 </project>
