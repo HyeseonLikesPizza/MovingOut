@@ -5,6 +5,14 @@
     <projectFile profileName="EpicGames.AspNet">../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.AspNet/EpicGames.AspNet.csproj</projectFile>
     <projectFile kind="Docker">../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/EpicGames.Perforce.Fixture.csproj</projectFile>
     <projectFile>../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.csproj</projectFile>
+    <projectFile>C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/AutomationTool/AutomationTool.csproj</projectFile>
+    <projectFile>C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/AutomationToolLauncher/AutomationToolLauncher.csproj</projectFile>
+    <projectFile profileName="EpicGames.AspNet">C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.AspNet/EpicGames.AspNet.csproj</projectFile>
+    <projectFile kind="Docker">C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/EpicGames.Perforce.Fixture.csproj</projectFile>
+    <projectFile>C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.csproj</projectFile>
+    <projectFile>Intermediate/ProjectFiles/DotNetPerforceLib.vcxproj</projectFile>
+    <projectFile>Intermediate/ProjectFiles/EventLoopUnitTests.vcxproj</projectFile>
+    <projectFile>Intermediate/ProjectFiles/LiveLinkHub.vcxproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/MovingOut.vcxproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
@@ -12,6 +20,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="변경" />
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> parent of a6de716 (라인트레이서)
+    <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="변경">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/VT/RDYC3WB90S7TUNHFIKD1ZP.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/A/VT/RDYC3WB90S7TUNHFIKD1ZP.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/P1/0M7UUCKIQ2S56SBHF9KUE9.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Assets/TopDown/Maps/TopDownMap/C/P1/0M7UUCKIQ2S56SBHF9KUE9.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Character/EnemyMovingOutCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Character/EnemyMovingOutCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Character/EnemyMovingOutCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Character/EnemyMovingOutCharacter.h" afterDir="false" />
+=======
 <<<<<<< Updated upstream
     <list default="true" id="818aab74-3bf9-4367-9cc1-f6bdbd601299" name="변경" comment="" />
 =======
@@ -77,8 +99,13 @@
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/ExPlayerController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/GameMode/MovingOutGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/GameMode/MovingOutGameMode.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/ExPlayerController.h" afterDir="false" />
+>>>>>>> main
     </list>
 >>>>>>> Stashed changes
+<<<<<<< HEAD
+>>>>>>> parent of 2cad3b7 (에너미 캐릭터 로테이션 쿨다운 + lerp 로 돌아가게)
+=======
+>>>>>>> parent of a6de716 (라인트레이서)
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,6 +120,30 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+<<<<<<< HEAD
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://36" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Plugins/Online/OnlineFramework/Source/Lobby/Private/LobbyBeaconState.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Developer/AITestSuite/Private/Tests/BTTest.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Developer/FunctionalTesting/Private/FunctionalAITest.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Delegates/DelegateSignatureImpl.inl" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/String/FormatStringSan.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/Object.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/SparseDelegate.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://C:/Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/PlayerController.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/MovingOut/UHT/EnemyMovingOutCharacter.generated.h" root0="FORCE_HIGHLIGHTING" />
+=======
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/LogVisualizer/Private/VisualLoggerCameraController.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/LogVisualizer/Private/VisualLoggerCameraController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Math/Rotator.h" root0="FORCE_HIGHLIGHTING" />
@@ -101,6 +152,7 @@
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/Controller.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> main
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Private/Character/MovingOutPlayerCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Public/Character/MovingOutPlayerCharacter.h" root0="FORCE_HIGHLIGHTING" />
@@ -122,17 +174,59 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C/C++ Project.MovingOut.executor&quot;: &quot;Debug&quot;,
+    &quot;C/C++ 프로젝트.MovingOut.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;JM&quot;,
+=======
 <<<<<<< Updated upstream
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;C/C++ 프로젝트.MovingOut.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+>>>>>>> main
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+<<<<<<< HEAD
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.scopes&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="C/C++ Project.MovingOut">
+    <configuration name="DotNetPerforceLib" type="CppProject" factoryName="C++ Project" folderName="Programs">
+      <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/DotNetPerforceLib.vcxproj" />
+      <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/DotNetPerforceLib.vcxproj" />
+      <option name="AUTO_SELECT_PRIORITY" value="10005" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="EventLoopUnitTests" type="CppProject" factoryName="C++ Project" folderName="Programs">
+      <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/EventLoopUnitTests.vcxproj" />
+      <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/EventLoopUnitTests.vcxproj" />
+      <option name="AUTO_SELECT_PRIORITY" value="10005" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="LiveLinkHub" type="CppProject" factoryName="C++ Project" folderName="Programs">
+      <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/LiveLinkHub.vcxproj" />
+      <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/LiveLinkHub.vcxproj" />
+      <option name="AUTO_SELECT_PRIORITY" value="10005" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+=======
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
 =======
   <component name="PropertiesComponent"><![CDATA[{
@@ -152,6 +246,7 @@
   }
 }</component>
   <component name="RunManager" selected="C/C++ 프로젝트.MovingOut">
+>>>>>>> main
     <configuration name="MovingOut" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
         <option name="CONFIGURATION" value="Development_Editor" />
@@ -203,6 +298,29 @@
         <option name="Build" />
       </method>
     </configuration>
+    <configuration name="AutomationToolLauncher" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="ENV_FILE_PATHS" value="" />
+      <option name="REDIRECT_INPUT_PATH" value="" />
+      <option name="PTY_MODE" value="Auto" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="AUTO_ATTACH_CHILDREN" value="0" />
+      <option name="MIXED_MODE_DEBUG" value="0" />
+      <option name="PROJECT_PATH" value="C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/AutomationToolLauncher/AutomationToolLauncher.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <configuration name="UnrealBuildTool" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -241,9 +359,13 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+    <configuration name="EpicGames.Perforce.Fixture/Dockerfile (1)" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
       <deployment type="dockerfile">
-        <settings />
+        <settings>
+          <option name="containerName" value="epicgames.perforce.fixture" />
+          <option name="contextFolderPath" value="D:\PROJECT\MovingOut" />
+          <option name="sourceFilePath" value="C:/Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/Dockerfile" />
+        </settings>
       </deployment>
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
@@ -259,6 +381,13 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
@@ -268,10 +397,25 @@
       <option name="presentableId" value="Default" />
       <updated>1754374484758</updated>
       <workItem from="1754374486186" duration="302000" />
+<<<<<<< HEAD
+      <workItem from="1754375020391" duration="2422000" />
+      <workItem from="1754389570171" duration="1084000" />
+      <workItem from="1754390846417" duration="2875000" />
+      <workItem from="1754437721600" duration="22103000" />
+=======
+=======
 <<<<<<< Updated upstream
 =======
       <workItem from="1754375020391" duration="17741000" />
 >>>>>>> Stashed changes
+>>>>>>> main
+<<<<<<< HEAD
+>>>>>>> parent of 2cad3b7 (에너미 캐릭터 로테이션 쿨다운 + lerp 로 돌아가게)
+=======
+=======
+      <workItem from="1754437721600" duration="12446000" />
+>>>>>>> parent of 8e951f7 (에너미 캐릭터 로테이션 쿨다운 + lerp 로 돌아가게)
+>>>>>>> parent of a6de716 (라인트레이서)
     </task>
     <servers />
   </component>
@@ -304,5 +448,11 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="CppProject">
+        <watch expression="InFunctionName" />
+        <watch expression="((class TScriptDelegate&lt;FNotThreadSafeDelegateMode&gt; &amp;) NewDelegate).FunctionName" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
