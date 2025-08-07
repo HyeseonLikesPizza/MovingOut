@@ -12,7 +12,7 @@ APropsBase::APropsBase()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	DefaultMaterial = CreateDefaultSubobject<UMaterial>(TEXT("DefaultMaterial"));
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT("/Script/Engine.Material'/Game/Assets/Furniture_Free/Materials/M_Material.M_Material'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT("/Script/Engine.Material'/Game/Assets/Furniture_Free/Materials/M_MaterialSlide.M_MaterialSlide'"));
 	if (MaterialRef.Succeeded())
 	{
 		DefaultMaterial = MaterialRef.Object;
