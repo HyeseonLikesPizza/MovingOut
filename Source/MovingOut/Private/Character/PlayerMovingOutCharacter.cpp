@@ -2,19 +2,37 @@
 #include "Character/PlayerMovingOutCharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
+#include "MovingOut/DebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle"));
 	GrabTraceDistance = 200.f;
+	GrabDistance = 50.f;
+}
+
+void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
+{
+	if (bIsGrabbing)
+	{
+		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
+		{
+			FVector HoldLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
+			FVector LeftHand = GetMesh()->GetSocketLocation(LeftHandBoneName);
+			FVector RightHand = GetMesh()->GetSocketLocation(RightHandBoneName);
+			FVector Middle = (LeftHand + RightHand) * 0.5f;
+			FRotator MiddleRot = (RightHand - LeftHand).Rotation();
+			FQuat FixedRotation = FQuat::Identity;
+			//FRotator HoldRotation = GetMesh()->GetSocketRotation(GrabBoneName);
+			PhysicsHandle->SetTargetLocationAndRotation(Middle + GetActorForwardVector() * GrabDistance, FixedRotation.Rotator());
+		}
+	}
 }
 
 void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	UE_LOG(LogTemp, Warning, TEXT("Player Move Called"));
 
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -30,14 +48,15 @@ void APlayerMovingOutCharacter::TryGrab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
 
-	if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
+	//if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
 
 	FVector Start = GetActorLocation();
-	FVector End = GetActorForwardVector() * GrabTraceDistance;
-
-	FHitResult Hit;
+	FVector End = Start + GetActorForwardVector() * GrabTraceDistance;
+	
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
+
+	DrawDebugLineTrace(GetWorld(), Start, End);
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_PhysicsBody, Params))
 	{
@@ -45,11 +64,14 @@ void APlayerMovingOutCharacter::TryGrab()
 		{
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
 				HitComp,
-				GrabBoneName,
-				HitComp->GetComponentLocation(),
+				NAME_None,
+				Hit.ImpactPoint,
 				HitComp->GetComponentRotation());
 
 			bIsGrabbing = true;
+			DrawDebugHitPoint(GetWorld(), Hit);
+			HitComp->SetAngularDamping(100.f);
+			//HitComp->SetSimulatePhysics(false);
 		}
 	}
 }
@@ -57,4 +79,8 @@ void APlayerMovingOutCharacter::TryGrab()
 void APlayerMovingOutCharacter::TryRelease()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TryRelease Called"));
+	bIsGrabbing = false;
+	//Hit.GetComponent()->SetSimulatePhysics(true);
+	Hit.Reset();
+	PhysicsHandle->ReleaseComponent();
 }
