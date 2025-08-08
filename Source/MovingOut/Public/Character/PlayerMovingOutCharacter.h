@@ -37,10 +37,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Grab)
 	FName RightHandBoneName;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsGrabbing;
+
 private:
 	
-	bool bIsGrabbing;
 	FHitResult Hit;
-	
 	UPhysicsHandleComponent* PhysicsHandle;
 };

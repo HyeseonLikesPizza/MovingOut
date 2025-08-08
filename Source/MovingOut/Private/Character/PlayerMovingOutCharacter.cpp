@@ -14,6 +14,7 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 {
+	/*
 	if (bIsGrabbing)
 	{
 		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
@@ -28,6 +29,7 @@ void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 			PhysicsHandle->SetTargetLocationAndRotation(Middle + GetActorForwardVector() * GrabDistance, FixedRotation.Rotator());
 		}
 	}
+	*/
 }
 
 void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
@@ -58,20 +60,24 @@ void APlayerMovingOutCharacter::TryGrab()
 
 	DrawDebugLineTrace(GetWorld(), Start, End);
 
-	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_PhysicsBody, Params))
+	if (GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(50.f), Params))
 	{
 		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
 		{
+			HitComp->SetSimulatePhysics(false);
+			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
+			HitComp->AttachToComponent(GetMesh(), Rules, RightHandBoneName);
+			/*
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
 				HitComp,
-				NAME_None,
+				RightHandBoneName,
 				Hit.ImpactPoint,
 				HitComp->GetComponentRotation());
-
+			*/
 			bIsGrabbing = true;
 			DrawDebugHitPoint(GetWorld(), Hit);
 			HitComp->SetAngularDamping(100.f);
-			//HitComp->SetSimulatePhysics(false);
+			
 		}
 	}
 }
@@ -82,5 +88,8 @@ void APlayerMovingOutCharacter::TryRelease()
 	bIsGrabbing = false;
 	//Hit.GetComponent()->SetSimulatePhysics(true);
 	Hit.Reset();
-	PhysicsHandle->ReleaseComponent();
+	//PhysicsHandle->ReleaseComponent();
+	FDetachmentTransformRules rules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
+	//DetachFromActor(rules);
+	//Hit.GetComponent()->DetachFromComponent(rules);
 }
