@@ -10,10 +10,14 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle"));
 	GrabTraceDistance = 200.f;
 	GrabDistance = 50.f;
+
+	PrimaryActorTick.bCanEverTick = true;
+	SetActorTickEnabled(true);
 }
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
 	/*
 	if (bIsGrabbing)
 	{
