@@ -31,6 +31,8 @@ protected:
 public:
     virtual void Tick(float DeltaSeconds) override;
 
+    bool IsOut = true;
+
 private:
     // AI 상태를 설정하는 함수
     void SetEnemyState(EEnemyState NewState);
@@ -73,6 +75,8 @@ private:
     void HandlePatrolling(float DeltaTime);
     void HandleChasing(float DeltaTime);
     void HandleHitReaction(float DeltaTime);
+
+    
 
     // 새로운 순찰 지점을 찾는 함수
     void FindNewPatrolDestination();

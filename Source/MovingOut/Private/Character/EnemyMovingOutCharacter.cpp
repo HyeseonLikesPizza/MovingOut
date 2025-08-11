@@ -3,8 +3,8 @@
 #include "Character/EnemyMovingOutCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/CharacterMovementComponent.h"
+ // #include "Kismet/GameplayStatics.h"
+ // #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/PlayerMovingOutCharacter.h"
 #include "Engine/World.h"
 #include "Math/UnrealMathUtility.h"
@@ -43,6 +43,8 @@ void AEnemyMovingOutCharacter::BeginPlay()
     }
     
     // 게임 시작 시 순찰 상태로 시작
+    PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyMovingOutCharacter::OnPlayerLost);
+
     SetEnemyState(EEnemyState::ES_Patrolling);
 }
 
@@ -73,7 +75,8 @@ void AEnemyMovingOutCharacter::Tick(float DeltaSeconds)
     }
 }
 
-// 충돌 이벤트 핸들러
+// 충돌 이벤트 핸들러 (공사예정)
+
 void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
     
@@ -89,6 +92,7 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
         FVector ForwardVector = GetActorForwardVector();
         FVector CrossProduct = FVector::CrossProduct(ForwardVector, ImpactDirection);
 
+        
         FRotator CurrentRotation = GetActorRotation();
         if (CrossProduct.Z > 0)
         {
@@ -98,6 +102,7 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
         {
             TargetRotation = CurrentRotation.Add(0.0f, 75.0f, 0.0f); // 오른쪽으로 회전
         }
+        
 
         if (GEngine)
         {
@@ -105,9 +110,10 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
         }
 
         // 회전 후 추격/순찰 상태로 돌아가도록 타이머 설정
-        GetWorld()->GetTimerManager().SetTimer(RotationCooldownTimer, this, &AEnemyMovingOutCharacter::ResetRotationCooldown, 0.9f, false);
+        GetWorld()->GetTimerManager().SetTimer(RotationCooldownTimer, this, &AEnemyMovingOutCharacter::ResetRotationCooldown, 0.2f, false);
     }
 }
+
 
 // 플레이어 감지 이벤트 핸들러
 void AEnemyMovingOutCharacter::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -150,8 +156,28 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
     // 상태 전환 시 필요한 초기화
     if (NewState == EEnemyState::ES_Patrolling)
     {
-        // 네비게이션 시스템을 사용하지 않으므로 순찰 로직도 수정
-        PatrolDestination = GetActorLocation() + FVector(FMath::RandRange(-5000.f, 5000.f), FMath::RandRange(-5000.f, 5000.f), 0.f);
+        // 아래는 순찰 로직 
+        PatrolDestination = GetActorLocation() + FVector(FMath::RandRange(-5000.f, 5000.f),
+            FMath::RandRange(-5000.f, 5000.f), 0.f);
+    }
+}
+
+void AEnemyMovingOutCharacter::OnPlayerLost(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    if (OtherActor && OtherActor != this && OtherActor->ActorHasTag(TEXT("player")))
+    {
+        // 플레이어 참조 제거
+        PlayerMovingOutCharacter = nullptr;
+
+        // 현재 상태가 추적 중일 때만 순찰 상태로 변경
+        if (CurrentState == EEnemyState::ES_Chasing)
+        {
+            PlayerMovingOutCharacter = Cast<AMovingOutCharacter>(OtherActor);
+            SetEnemyState(EEnemyState::ES_Chasing);
+            UE_LOG(LogTemp, Warning, TEXT("플레이어 감지 범위를 벗어남 → 순찰 상태로 변경"));
+        
+        }
     }
 }
 
@@ -175,11 +201,11 @@ void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
     Direction.Z = 0.0f; // Z축 이동을 막음
     Direction.Normalize();
     
-    AddMovementInput(Direction, 0.3f); // 순찰 속도는 추격보다 느리게 설정
+    AddMovementInput(Direction, 0.4f); // 순찰 속도는 추격보다 느리게 설정
     
     // 이동 방향으로 회전
     FRotator NewTargetRotation = Direction.Rotation();
-    FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), NewTargetRotation, DeltaTime, 5.0f); // 순찰 중에는 느리게 회전
+    FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), NewTargetRotation, DeltaTime, 15.0f); // 순찰 중에는 느리게 회전
     SetActorRotation(NewRotation);
 }
 
@@ -187,6 +213,7 @@ void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
 // 추격 상태 로직 
 void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
 {
+    
     if (PlayerMovingOutCharacter && PlayerMovingOutCharacter->IsValidLowLevel())
     {
         FVector PlayerLocation = PlayerMovingOutCharacter->GetActorLocation();
@@ -197,37 +224,26 @@ void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
         DirectionToPlayer.Normalize();
 
         //  계산된 방향으로 이동 입력을 추가합니다.
-        AddMovementInput(DirectionToPlayer, 0.6f);
+        AddMovementInput(DirectionToPlayer, 0.8f);
         
         // 캐릭터가 이동 방향을 바라보도록 회전 로직을 추가합니다.
         FRotator NewTargetRotation = DirectionToPlayer.Rotation();
-        FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), NewTargetRotation, DeltaTime, 10.0f);
+        FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), NewTargetRotation, DeltaTime, 50.0f);
         SetActorRotation(NewRotation);
     }
     else
     {
+        
         // 타겟을 잃으면 순찰 상태로 돌아갑니다.
         PlayerMovingOutCharacter = nullptr;
         SetEnemyState(EEnemyState::ES_Patrolling);
+        
+        
     }
 }
 
-void AEnemyMovingOutCharacter::OnPlayerLost(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (OtherActor && OtherActor != this && OtherActor->ActorHasTag(TEXT("player")))
-    {
-        // 플레이어 참조 제거
-        PlayerMovingOutCharacter = nullptr;
 
-        // 현재 상태가 추적 중일 때만 순찰 상태로 변경
-        if (CurrentState == EEnemyState::ES_Chasing)
-        {
-            SetEnemyState(EEnemyState::ES_Patrolling);
-            UE_LOG(LogTemp, Warning, TEXT("플레이어 감지 범위를 벗어남 → 순찰 상태로 변경"));
-        }
-    }
-}
+
 
 // 피격 반응 상태 로직
 void AEnemyMovingOutCharacter::HandleHitReaction(float DeltaTime)
@@ -237,5 +253,9 @@ void AEnemyMovingOutCharacter::HandleHitReaction(float DeltaTime)
 
     FRotator InterpolatedRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, InterpSpeed);
     SetActorRotation(InterpolatedRotation);
-}
 
+    FVector Direction = (PatrolDestination - GetActorLocation());
+    Direction.Z = 0.0f; // Z축 이동을 막음
+    Direction.Normalize();
+
+}
