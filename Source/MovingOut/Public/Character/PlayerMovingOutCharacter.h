@@ -17,6 +17,9 @@ class MOVINGOUT_API APlayerMovingOutCharacter : public AMovingOutCharacter
 public:
 
 	APlayerMovingOutCharacter();
+
+	virtual void Tick(float DeltaSeconds) override;
+	
 	
 	void HandleMove(const FInputActionValue& Value);
 	void TryGrab();
@@ -25,12 +28,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Grab)
 	float GrabTraceDistance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Grab)
+	float GrabDistance;
+
 	UPROPERTY(EditDefaultsOnly, Category=Grab)
-	FName GrabBoneName;
+	FName LeftHandBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category=Grab)
+	FName RightHandBoneName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsGrabbing;
 
 private:
 	
-	bool bIsGrabbing;
-	
+	FHitResult Hit;
 	UPhysicsHandleComponent* PhysicsHandle;
 };
