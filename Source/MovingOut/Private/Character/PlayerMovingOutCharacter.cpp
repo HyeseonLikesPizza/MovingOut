@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MovingOut/DebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "MovingOut/MovingOut.h"
 
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
@@ -18,7 +19,7 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	/*
+	
 	if (bIsGrabbing)
 	{
 		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
@@ -33,7 +34,7 @@ void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 			PhysicsHandle->SetTargetLocationAndRotation(Middle + GetActorForwardVector() * GrabDistance, FixedRotation.Rotator());
 		}
 	}
-	*/
+	
 }
 
 void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
@@ -55,6 +56,7 @@ void APlayerMovingOutCharacter::TryGrab()
 	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
 
 	//if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
+	
 
 	FVector Start = GetActorLocation();
 	FVector End = Start + GetActorForwardVector() * GrabTraceDistance;
@@ -64,24 +66,26 @@ void APlayerMovingOutCharacter::TryGrab()
 
 	DrawDebugLineTrace(GetWorld(), Start, End);
 
-	if (GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(50.f), Params))
+	if (GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(50.f), Params))
 	{
 		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
 		{
-			HitComp->SetSimulatePhysics(false);
-			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
-			HitComp->AttachToComponent(GetMesh(), Rules, RightHandBoneName);
-			/*
+			//HitComp->SetSimulatePhysics(false);
+			//FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
+			//HitComp->AttachToComponent(GetMesh(), Rules, RightHandBoneName);
+
+			
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
 				HitComp,
 				RightHandBoneName,
 				Hit.ImpactPoint,
 				HitComp->GetComponentRotation());
-			*/
+			
 			bIsGrabbing = true;
 			DrawDebugHitPoint(GetWorld(), Hit);
 			HitComp->SetAngularDamping(100.f);
-			
+			FString Msg = FString::Printf(TEXT("Component Name : %s"), *Hit.GetComponent()->GetName());
+			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
 		}
 	}
 }
@@ -91,9 +95,11 @@ void APlayerMovingOutCharacter::TryRelease()
 	UE_LOG(LogTemp, Warning, TEXT("TryRelease Called"));
 	bIsGrabbing = false;
 	//Hit.GetComponent()->SetSimulatePhysics(true);
+	FDetachmentTransformRules rules(EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
+	Hit.GetComponent()->SetSimulatePhysics(true);
+	Hit.GetComponent()->DetachFromComponent(rules);
 	Hit.Reset();
 	//PhysicsHandle->ReleaseComponent();
-	FDetachmentTransformRules rules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
 	//DetachFromActor(rules);
-	//Hit.GetComponent()->DetachFromComponent(rules);
+	
 }

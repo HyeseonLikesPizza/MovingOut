@@ -20,7 +20,8 @@ void AMovingOutPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMovingOutPlayerController::PlayerMove);
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::Grab);
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::Release);
-		
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::StopJumping);
 	}
 }
 
@@ -45,5 +46,25 @@ void AMovingOutPlayerController::Release()
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
 		PlayerCharacter->TryRelease();
+	}
+}
+
+void AMovingOutPlayerController::Jump()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Jump Called"));
+	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	{
+		PlayerCharacter->Jump();
+		UE_LOG(LogTemp, Warning, TEXT("Jump Called"));
+	}
+}
+
+void AMovingOutPlayerController::StopJumping()
+{
+	UE_LOG(LogTemp, Warning, TEXT("StopJumping Called"));
+	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	{
+		PlayerCharacter->StopJumping();
+		UE_LOG(LogTemp, Warning, TEXT("StopJumping Called"));
 	}
 }

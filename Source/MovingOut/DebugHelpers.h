@@ -30,3 +30,23 @@ FORCEINLINE void DrawDebugHitPoint(
 		DrawDebugSphere(World, Hit.ImpactPoint, Radius, 12, Color, false, Duration);
 	}
 }
+
+
+/*
+
+FORCEINLINE void PrintLog(
+	UEngine* Engine,
+	const FString& Message,
+	uint64 key = 0,
+	float TimeToDisplay = 5.f,
+	FColor DisplayColor = FColor::Magenta
+)
+{
+	if (Engine)
+	{
+		FString Msg = FString::Printf(TEXT("Component Name : %s"), *Hit.GetComponent()->GetName());
+		Engine->AddOnScreenDebugMessage(key, TimeToDisplay, DisplayColor, Message);
+	}
+}
+
+*/
