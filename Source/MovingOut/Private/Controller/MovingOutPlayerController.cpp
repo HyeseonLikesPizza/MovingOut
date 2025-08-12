@@ -22,6 +22,8 @@ void AMovingOutPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::Release);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::StopJumping);
+		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowAim);
+		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::ThrowRelease);
 	}
 }
 
