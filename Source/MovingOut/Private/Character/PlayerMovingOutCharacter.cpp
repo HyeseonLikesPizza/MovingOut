@@ -19,7 +19,8 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
+
+	/*
 	if (bIsGrabbing)
 	{
 		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
@@ -34,7 +35,7 @@ void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 			PhysicsHandle->SetTargetLocationAndRotation(Middle + GetActorForwardVector() * GrabDistance, FixedRotation.Rotator());
 		}
 	}
-	
+	*/
 }
 
 void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
@@ -53,7 +54,6 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 
 void APlayerMovingOutCharacter::TryGrab()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
 
 	//if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
 	
@@ -65,25 +65,29 @@ void APlayerMovingOutCharacter::TryGrab()
 	Params.AddIgnoredActor(this);
 
 	DrawDebugLineTrace(GetWorld(), Start, End);
+	bIsGrabbing = true;
 
-	if (GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(50.f), Params))
+	if (GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(50.f), Params))
 	{
+		
 		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
 		{
-			//HitComp->SetSimulatePhysics(false);
-			//FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, EAttachmentRule::KeepWorld, false);
-			//HitComp->AttachToComponent(GetMesh(), Rules, RightHandBoneName);
+			HitComp->SetSimulatePhysics(false);
+			HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
+			HitComp->AttachToComponent(GetMesh(), Rules, RightHandBoneName);
 
-			
+			/*
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
 				HitComp,
 				RightHandBoneName,
 				Hit.ImpactPoint,
 				HitComp->GetComponentRotation());
+			*/
 			
-			bIsGrabbing = true;
+
 			DrawDebugHitPoint(GetWorld(), Hit);
-			HitComp->SetAngularDamping(100.f);
+			//HitComp->SetAngularDamping(100.f);
 			FString Msg = FString::Printf(TEXT("Component Name : %s"), *Hit.GetComponent()->GetName());
 			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
 		}
@@ -92,14 +96,27 @@ void APlayerMovingOutCharacter::TryGrab()
 
 void APlayerMovingOutCharacter::TryRelease()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TryRelease Called"));
 	bIsGrabbing = false;
-	//Hit.GetComponent()->SetSimulatePhysics(true);
-	FDetachmentTransformRules rules(EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
-	Hit.GetComponent()->SetSimulatePhysics(true);
-	Hit.GetComponent()->DetachFromComponent(rules);
-	Hit.Reset();
+	if (Hit.GetActor())
+	{
+		Hit.GetComponent()->SetSimulatePhysics(true);
+		Hit.GetComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		FDetachmentTransformRules rules(EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
+		Hit.GetComponent()->DetachFromComponent(rules);
+		Hit.Reset();
+	}
+	
 	//PhysicsHandle->ReleaseComponent();
 	//DetachFromActor(rules);
 	
+}
+
+void APlayerMovingOutCharacter::ThrowAim()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ThrowAim Called"));
+}
+
+void APlayerMovingOutCharacter::ThrowRelease()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ThrowRelease Called"));
 }
