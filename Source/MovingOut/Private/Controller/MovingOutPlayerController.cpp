@@ -51,20 +51,32 @@ void AMovingOutPlayerController::Release()
 
 void AMovingOutPlayerController::Jump()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Jump Called"));
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
 		PlayerCharacter->Jump();
-		UE_LOG(LogTemp, Warning, TEXT("Jump Called"));
 	}
 }
 
 void AMovingOutPlayerController::StopJumping()
 {
-	UE_LOG(LogTemp, Warning, TEXT("StopJumping Called"));
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
 		PlayerCharacter->StopJumping();
-		UE_LOG(LogTemp, Warning, TEXT("StopJumping Called"));
+	}
+}
+
+void AMovingOutPlayerController::ThrowAim()
+{
+	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	{
+		PlayerCharacter->ThrowAim();
+	}
+}
+
+void AMovingOutPlayerController::ThrowRelease()
+{
+	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	{
+		PlayerCharacter->ThrowRelease();
 	}
 }

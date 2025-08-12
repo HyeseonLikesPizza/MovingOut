@@ -32,9 +32,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	UInputAction* ThrowAction;
+
 	void PlayerMove(const FInputActionValue& Value);
 	void Grab();
 	void Release();
 	void Jump();
 	void StopJumping();
+	void ThrowAim();
+	void ThrowRelease();
 };
