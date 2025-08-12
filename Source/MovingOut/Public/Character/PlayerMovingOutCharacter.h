@@ -8,6 +8,7 @@
 
 class UPhysicsHandleComponent;
 struct FInputActionValue;
+class UInteractiveComponent;
 
 UCLASS()
 class MOVINGOUT_API APlayerMovingOutCharacter : public AMovingOutCharacter
@@ -27,23 +28,10 @@ public:
 	void ThrowAim();
 	void ThrowRelease();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Grab)
-	float GrabTraceDistance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Grab)
-	float GrabDistance;
-
-	UPROPERTY(EditDefaultsOnly, Category=Grab)
-	FName LeftHandBoneName;
-
-	UPROPERTY(EditDefaultsOnly, Category=Grab)
-	FName RightHandBoneName;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bIsGrabbing;
+	UPROPERTY()
+	UInteractiveComponent* InteractiveComponent;
 
 private:
-	
-	FHitResult Hit;
 	UPhysicsHandleComponent* PhysicsHandle;
+	FHitResult Hit;
 };

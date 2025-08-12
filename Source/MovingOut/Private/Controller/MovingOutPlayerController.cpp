@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Controller/MovingOutPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Character/PlayerMovingOutCharacter.h"
+#include "Component/InteractiveComponent.h"
 
 void AMovingOutPlayerController::SetupInputComponent()
 {
@@ -39,7 +38,7 @@ void AMovingOutPlayerController::Grab()
 {
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
-		PlayerCharacter->TryGrab();
+		PlayerCharacter->InteractiveComponent->TryGrab();
 	}
 }
 
@@ -47,7 +46,7 @@ void AMovingOutPlayerController::Release()
 {
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
-		PlayerCharacter->TryRelease();
+		PlayerCharacter->InteractiveComponent->TryRelease();
 	}
 }
 
@@ -71,7 +70,7 @@ void AMovingOutPlayerController::ThrowAim()
 {
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
-		PlayerCharacter->ThrowAim();
+		PlayerCharacter->InteractiveComponent->ThrowAim();
 	}
 }
 
@@ -79,6 +78,6 @@ void AMovingOutPlayerController::ThrowRelease()
 {
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
-		PlayerCharacter->ThrowRelease();
+		PlayerCharacter->InteractiveComponent->ThrowRelease();
 	}
 }

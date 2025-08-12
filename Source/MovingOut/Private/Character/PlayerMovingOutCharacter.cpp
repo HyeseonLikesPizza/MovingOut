@@ -5,6 +5,7 @@
 #include "MovingOut/DebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "MovingOut/MovingOut.h"
+#include "Component/InteractiveComponent.h"
 
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
@@ -14,6 +15,9 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 
 	PrimaryActorTick.bCanEverTick = true;
 	SetActorTickEnabled(true);
+
+	InteractiveComponent = CreateDefaultSubobject<UInteractiveComponent>(TEXT("InteractiveComponent"));
+
 }
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
@@ -54,9 +58,6 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 
 void APlayerMovingOutCharacter::TryGrab()
 {
-
-	//if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
-	
 
 	FVector Start = GetActorLocation();
 	FVector End = Start + GetActorForwardVector() * GrabTraceDistance;

@@ -21,12 +21,41 @@ public:
 
 	virtual void Walk();
 
+	FORCEINLINE float GetGrabTraceDistance() const { return GrabTraceDistance; }
+	FORCEINLINE float GetGrabDistance() const { return GrabDistance; }
+	FORCEINLINE FName GetRightHandBoneName() const { return RightHandBoneName; }
+	FORCEINLINE bool GetIsGrabbing() const { return bIsGrabbing; }
+
+	FORCEINLINE void SetGrabTraceDistance(const float& InDistance) { GrabTraceDistance = InDistance; }
+	FORCEINLINE void SetGrabDistance(const float& InDistance) { GrabDistance = InDistance; }
+	FORCEINLINE void SetIsGrabbing(const bool& InGrabbing) { bIsGrabbing = InGrabbing; }
+
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grab)
+	float GrabTraceDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grab)
+	float GrabDistance;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grab)
+	FName LeftHandBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grab)
+	FName RightHandBoneName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsGrabbing;
+
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
 	
 };
 
