@@ -43,8 +43,6 @@ void AEnemyMovingOutCharacter::BeginPlay()
     }
     
     // 게임 시작 시 순찰 상태로 시작
-    PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyMovingOutCharacter::OnPlayerLost);
-
     SetEnemyState(EEnemyState::ES_Patrolling);
 }
 
@@ -184,14 +182,16 @@ void AEnemyMovingOutCharacter::OnPlayerLost(UPrimitiveComponent* OverlappedComp,
 // 새로운 순찰 지점 찾기
 void AEnemyMovingOutCharacter::FindNewPatrolDestination()
 {
-    PatrolDestination = GetActorLocation() + FVector(FMath::RandRange(-5000.f, 5000.f), FMath::RandRange(-5000.f, 5000.f), 0.f);
+    SetEnemyState(EEnemyState::ES_Patrolling);
+        
+    PatrolDestination = GetActorLocation() + FVector(FMath::FRandRange(-5000.f, 5000.f), FMath::FRandRange(-5000.f, 5000.f), 0.f);
 }
 
 // 순찰 상태 로직 
 void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
 {
     // 순찰 지점에 거의 도달했는지 확인
-    if (FVector::Dist(GetActorLocation(), PatrolDestination) < 450.f)
+    if (FVector::Dist(GetActorLocation(), PatrolDestination) < 2000.f)
     {
         FindNewPatrolDestination();
     }
@@ -220,7 +220,8 @@ void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
         
         //  현재 위치에서 플레이어 위치까지의 방향 벡터를 계산합니다.
         FVector DirectionToPlayer = PlayerLocation - GetActorLocation();
-        DirectionToPlayer.Z = 0.0f; // 날라가는거 방지 normalize
+        DirectionToPlayer.Z = 0.0f;
+        // 날라가는거 방지 normalize
         DirectionToPlayer.Normalize();
 
         //  계산된 방향으로 이동 입력을 추가합니다.
@@ -237,7 +238,6 @@ void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
         // 타겟을 잃으면 순찰 상태로 돌아갑니다.
         PlayerMovingOutCharacter = nullptr;
         SetEnemyState(EEnemyState::ES_Patrolling);
-        
         
     }
 }
