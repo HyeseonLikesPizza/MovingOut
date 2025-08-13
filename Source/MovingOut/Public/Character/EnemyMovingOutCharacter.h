@@ -23,6 +23,13 @@ public:
     // 생성자
     AEnemyMovingOutCharacter();
 
+    //ai 걷기 속도
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+    float PatrolSpeed = 250.f;
+    //ai 달리기 속도
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+    float ChaseSpeed = 680.f;
+
 protected:
     // 게임 시작 시 호출
     virtual void BeginPlay() override;
@@ -60,6 +67,9 @@ public:
     void StartPatrolling();
 
 private:
+
+    
+    
     // 플레이어 감지용 Sphere Component
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
     class USphereComponent* PlayerDetectionSphere;

@@ -92,7 +92,26 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
 
     CurrentState = NewState;
     UE_LOG(LogTemp, Warning, TEXT("AI State Changed to: %s"), *UEnum::GetValueAsString(NewState));
+
+   UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+   if (MovementComponent)
+   {
+      if (CurrentState == EEnemyState::ES_Patrolling)
+      {
+         MovementComponent-> MaxWalkSpeed = PatrolSpeed;
+      }
+      else if (CurrentState == EEnemyState::ES_Chasing)
+      {
+         MovementComponent-> MaxWalkSpeed = ChaseSpeed;
+      }
+      else
+      {
+         // 다른 상태에서는 속도를 0으로 설정하거나, 기본값으로 되돌릴 수 있습니다.
+         MovementComponent->MaxWalkSpeed = 0.f;
+      }
+   }
 }
+
 
 
 void AEnemyMovingOutCharacter::HandleIdle()
@@ -104,7 +123,7 @@ void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
 {
     // 목표 지점에 거의 도달했는지 확인
     const float DistanceToGoal = FVector::Dist(GetActorLocation(), PatrolDestination);
-    if (DistanceToGoal < 1500.f)
+    if (DistanceToGoal < 190.f)
     {
        // 목표에 도달했으므로, 새로운 순찰 지점을 찾아 이동
        FindAndMoveToNewPatrolDestination();
@@ -124,6 +143,8 @@ void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
        PlayerTarget = nullptr;
        SetEnemyState(EEnemyState::ES_Patrolling);
        FindAndMoveToNewPatrolDestination();
+
+       
     }
 }
 
@@ -147,6 +168,7 @@ void AEnemyMovingOutCharacter::OnPlayerDetected(UPrimitiveComponent* OverlappedC
        {
           PlayerTarget = Player;
           SetEnemyState(EEnemyState::ES_Chasing);
+          
        }
     }
 }
@@ -254,5 +276,6 @@ void AEnemyMovingOutCharacter::EndHitReaction()
     }
     // 이전 상태가 추적이였다면 추적을 자동으로 재개합
 }
+
 
 
