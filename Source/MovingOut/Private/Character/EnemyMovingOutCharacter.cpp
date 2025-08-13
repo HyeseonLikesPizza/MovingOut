@@ -1,3 +1,5 @@
+
+
 #include "Character/EnemyMovingOutCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -102,7 +104,7 @@ void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
 {
     // 목표 지점에 거의 도달했는지 확인
     const float DistanceToGoal = FVector::Dist(GetActorLocation(), PatrolDestination);
-    if (DistanceToGoal < 150.f)
+    if (DistanceToGoal < 1500.f)
     {
        // 목표에 도달했으므로, 새로운 순찰 지점을 찾아 이동
        FindAndMoveToNewPatrolDestination();
@@ -235,7 +237,7 @@ void AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination()
        UE_LOG(LogTemp, Error, TEXT("FAILED to find reachable point in radius. Check NavMesh or PatrolRadius value."));
        // 길 찾기 실패 시, 2초 뒤에 다시 시도
        FTimerHandle RetryTimer;
-       GetWorldTimerManager().SetTimer(RetryTimer, this, &AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination, 2.0f, false);
+       GetWorldTimerManager().SetTimer(RetryTimer, this, &AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination, 1.0f, false);
     }
 }
 void AEnemyMovingOutCharacter::EndHitReaction()
