@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="MovingOut" pattern="file:Source/*||file:Source/MovingOut/*||file:Source/MovingOut/Private/*||file:Source/MovingOut/Public/*" />
-</component>
