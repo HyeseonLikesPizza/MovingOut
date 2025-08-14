@@ -1,6 +1,7 @@
 
 #include "Character/PlayerMovingOutCharacter.h"
 #include "EnhancedInputSubsystems.h"
+#include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "MovingOut/DebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
@@ -34,7 +35,8 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	const FRotator Rotation = GetControlRotation();
+	//const FRotator Rotation = GetControlRotation();
+	const FRotator Rotation = TopDownCameraComponent->GetForwardVector().Rotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
