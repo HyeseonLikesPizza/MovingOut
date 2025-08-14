@@ -1,83 +1,93 @@
-
 #pragma once
+
 #include "CoreMinimal.h"
-#include "Character/MovingOutCharacter.h"                                                               
-#include "Components/SphereComponent.h"
-#include "NavigationSystem.h"
+#include "GameFramework/Character.h"
 #include "EnemyMovingOutCharacter.generated.h"
 
-
-// 에너미의 상태를 정의하는 열거형
+// AI 상태를 정의하는 enum
 UENUM(BlueprintType)
 enum class EEnemyState : uint8
 {
-    ES_Idle UMETA(DisplayName = "Idle"),             // 대기 상태 (플레이어가 없을 때)
-    ES_Patrolling UMETA(DisplayName = "Patrolling"), // 순찰 상태
-    ES_Chasing UMETA(DisplayName = "Chasing"),       // 플레이어 추적 상태
-    ES_HitReaction UMETA(DisplayName = "HitReaction")// 충돌 후 회전하는 상태
+    ES_Idle UMETA(DisplayName = "Idle"),
+    ES_Patrolling UMETA(DisplayName = "Patrolling"),
+    ES_Chasing UMETA(DisplayName = "Chasing"),
+    ES_HitReaction UMETA(DisplayName = "HitReaction"),
 };
 
 UCLASS()
-class MOVINGOUT_API AEnemyMovingOutCharacter : public AMovingOutCharacter
+class MOVINGOUT_API AEnemyMovingOutCharacter : public ACharacter
 {
     GENERATED_BODY()
 
 public:
+    // 생성자
     AEnemyMovingOutCharacter();
 
+    //ai 걷기 속도
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+    float PatrolSpeed = 250.f;
+    //ai 달리기 속도
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+    float ChaseSpeed = 680.f;
+
 protected:
+    // 게임 시작 시 호출
     virtual void BeginPlay() override;
 
 public:
+    // 매 프레임 호출
     virtual void Tick(float DeltaSeconds) override;
 
-    bool IsOut = true;
-
-private:
-    // AI 상태를 설정하는 함수
-    void SetEnemyState(EEnemyState NewState);
-    
-    // 현재 에너미의 상태
+    // AI 상태
     EEnemyState CurrentState;
-    // 피격 전 상태 저장
     EEnemyState PreviousState;
 
-    // 플레이어 캐릭터 타겟
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-    AMovingOutCharacter* PlayerMovingOutCharacter;
+    // AI 상태 변경 함수
+    void SetEnemyState(EEnemyState NewState);
 
-    // 에너미가 플레이어를 감지하는 구체 충돌 컴포넌트
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-    USphereComponent* PlayerDetectionSphere;
+    // AI 행동 핸들러
+    void HandleIdle();
+    void HandlePatrolling(float DeltaTime);
+    void HandleChasing(float DeltaTime);
+    void HandleHitReaction(float DeltaTime);
 
-    // 현재 순찰 지점
-    FVector PatrolDestination;
-
-    // 타겟 회전
-    FRotator TargetRotation;
-
-    // 회전 타이머 핸들
-    FTimerHandle RotationCooldownTimer;
-    void ResetRotationCooldown();
-
-    // 캡슐 컴포넌트에 닿았을때 호출
-    UFUNCTION()
-    void OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-    // 플레이어가 감지 범위에 들어왔을 때 호출
+    // 이벤트 함수
     UFUNCTION()
     void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION()
     void OnPlayerLost(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
     
-    // 각 상태별 로직을 처리하는 함수
-    void HandlePatrolling(float DeltaTime);
-    void HandleChasing(float DeltaTime);
-    void HandleHitReaction(float DeltaTime);
+    UFUNCTION()
+    void OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+    // 패트롤 관련 함수
+    void FindAndMoveToNewPatrolDestination();
+    void EndHitReaction();
+    void StartPatrolling();
+
+private:
 
     
+    
+    // 플레이어 감지용 Sphere Component
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+    class USphereComponent* PlayerDetectionSphere;
 
-    // 새로운 순찰 지점을 찾는 함수
-    void FindNewPatrolDestination();
+    // 현재 추적 대상
+    UPROPERTY()
+    class APlayerMovingOutCharacter* PlayerTarget;
+
+    // 순찰 목표 지점
+    FVector PatrolDestination;
+    
+    // 순찰 반경
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+    float PatrolRadius = 1500.f; // 기본값 설정
+
+    // 충돌 반응 타이머
+    FTimerHandle HitReactionTimer;
+
+    // 충돌 반응 회전 목표
+    FRotator TargetRotation;
 };
