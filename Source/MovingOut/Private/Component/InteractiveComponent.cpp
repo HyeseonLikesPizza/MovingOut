@@ -1,8 +1,10 @@
 
 #include "Component/InteractiveComponent.h"
 #include "Character/MovingOutCharacter.h"
+#include "Components/DecalComponent.h"
 #include "MovingOut/DebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "MovingOut/MovingOut.h"
 
 UInteractiveComponent::UInteractiveComponent()
 {
@@ -28,8 +30,13 @@ void UInteractiveComponent::TryGrab()
 		{
 			HitComp->SetSimulatePhysics(false);
 			HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
-			HitComp->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
+			FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+
+			FVector vec = HitResult.GetActor()->GetActorLocation();
+			vec.Z = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()).Z;
+			HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
+			
+			//HitComp->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
 
 			/*
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
@@ -39,11 +46,14 @@ void UInteractiveComponent::TryGrab()
 				HitComp->GetComponentRotation());
 			*/
 
+			
+
 
 			DrawDebugHitPoint(GetWorld(), HitResult);
 			//HitComp->SetAngularDamping(100.f);
 			FString Msg = FString::Printf(TEXT("Component Name : %s"), *HitResult.GetComponent()->GetName());
 			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
+			
 		}
 	}
 }
@@ -51,6 +61,7 @@ void UInteractiveComponent::TryGrab()
 void UInteractiveComponent::TryRelease()
 {
 	Character->SetIsGrabbing(false);
+	CanAming = false;
 	if (HitResult.GetActor())
 	{
 		HitResult.GetComponent()->SetSimulatePhysics(true);
@@ -66,9 +77,13 @@ void UInteractiveComponent::TryRelease()
 
 void UInteractiveComponent::ThrowAim()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ThrowAim Called"));
 	bool bIsGrabbing = Character->GetIsGrabbing();
+	
 	if (bIsGrabbing)
 	{
+		Character->CrosshairDecal->SetVisibility(true, true);
+		Character->LightCone->SetVisibility(true);
 		FVector Start = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
 		FVector AimDir = Character->GetActorForwardVector() * 100.f;
 		float ThrowSpeed = 10.f;
@@ -87,39 +102,50 @@ void UInteractiveComponent::ThrowAim()
 		FPredictProjectilePathResult R;
 		UGameplayStatics::PredictProjectilePath(this, P, R);
 
-		FVector AimPoint = R.HitResult.bBlockingHit ? R.HitResult.ImpactPoint : R.LastTraceDestination.Location;
+		AimPoint = R.HitResult.bBlockingHit ? R.HitResult.ImpactPoint : R.LastTraceDestination.Location;
 
 	}
 }
 
 void UInteractiveComponent::ThrowRelease()
 {
+	CanAming = false;
 	if (!HitResult.GetComponent()) return;
 
+	Character->LightCone->SetVisibility(false);
+	Character->CrosshairDecal->SetVisibility(false, true);
+	
 	HitResult.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	HitResult.GetComponent()->SetEnableGravity(true);
 	HitResult.GetComponent()->SetSimulatePhysics(true);
-
-	FVector AimDir = Character->GetActorForwardVector() * 100.f;
-	float ThrowSpeed = 10.f;
-
+	
+	FVector AimDir = Character->GetActorForwardVector() * 10.f;
+	float ThrowSpeed = 100.f;
+	
 	FVector LaunchVel = AimDir * ThrowSpeed;
-
+	
 	HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
-
+	
 	Character->SetIsGrabbing(false);
+
+	
 }
 
 
 void UInteractiveComponent::BeginPlay()
 {
 	Character = Cast<AMovingOutCharacter>(GetOwner());
+
+	
 }
 
 
 void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	
+	if (Character && Character->GetIsGrabbing() && HitResult.GetActor())
+	{
+		HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
+	}
 }
 

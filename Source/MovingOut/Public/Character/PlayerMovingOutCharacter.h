@@ -31,7 +31,11 @@ public:
 	UPROPERTY()
 	UInteractiveComponent* InteractiveComponent;
 
+	
+
 private:
 	UPhysicsHandleComponent* PhysicsHandle;
 	FHitResult Hit;
+
+
 };

@@ -30,6 +30,13 @@ public:
 	FORCEINLINE void SetGrabDistance(const float& InDistance) { GrabDistance = InDistance; }
 	FORCEINLINE void SetIsGrabbing(const bool& InGrabbing) { bIsGrabbing = InGrabbing; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* LightCone;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UDecalComponent* CrosshairDecal;
+
 
 protected:
 

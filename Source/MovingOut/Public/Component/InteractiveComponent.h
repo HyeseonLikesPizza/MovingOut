@@ -31,4 +31,8 @@ private:
 	AMovingOutCharacter* Character;
 
 	FHitResult HitResult;
+
+	FVector AimPoint;
+
+	bool CanAming;
 };

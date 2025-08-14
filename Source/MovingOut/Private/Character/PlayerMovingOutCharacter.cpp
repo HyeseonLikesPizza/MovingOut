@@ -17,6 +17,9 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 	SetActorTickEnabled(true);
 
 	InteractiveComponent = CreateDefaultSubobject<UInteractiveComponent>(TEXT("InteractiveComponent"));
+	LightCone = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightCone"));
+	LightCone->SetupAttachment(RootComponent);
+	LightCone->SetVisibility(false);
 
 }
 
