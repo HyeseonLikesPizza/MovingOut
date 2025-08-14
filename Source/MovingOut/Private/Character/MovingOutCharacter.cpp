@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Character/MovingOutCharacter.h"
+
+#include "NavigationSystemTypes.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -43,6 +45,13 @@ AMovingOutCharacter::AMovingOutCharacter()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	CrosshairDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("CrosshairDecal"));
+	CrosshairDecal->SetupAttachment(GetMesh());
+	CrosshairDecal->SetVisibility(true, true);         // ThrowAim 때만 켬
+	CrosshairDecal->DecalSize = FVector(8.f, 40.f, 40.f); // X=깊이, Y/Z=반지름
+	//CrosshairDecal->SetFadeScreenSize(0.0f);      // 멀어져도 사라지지 않게(선택)
+	//CrosshairDecal->RegisterComponent();
 }
 
 void AMovingOutCharacter::Tick(float DeltaSeconds)
