@@ -23,10 +23,6 @@ public:
 	
 	
 	void HandleMove(const FInputActionValue& Value);
-	void TryGrab();
-	void TryRelease();
-	void ThrowAim();
-	void ThrowRelease();
 
 	UPROPERTY()
 	UInteractiveComponent* InteractiveComponent;
@@ -34,8 +30,8 @@ public:
 	
 
 private:
+	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle;
-	FHitResult Hit;
 
 
 };

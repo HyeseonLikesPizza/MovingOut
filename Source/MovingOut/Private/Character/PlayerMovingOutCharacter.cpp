@@ -27,22 +27,7 @@ void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	/*
-	if (bIsGrabbing)
-	{
-		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
-		{
-			FVector HoldLocation = GetActorLocation() + GetActorForwardVector() * 100.f;
-			FVector LeftHand = GetMesh()->GetSocketLocation(LeftHandBoneName);
-			FVector RightHand = GetMesh()->GetSocketLocation(RightHandBoneName);
-			FVector Middle = (LeftHand + RightHand) * 0.5f;
-			FRotator MiddleRot = (RightHand - LeftHand).Rotation();
-			FQuat FixedRotation = FQuat::Identity;
-			//FRotator HoldRotation = GetMesh()->GetSocketRotation(GrabBoneName);
-			PhysicsHandle->SetTargetLocationAndRotation(Middle + GetActorForwardVector() * GrabDistance, FixedRotation.Rotator());
-		}
-	}
-	*/
+	
 }
 
 void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
@@ -54,110 +39,34 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	ACharacter* CharacterPawn = UGameplayStatics::GetPlayerCharacter(this, 0);
-	CharacterPawn->AddMovementInput(ForwardDirection, MovementVector.X);
-	CharacterPawn->AddMovementInput(RightDirection, MovementVector.Y);
-}
-
-void APlayerMovingOutCharacter::TryGrab()
-{
-
-	FVector Start = GetActorLocation();
-	FVector End = Start + GetActorForwardVector() * GrabTraceDistance;
-	
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-
-	DrawDebugLineTrace(GetWorld(), Start, End);
-	bIsGrabbing = true;
-
-	if (GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(50.f), Params))
+	if (!InteractiveComponent->GetIsAming())
 	{
-		
-		if (UPrimitiveComponent* HitComp = Hit.GetComponent())
+		AddMovementInput(ForwardDirection, MovementVector.X);
+		AddMovementInput(RightDirection, MovementVector.Y);
+	}
+	else
+	{
+		// 1. 입력 방향 벡터의 크기가 0이 아닐 때만 (즉, 키를 누르고 있을 때만) 회전 처리
+		if (!MovementVector.IsNearlyZero())
 		{
-			HitComp->SetSimulatePhysics(false);
-			HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-			FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, true);
-			HitComp->AttachToComponent(GetMesh(), Rules, RightHandBoneName);
+			// 2. 입력 방향 벡터를 정규화(Normalize)하고, 이를 목표 회전값(FRotator)으로 변환합니다.
+			// Y(Right)가 X(Forward)보다 우선순위가 높게 처리되지만, 탑다운 시점에서는 큰 차이가 없습니다.
+			FVector TargetDirection = FVector(MovementVector.X, MovementVector.Y, 0.f);
+			TargetDirection.Normalize();
+			FRotator TargetRotation = TargetDirection.Rotation();
 
-			/*
-			PhysicsHandle->GrabComponentAtLocationWithRotation(
-				HitComp,
-				RightHandBoneName,
-				Hit.ImpactPoint,
-				HitComp->GetComponentRotation());
-			*/
+			// 3. 현재 캐릭터의 회전값을 가져옵니다.
+			FRotator CurrentRotation = GetActorRotation();
+
+			// 4. 현재 회전값에서 목표 회전값으로 부드럽게 보간(RInterpTo)합니다.
+			// DeltaTime은 프레임 간 시간 간격이며, RotationSpeed는 회전 속도를 조절합니다.
+			FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->DeltaTimeSeconds, 1.f);
+
+			// 5. 계산된 새로운 회전값을 액터에게 적용합니다.
+			GetController()->SetControlRotation(NewRotation); // 컨트롤러의 회전을 변경
+			SetActorRotation(NewRotation); // 액터(캐릭터)의 회전을 변경
 			
-
-			DrawDebugHitPoint(GetWorld(), Hit);
-			//HitComp->SetAngularDamping(100.f);
-			FString Msg = FString::Printf(TEXT("Component Name : %s"), *Hit.GetComponent()->GetName());
-			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
 		}
 	}
-}
-
-void APlayerMovingOutCharacter::TryRelease()
-{
-	bIsGrabbing = false;
-	if (Hit.GetActor())
-	{
-		Hit.GetComponent()->SetSimulatePhysics(true);
-		Hit.GetComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
-		FDetachmentTransformRules rules(EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
-		Hit.GetComponent()->DetachFromComponent(rules);
-		Hit.Reset();
-	}
-	
-	//PhysicsHandle->ReleaseComponent();
-	//DetachFromActor(rules);
-	
-}
-
-void APlayerMovingOutCharacter::ThrowAim()
-{
-	if (bIsGrabbing)
-	{
-		FVector Start = GetMesh()->GetSocketLocation(RightHandBoneName);
-		FVector AimDir = GetActorForwardVector() * 100.f;
-		float ThrowSpeed = 10.f;
-		
-		DrawDebugLineTrace(GetWorld(), Start, GetActorLocation()+AimDir);
-		
-		FPredictProjectilePathParams P;
-		P.StartLocation = Start;
-		P.LaunchVelocity = AimDir * ThrowSpeed;
-		P.ProjectileRadius = 8.f;
-		P.bTraceWithCollision = true;
-		P.SimFrequency = 15.f;
-		P.MaxSimTime = 2.f;
-		P.TraceChannel = ECC_Visibility;
-
-		FPredictProjectilePathResult R;
-		UGameplayStatics::PredictProjectilePath(this, P, R);
-
-		FVector AimPoint = R.HitResult.bBlockingHit ? R.HitResult.ImpactPoint : R.LastTraceDestination.Location;
-		
-	}
-}
-
-void APlayerMovingOutCharacter::ThrowRelease()
-{
-	if (!Hit.GetComponent()) return;
-
-	Hit.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	Hit.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Hit.GetComponent()->SetEnableGravity(true);
-	Hit.GetComponent()->SetSimulatePhysics(true);
-
-	FVector AimDir = GetActorForwardVector() * 100.f;
-	float ThrowSpeed = 10.f;
-	
-	FVector LaunchVel = AimDir * ThrowSpeed;
-
-	Hit.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
-
-	bIsGrabbing = false;
 	
 }

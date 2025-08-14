@@ -2,6 +2,7 @@
 #include "Component/InteractiveComponent.h"
 #include "Character/MovingOutCharacter.h"
 #include "Components/DecalComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "MovingOut/DebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "MovingOut/MovingOut.h"
@@ -14,6 +15,7 @@ UInteractiveComponent::UInteractiveComponent()
 
 void UInteractiveComponent::TryGrab()
 {
+	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
 	FVector Start = Character->GetActorLocation();
 	FVector End = Start + Character->GetActorForwardVector() * Character->GetGrabTraceDistance();
 
@@ -23,45 +25,53 @@ void UInteractiveComponent::TryGrab()
 	DrawDebugLineTrace(GetWorld(), Start, End);
 	Character->SetIsGrabbing(true);
 
-	if (GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(50.f), Params))
+	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params))
 	{
 
 		if (UPrimitiveComponent* HitComp = HitResult.GetComponent())
 		{
-			HitComp->SetSimulatePhysics(false);
-			HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-			FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+			if (HitComp->GetCollisionObjectType() == Props)
+			{
+				HitComp->SetSimulatePhysics(false);
+				HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+				FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-			FVector vec = HitResult.GetActor()->GetActorLocation();
-			vec.Z = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()).Z;
-			HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
+				FVector vec = HitResult.GetActor()->GetActorLocation();
+				vec.Z = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()).Z;
+				HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
 			
-			//HitComp->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
+				//HitComp->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
 
-			/*
-			PhysicsHandle->GrabComponentAtLocationWithRotation(
-				HitComp,
-				RightHandBoneName,
-				Hit.ImpactPoint,
-				HitComp->GetComponentRotation());
-			*/
+				/*
+				PhysicsHandle->GrabComponentAtLocationWithRotation(
+					HitComp,
+					RightHandBoneName,
+					Hit.ImpactPoint,
+					HitComp->GetComponentRotation());
+				*/
 
 			
 
 
-			DrawDebugHitPoint(GetWorld(), HitResult);
-			//HitComp->SetAngularDamping(100.f);
-			FString Msg = FString::Printf(TEXT("Component Name : %s"), *HitResult.GetComponent()->GetName());
-			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
+				DrawDebugHitPoint(GetWorld(), HitResult);
+				//HitComp->SetAngularDamping(100.f);
+
+				//FString MsgName = FString::Printf(TEXT("Actor Name : %s"), *HitResult.->GetName());
+				//GEngine->AddOnScreenDebugMessage(2, 10.f, FColor::Magenta, MsgName);
+			
+				FString Msg = FString::Printf(TEXT("Component Name : %s"), *HitResult.GetComponent()->GetName());
+				GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
+			
+			}
 			
 		}
 	}
 }
 
-void UInteractiveComponent::TryRelease()
+void UInteractiveComponent::GrabRelease()
 {
+	UE_LOG(LogTemp, Warning, TEXT("TryRelease Called"));
 	Character->SetIsGrabbing(false);
-	CanAming = false;
 	if (HitResult.GetActor())
 	{
 		HitResult.GetComponent()->SetSimulatePhysics(true);
@@ -71,8 +81,14 @@ void UInteractiveComponent::TryRelease()
 		HitResult.Reset();
 	}
 
-	//PhysicsHandle->ReleaseComponent();
-	//DetachFromActor(rules);
+	if (IsAming)
+	{
+		IsAming = false;
+		ThrowRelease();
+		CancelThrowAming();
+	}
+	
+	
 }
 
 void UInteractiveComponent::ThrowAim()
@@ -82,8 +98,10 @@ void UInteractiveComponent::ThrowAim()
 	
 	if (bIsGrabbing)
 	{
-		Character->CrosshairDecal->SetVisibility(true, true);
-		Character->LightCone->SetVisibility(true);
+		SetThrowIndicatorVisible(true);
+		IsAming = true;
+
+		
 		FVector Start = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
 		FVector AimDir = Character->GetActorForwardVector() * 100.f;
 		float ThrowSpeed = 10.f;
@@ -109,27 +127,43 @@ void UInteractiveComponent::ThrowAim()
 
 void UInteractiveComponent::ThrowRelease()
 {
-	CanAming = false;
-	if (!HitResult.GetComponent()) return;
+	UE_LOG(LogTemp, Warning, TEXT("ThrowRelease Called"));
+	IsAming = false;
 
 	Character->LightCone->SetVisibility(false);
 	Character->CrosshairDecal->SetVisibility(false, true);
 	
-	HitResult.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	HitResult.GetComponent()->SetEnableGravity(true);
-	HitResult.GetComponent()->SetSimulatePhysics(true);
+	if (HitResult.GetComponent())
+	{
+		HitResult.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		HitResult.GetComponent()->SetEnableGravity(true);
+		HitResult.GetComponent()->SetSimulatePhysics(true);
+		FVector AimDir = Character->GetActorForwardVector() * 10.f;
+		float ThrowSpeed = 100.f;
+		FVector LaunchVel = AimDir * ThrowSpeed;
+		HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
+	}
 	
-	FVector AimDir = Character->GetActorForwardVector() * 10.f;
-	float ThrowSpeed = 100.f;
-	
-	FVector LaunchVel = AimDir * ThrowSpeed;
-	
-	HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
 	
 	Character->SetIsGrabbing(false);
 
 	
+}
+
+void UInteractiveComponent::SetThrowIndicatorVisible(bool bVisible)
+{
+	if (Character)
+	{
+		Character->CrosshairDecal->SetVisibility(bVisible, true);
+		Character->LightCone->SetVisibility(bVisible);	
+	}
+}
+
+void UInteractiveComponent::CancelThrowAming()
+{
+	IsAming = false;
+	SetThrowIndicatorVisible(false);
 }
 
 
@@ -146,6 +180,13 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	if (Character && Character->GetIsGrabbing() && HitResult.GetActor())
 	{
 		HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
+	}
+
+	if (IsAming)
+		GEngine->AddOnScreenDebugMessage(12, 3.f, FColor::Cyan, TEXT("IsAming = true"));
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(12, 3.f, FColor::Cyan, TEXT("IsAming = false"));
 	}
 }
 

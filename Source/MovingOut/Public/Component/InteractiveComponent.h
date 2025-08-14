@@ -16,9 +16,14 @@ class MOVINGOUT_API UInteractiveComponent : public UActorComponent
 public:	
 	UInteractiveComponent();
 	void TryGrab();
-	void TryRelease();
+	void GrabRelease();
 	void ThrowAim();
 	void ThrowRelease();
+	void SetThrowIndicatorVisible(bool bVisible);
+	void CancelThrowAming();
+
+	FORCEINLINE bool GetIsAming() const { return IsAming; }
+	FORCEINLINE void SetIsAming(const bool& InAming) { IsAming = InAming; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -34,5 +39,7 @@ private:
 
 	FVector AimPoint;
 
-	bool CanAming;
+	bool IsAming;
+
+	float CachedAimYaw;
 };

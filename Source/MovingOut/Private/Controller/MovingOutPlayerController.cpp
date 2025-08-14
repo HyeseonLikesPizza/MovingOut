@@ -46,7 +46,7 @@ void AMovingOutPlayerController::Release()
 {
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
-		PlayerCharacter->InteractiveComponent->TryRelease();
+		PlayerCharacter->InteractiveComponent->GrabRelease();
 	}
 }
 
