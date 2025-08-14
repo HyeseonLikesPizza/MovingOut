@@ -24,6 +24,8 @@ public:
 	void HandleMove(const FInputActionValue& Value);
 	void TryGrab();
 	void TryRelease();
+	void ThrowAim();
+	void ThrowRelease();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Grab)
 	float GrabTraceDistance;
