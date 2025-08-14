@@ -5,6 +5,7 @@
 #include "MovingOut/DebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "MovingOut/MovingOut.h"
+#include "Component/InteractiveComponent.h"
 
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
@@ -14,6 +15,12 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 
 	PrimaryActorTick.bCanEverTick = true;
 	SetActorTickEnabled(true);
+
+	InteractiveComponent = CreateDefaultSubobject<UInteractiveComponent>(TEXT("InteractiveComponent"));
+	LightCone = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightCone"));
+	LightCone->SetupAttachment(RootComponent);
+	LightCone->SetVisibility(false);
+
 }
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
@@ -54,9 +61,6 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 
 void APlayerMovingOutCharacter::TryGrab()
 {
-
-	//if (bIsGrabbing || PhysicsHandle->GrabbedComponent) return;
-	
 
 	FVector Start = GetActorLocation();
 	FVector End = Start + GetActorForwardVector() * GrabTraceDistance;
@@ -113,10 +117,47 @@ void APlayerMovingOutCharacter::TryRelease()
 
 void APlayerMovingOutCharacter::ThrowAim()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ThrowAim Called"));
+	if (bIsGrabbing)
+	{
+		FVector Start = GetMesh()->GetSocketLocation(RightHandBoneName);
+		FVector AimDir = GetActorForwardVector() * 100.f;
+		float ThrowSpeed = 10.f;
+		
+		DrawDebugLineTrace(GetWorld(), Start, GetActorLocation()+AimDir);
+		
+		FPredictProjectilePathParams P;
+		P.StartLocation = Start;
+		P.LaunchVelocity = AimDir * ThrowSpeed;
+		P.ProjectileRadius = 8.f;
+		P.bTraceWithCollision = true;
+		P.SimFrequency = 15.f;
+		P.MaxSimTime = 2.f;
+		P.TraceChannel = ECC_Visibility;
+
+		FPredictProjectilePathResult R;
+		UGameplayStatics::PredictProjectilePath(this, P, R);
+
+		FVector AimPoint = R.HitResult.bBlockingHit ? R.HitResult.ImpactPoint : R.LastTraceDestination.Location;
+		
+	}
 }
 
 void APlayerMovingOutCharacter::ThrowRelease()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ThrowRelease Called"));
+	if (!Hit.GetComponent()) return;
+
+	Hit.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	Hit.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Hit.GetComponent()->SetEnableGravity(true);
+	Hit.GetComponent()->SetSimulatePhysics(true);
+
+	FVector AimDir = GetActorForwardVector() * 100.f;
+	float ThrowSpeed = 10.f;
+	
+	FVector LaunchVel = AimDir * ThrowSpeed;
+
+	Hit.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
+
+	bIsGrabbing = false;
+	
 }
