@@ -31,15 +31,8 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DpaMonitoringSettings">
-    <option name="firstShow" value="false" />
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Source/MovingOut/Private/Props/CarSpawnManager.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/MovingOut/Public/Props/CarSpawnManager.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -51,7 +44,6 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;C/C++ 프로젝트.MovingOut.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -185,11 +177,6 @@
       <workItem from="1755058766367" duration="2298000" />
       <workItem from="1755065599569" duration="644000" />
       <workItem from="1755066267927" duration="689000" />
-      <workItem from="1755073795204" duration="318000" />
-      <workItem from="1755074678792" duration="6685000" />
-      <workItem from="1755086790284" duration="102000" />
-      <workItem from="1755086967105" duration="574000" />
-      <workItem from="1755088066709" duration="861000" />
     </task>
     <servers />
   </component>
