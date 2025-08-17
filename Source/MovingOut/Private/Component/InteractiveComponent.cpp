@@ -12,7 +12,24 @@
 UInteractiveComponent::UInteractiveComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.TickGroup = TG_PostPhysics;
+}
 
+void UInteractiveComponent::BeginPlay()
+{
+	Character = Cast<AMovingOutCharacter>(GetOwner());
+	AnimInstance = Cast<UPlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());
+	if (Character) AddTickPrerequisiteActor(Character);
+}
+
+// 캐리 프레임(월드): 골반 위치, Yaw=Actor Forward, Up=+Z
+FTransform UInteractiveComponent::MakeCarryFrame()
+{
+	const FVector Hips = Character->GetMesh()->GetSocketLocation(TEXT("Hips"));
+	const FVector fwd = Character->GetActorForwardVector();
+	const FVector up = FVector::UpVector;
+	const FQuat   rot = FRotationMatrix::MakeFromXZ(fwd, up).ToQuat();
+	return FTransform(rot, Hips);
 }
 
 // 소켓 이름에서 라벨 뽑기
@@ -267,16 +284,20 @@ bool UInteractiveComponent::PickFaceEdgesAndSetIK()
 }
 
 
-void UInteractiveComponent::BeginPlay()
-{
-	Character = Cast<AMovingOutCharacter>(GetOwner());
-	AnimInstance = Cast<UPlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());
-}
-
-
 void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	TickCarry_Light(DeltaTime, Settings);
+
+	switch (AnimInstance->CarryState)
+	{
+	case EIKProfile::Light:
+		TickCarry_Light(DeltaTime, Settings);
+		break;
+	case EIKProfile::ArmsOnly:
+		TickCarry_MoveCoupled(DeltaTime);
+		break;
+	}
+
+	
 }
 
 void UInteractiveComponent::TickCarry_Light(float DeltaTime, const FCarrySettings& S)
@@ -345,6 +366,31 @@ void UInteractiveComponent::TickCarry_Heavy(float DeltaTime, const FCarrySetting
 
 }
 
+void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTime, float posSpeed, float rotSpeed)
+{
+	if (!HitResult.GetComponent()) return;
+	UPrimitiveComponent* HeldComp = HitResult.GetComponent();
+
+	// ① 목표 오브젝트 변환 = (새 캐리프레임) * (저장된 상대)
+	const FTransform carryWS = MakeCarryFrame();
+	const FTransform targetWS = RelObjFromCarry * carryWS; // 또는 carryWS * RelObjFromCarry (UE 버전에 맞게 확인)
+	const FTransform curr = HeldComp->GetComponentTransform();
+
+	// ② 부드럽게 보간(스윕 금지, 텔레포트)
+	const FVector newLoc = FMath::VInterpTo(curr.GetLocation(), targetWS.GetLocation(), DeltaTime, posSpeed);
+	const FQuat   newRot = FMath::QInterpTo(curr.GetRotation(), targetWS.GetRotation(), DeltaTime, rotSpeed);
+	HeldComp->SetWorldTransform(FTransform(newRot, newLoc, curr.GetScale3D()),
+		/*bSweep=*/false, nullptr, ETeleportType::TeleportPhysics);
+
+
+
+	// ③ 손 IK 목표(월드 → AnimBP에서 컴포넌트로 변환)
+	const FTransform R_WS = HeldComp->GetSocketTransform(RightSocketName, RTS_World);
+	const FTransform L_WS = HeldComp->GetSocketTransform(LeftSocketName, RTS_World);
+	AnimInstance->SetRightHandTarget(R_WS);
+	AnimInstance->SetLeftHandTarget(L_WS);
+}
+
 void UInteractiveComponent::SetGripMidPoint(FName RSock, FName LSock)
 {
 	if (!HitResult.GetComponent() || !Character) return;
@@ -358,5 +404,9 @@ void UInteractiveComponent::SetGripMidPoint(FName RSock, FName LSock)
 
 	const FVector Mid_CS = (R_CS.GetLocation() + L_CS.GetLocation()) * 0.5f;
 	GripLocal = FTransform(FRotator::ZeroRotator, Mid_CS, FVector::OneVector); // **컴포넌트 공간**
+
+	// 현재 오브젝트 위치를 캐리 프레임 기준으로 저장
+	const FTransform carryWS = MakeCarryFrame();
+	RelObjFromCarry = HeldComp->GetComponentTransform().GetRelativeTransform(carryWS);
 }
 
