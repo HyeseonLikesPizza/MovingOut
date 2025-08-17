@@ -1,281 +1,366 @@
 
-
 #include "Character/EnemyMovingOutCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/PlayerMovingOutCharacter.h"
 #include "Engine/World.h"
-#include "Math/UnrealMathUtility.h"
 #include "NavigationSystem.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "NavigationPath.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "AIController.h"
 
 // 생성자
 AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
-
-    // 네비게이션 시스템을 사용하려면 반드시 필요
+    
+    // 네비게이션 시스템을 쓰려면 반드시 필요!
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
     
-    // 플레이어 감지용 SphereComponent 생성 및 설정
+    // 플레이어를 감지하기 위한 구체 컴포넌트 생성 및 설정
     PlayerDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectionSphere"));
     PlayerDetectionSphere->SetupAttachment(RootComponent);
-    PlayerDetectionSphere->SetSphereRadius(500.f); // 감지 범위
+    PlayerDetectionSphere->SetSphereRadius(950.0f);
     PlayerDetectionSphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
     
-    // SphereComponent의 Overlap 이벤트에 함수를 바인딩
+    // 플레이어 감지용 구체 컴포넌트에 이벤트 함수 바인딩
     PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyMovingOutCharacter::OnPlayerDetected);
     PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyMovingOutCharacter::OnPlayerLost);
-
+   
+    // 초기 상태 설정
     CurrentState = EEnemyState::ES_Idle;
+
+    // 능력치 설정
+    PatrolSpeed = 150.f;
+    ChaseSpeed = 450.f;
+    PatrolRadius = 2000.f;
+    ObjectSearchRadius = 1500.f;
+    ThrowForce = 1500.f;
+    TargetObject = nullptr;
+    GrabbedObject = nullptr;
 }
 
 // 게임 시작 시 호출
 void AEnemyMovingOutCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
-    // 캡슐 컴포넌트가 있는지 확인 후 충돌 이벤트 바인딩
-    if(GetCapsuleComponent())
+    
+    // 캡슐 컴포넌트가 제대로 있는지 확인 후 충돌 이벤트 바인딩
+    if (GetCapsuleComponent())
     {
        GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEnemyMovingOutCharacter::OnEnemyHit);
     }
-   
-    // 게임 시작하고 1초 뒤 패트롤 시작 (로직 중복 제거 및 안정적인 시작을 위함)
+    
+    // 게임 시작하고 1초 뒤에 순찰 시작
     FTimerHandle StartPatrolTimer;
     GetWorldTimerManager().SetTimer(StartPatrolTimer, this, &AEnemyMovingOutCharacter::StartPatrolling, 1.0f, false);
-    UE_LOG(LogTemp, Warning, TEXT("Patrol Timer Started"));
 }
 
+// 순찰 상태로 전환하는 함수
 void AEnemyMovingOutCharacter::StartPatrolling()
 {
     SetEnemyState(EEnemyState::ES_Patrolling);
-    FindAndMoveToNewPatrolDestination();
 }
 
-
-void AEnemyMovingOutCharacter::Tick(float DeltaSeconds)
+// 매 프레임마다 호출
+void AEnemyMovingOutCharacter::Tick(float DeltaTime)
 {
-    Super::Tick(DeltaSeconds);
-
-    // 현재 상태에 따라 다른 로직을 실행
+    Super::Tick(DeltaTime);
+    
+    // 현재 상태에 따라 다른 행동을 함
     switch (CurrentState)
     {
-       case EEnemyState::ES_Idle:
-          HandleIdle();
-          break;
-       case EEnemyState::ES_Patrolling:
-          HandlePatrolling(DeltaSeconds);
-          break;
-       case EEnemyState::ES_Chasing:
-          HandleChasing(DeltaSeconds);
-          break;
-       case EEnemyState::ES_HitReaction:
-          HandleHitReaction(DeltaSeconds);
-          break;
+    case EEnemyState::ES_Idle: HandleIdle(); break;
+    case EEnemyState::ES_Patrolling: HandlePatrolling(DeltaTime); break;
+    case EEnemyState::ES_Chasing: HandleChasing(DeltaTime); break;
+    case EEnemyState::ES_HitReaction: HandleHitReaction(DeltaTime); break;
+    case EEnemyState::ES_Grabbing: HandleGrabbing(DeltaTime); break;
+    default: break; // 혹시 모를 상황에 대비
     }
 }
 
-// AI 상태 변경 함수
+// AI 상태를 변경하는 함수
 void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
 {
     if (CurrentState == NewState) return;
-
-    // HitReaction 상태로 들어가기 전에 현재 상태를 저장 
+    
+    // 충돌 반응 상태로 들어가기 전에 현재 상태를 저장해둠
     if (NewState == EEnemyState::ES_HitReaction)
     {
        PreviousState = CurrentState;
+    }
+    
+    // 순찰 상태를 벗어날 때 타이머 초기화 (물건 잡기 시도)
+    if (CurrentState == EEnemyState::ES_Patrolling)
+    {
+        GetWorldTimerManager().ClearTimer(ThrowAttemptTimer);
+    }
+    
+    // 물건 잡기 상태를 벗어날 때 타겟 물건을 초기화함
+    if (NewState != EEnemyState::ES_Grabbing)
+    {
+        TargetObject = nullptr;
     }
 
     CurrentState = NewState;
     UE_LOG(LogTemp, Warning, TEXT("AI State Changed to: %s"), *UEnum::GetValueAsString(NewState));
 
-   UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-   if (MovementComponent)
-   {
-      if (CurrentState == EEnemyState::ES_Patrolling)
-      {
-         MovementComponent-> MaxWalkSpeed = PatrolSpeed;
-      }
-      else if (CurrentState == EEnemyState::ES_Chasing)
-      {
-         MovementComponent-> MaxWalkSpeed = ChaseSpeed;
-      }
-      else
-      {
-         // 다른 상태에서는 속도를 0으로 설정하거나, 기본값으로 되돌릴 수 있습니다.
-         MovementComponent->MaxWalkSpeed = 0.f;
-      }
-   }
+    UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
+    if (!MovementComponent) return;
+
+    // 새 상태에 맞춰 이동 속도와 타이머를 설정
+    switch (NewState)
+    {
+        case EEnemyState::ES_Patrolling:
+            MovementComponent->MaxWalkSpeed = PatrolSpeed;
+            // 30초마다 물건을 잡으려 시도하는 타이머를 설정해둠
+            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 30.0f, true);
+            FindAndMoveToNewPatrolDestination();
+            break;
+        case EEnemyState::ES_Chasing:
+            MovementComponent->MaxWalkSpeed = ChaseSpeed;
+            break;
+        case EEnemyState::ES_Grabbing:
+            MovementComponent->MaxWalkSpeed = PatrolSpeed;
+            break;
+        case EEnemyState::ES_Idle:
+        case EEnemyState::ES_HitReaction:
+        default:
+            MovementComponent->MaxWalkSpeed = 0.f;
+            break;
+    }
 }
-
-
 
 void AEnemyMovingOutCharacter::HandleIdle()
 {
-    // 대기 상태에서는 아무것도 하지 않음.
+    // 대기 상태에서는 할 게 없음!
 }
 
 void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
 {
-    // 목표 지점에 거의 도달했는지 확인
+    // 목표 지점에 거의 다 왔는지 확인
     const float DistanceToGoal = FVector::Dist(GetActorLocation(), PatrolDestination);
-    if (DistanceToGoal < 190.f)
+    if (DistanceToGoal < 140.f)
     {
-       // 목표에 도달했으므로, 새로운 순찰 지점을 찾아 이동
+       // 목표에 도착했으니, 새로운 순찰 지점을 찾아서 이동 시!
        FindAndMoveToNewPatrolDestination();
     }
 }
 
 void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
 {
+    // 플레이어가 유효한지 확인
     if (PlayerTarget && PlayerTarget->IsValidLowLevel())
     {
-       // 네비게이션 시스템을 사용해 플레이어를 향해 이동
-       UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), PlayerTarget);
+       AAIController* AIController = Cast<AAIController>(GetController());
+       if (AIController)
+       {
+           // AIController를 사용해 플레이어에게 이동
+           UAIBlueprintHelperLibrary::SimpleMoveToActor(AIController, PlayerTarget);
+       }
     }
     else
     {
-       // 타겟(플레이어) 참조가 유효하지 않으면 순찰 상태로 돌아감.
+       // 타겟이 사라지면 순찰 상태로 돌아감
        PlayerTarget = nullptr;
        SetEnemyState(EEnemyState::ES_Patrolling);
-       FindAndMoveToNewPatrolDestination();
+    }
+}
 
-       
+// 물건을 잡기 위해 이동하고 잡는 로직
+void AEnemyMovingOutCharacter::HandleGrabbing(float DeltaTime)
+{
+    if (!TargetObject)
+    {
+        // 목표가 사라지면 순찰 상태로 돌아가자
+        SetEnemyState(EEnemyState::ES_Patrolling);
+        return;
+    }
+    const float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetObject->GetActorLocation());
+    if (DistanceToTarget < 200.f)
+    {
+        // 목표에 충분히 가까워지면 이동을 멈춤
+        GetController()->StopMovement();
+        UPrimitiveComponent* ObjectMesh = Cast<UPrimitiveComponent>(TargetObject->GetRootComponent());
+        if (ObjectMesh && ObjectMesh->IsSimulatingPhysics())
+        {
+            GrabbedObject = TargetObject;
+            TargetObject = nullptr;
+            // 물리 시뮬레이션을 끄고 캐릭터에 부착
+            ObjectMesh->SetSimulatePhysics(false);
+            GrabbedObject->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("Hand_R"));
+            
+            // 물건을 잡고 잠시 대기 상태로 전환
+            SetEnemyState(EEnemyState::ES_Idle);
+            // 1.5초 뒤에 물건을 던지도록 타이머 설정
+            GetWorldTimerManager().SetTimer(ThrowActionTimer, this, &AEnemyMovingOutCharacter::PerformThrow, 1.5f, false);
+        }
+        else
+        {
+            // 물건이 물리가 활성화된 상태가 아니면 잡기 실패! 순찰 상태로 돌아감
+            TargetObject = nullptr;
+            SetEnemyState(EEnemyState::ES_Patrolling);
+        }
     }
 }
 
 void AEnemyMovingOutCharacter::HandleHitReaction(float DeltaTime)
 {
-    // 목표 회전값으로 부드럽게 회전
+    // 목표 회전값으로 부드럽게 돌기!
     FRotator CurrentRotation = GetActorRotation();
     FRotator InterpolatedRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 10.0f);
     SetActorRotation(InterpolatedRotation);
 }
 
-// 이벤트 함수와 아닌 함수를 따로 정리함( 아래는 모두 이벤트 함수, 추가도 꼭 똑같이 해라 재민아 까먹지 말고 [과거의 재민이가]
+
+// 플레이어가 감지됐을 때 호출
 void AEnemyMovingOutCharacter::OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // 감지된 액터가 플레이어인지 확인
+    // 감지된 액터가 플레이어인지 확인!
     APlayerMovingOutCharacter* Player = Cast<APlayerMovingOutCharacter>(OtherActor);
     if (Player)
     {
-       // 현재 벽에 부딪힌 상태가 아닐 때만 추적 상태로 변경
+       // 지금 벽에 부딪힌 상태가 아닐 때만 추적 상태로 변경
        if (CurrentState != EEnemyState::ES_HitReaction)
        {
+           // 물건 잡으러 가는 중에 플레이어를 발견하면 잡기 시도를 중단
+           if(CurrentState == EEnemyState::ES_Grabbing)
+           {
+               GetController()->StopMovement();
+               TargetObject = nullptr;
+           }
           PlayerTarget = Player;
           SetEnemyState(EEnemyState::ES_Chasing);
-          
        }
     }
 }
 
+// 플레이어가 범위를 벗어났을 때 호출
 void AEnemyMovingOutCharacter::OnPlayerLost(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    // 범위를 벗어난 액터가 현재 추적 중인 플레이어인지 확인
+    // 사라진 액터가 지금 추적 중인 플레이어인지 확인
     if (OtherActor == PlayerTarget)
     {
        PlayerTarget = nullptr;
-       
        // 추적 중인 상태에서만 순찰 상태로 변경
        if(CurrentState == EEnemyState::ES_Chasing)
        {
           SetEnemyState(EEnemyState::ES_Patrolling);
-          // 플레이어를 잃어버렸으므로 즉시 새로운 순찰 지점으로 이동 시작
+          // 플레이어를 잃었으니 바로 새로운 순찰 지점으로 이동 시작
           FindAndMoveToNewPatrolDestination();
        }
     }
 }
 
+// 적이 무언가에 부딪혔을 때 호출
 void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    // 자기 자신이나 플레이어와의 충돌은 무시하고, 월드 오브젝트(벽 등)와의 충돌만 처리
-    if (OtherActor && OtherActor != this && !Cast<APlayerMovingOutCharacter>(OtherActor))
+    // 충돌한 오브젝트가 Props 채널이 아닐 때만 반응함
+    UPrimitiveComponent* OtherPrimComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
+    if (OtherActor && OtherActor != this && OtherPrimComp && OtherPrimComp->GetCollisionObjectType() != COLLISION_CHANNEL_Probs)
     {
-       // 진행 방향과 충돌 지점의 법선 벡터를 통해 정면 충돌에 가까운지 확인
+       // 진행 방향과 충돌 지점의 법선 벡터를 통해 정면 충돌인지 확인
        float ForwardDot = FVector::DotProduct(GetActorForwardVector(), -Hit.ImpactNormal);
-
-       // 정면으로 부딪혔을 때만 반응하도록 하여, 스치거나 옆으로 부딪히는 일을 무시.
+       // 정면으로 부딪혔을 때만 반응
        if (ForwardDot > 0.5f)
        {
-          // 현재 이동을 멈춥
           AController* AIController = GetController();
           if (AIController)
           {
-             UAIBlueprintHelperLibrary::GetCurrentPath(AIController)->PathPoints.Last();
+             AIController->StopMovement();
           }
-          
-          // 충돌 반응 상태로 전환
+          // 충돌 반응 상태로 전환함
           SetEnemyState(EEnemyState::ES_HitReaction);
-
-          // 약간의 랜덤성을 추가하여 뒤로 돌거나 좌/우로 회전
+          // 좌우로 랜덤하게 돔
           TargetRotation = GetActorRotation().Add(0.0f, FMath::RandBool() ? 110.f : -110.f, 0.0f);
-
-          // 0.7초 후에 HitReaction 상태를 종료하도록 타이머 설정
+          // 0.7초 후에 충돌 반응 상태를 끝내도록 타이머 설정
           GetWorldTimerManager().SetTimer(HitReactionTimer, this, &AEnemyMovingOutCharacter::EndHitReaction, 0.7f, false);
        }
     }
 }
 
-// ai 행동 (nav 시스템 고치면 사용 가능)
+// 새로운 순찰 지점을 찾고 이동
 void AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination()
 {
-    // 컨트롤러가 유효한지 확인
+    if (CurrentState != EEnemyState::ES_Patrolling) return;
+    
     AController* AIController = GetController();
-    if (!AIController)
-    {
-       UE_LOG(LogTemp, Error, TEXT("FindAndMoveToNewPatrolDestination FAILED: AIController is NULL."));
-       return;
-    }
-
-    // 내비게이션 시스템이 유효한지 확인
+    if (!AIController) return;
+    
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
-    if (!NavSys)
-    {
-       UE_LOG(LogTemp, Error, TEXT("FindAndMoveToNewPatrolDestination FAILED: NavigationSystem is NULL."));
-       // NavSys가 유효하지 않다면, 2초 뒤에 다시 시도
-       FTimerHandle RetryTimer;
-       GetWorldTimerManager().SetTimer(RetryTimer, this, &AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination, 2.0f, false);
-       return;
-    }
-
-    UE_LOG(LogTemp, Warning, TEXT("Attempting to find new patrol destination with Radius: %f"), PatrolRadius);
+    if (!NavSys) return;
 
     FNavLocation RandomLocation;
-    // 실제로 길을 찾는지 확인
-    bool bFound = NavSys->GetRandomReachablePointInRadius(GetActorLocation(), PatrolRadius, RandomLocation);
-    
-    if (bFound)
+    // 현재 위치 주변 PatrolRadius 반경 내에서 이동 가능한 지점을 찾음
+    if (NavSys->GetRandomReachablePointInRadius(GetActorLocation(), PatrolRadius, RandomLocation))
     {
        PatrolDestination = RandomLocation.Location;
-       UE_LOG(LogTemp, Warning, TEXT("SUCCESS! New Destination: %s"), *PatrolDestination.ToString());
        UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), PatrolDestination);
     }
-    else
-    {
-       UE_LOG(LogTemp, Error, TEXT("FAILED to find reachable point in radius. Check NavMesh or PatrolRadius value."));
-       // 길 찾기 실패 시, 2초 뒤에 다시 시도
-       FTimerHandle RetryTimer;
-       GetWorldTimerManager().SetTimer(RetryTimer, this, &AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination, 1.0f, false);
-    }
 }
+
+// 충돌 반응 상태 종료
 void AEnemyMovingOutCharacter::EndHitReaction()
 {
     GetWorldTimerManager().ClearTimer(HitReactionTimer);
-    
-    // 이전 상태 로 복귀
+    // 이전 상태로 다시 돌아가자
     SetEnemyState(PreviousState);
-
-    // 이전 상태가 순찰이었다면 새로운 길 찾기 시작
+    // 만약 이전 상태가 순찰이었다면 새로운 길을 찾아서 다시 순찰 시작
     if (PreviousState == EEnemyState::ES_Patrolling)
     {
        FindAndMoveToNewPatrolDestination();
     }
-    // 이전 상태가 추적이였다면 추적을 자동으로 재개합
 }
 
+// 주변에 던질 수 있는 물건을 찾고 잡으러 가는 함수
+void AEnemyMovingOutCharacter::AttemptToGrabObject()
+{
+    if (CurrentState != EEnemyState::ES_Patrolling) return;
 
+    TArray<AActor*> OverlappingActors;
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+    // Props 채널을 가진 오브젝트를 찾음
+    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(COLLISION_CHANNEL_Probs));
 
+    if (UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), ObjectSearchRadius, ObjectTypes, AActor::StaticClass(), {}, OverlappingActors))
+    {
+        for (AActor* Actor : OverlappingActors)
+        {
+            UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(Actor->GetRootComponent());
+            // 물리 시뮬레이션 중인 오브젝트만 골라냄
+            if (PrimComp && PrimComp->IsSimulatingPhysics())
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Found a Prop to grab: %s"), *Actor->GetName());
+                TargetObject = Actor;
+                SetEnemyState(EEnemyState::ES_Grabbing);
+                UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), TargetObject);
+                return; // 가장 먼저 찾은 오브젝트로 이동!
+            }
+        }
+    }
+}
+
+// 잡은 물건을 던지는 함수
+void AEnemyMovingOutCharacter::PerformThrow()
+{
+    if (!GrabbedObject) return;
+    
+    // 플레이어를 향해 던지도록 방향을 계산함
+    FVector ThrowDirection = (PlayerTarget ? (PlayerTarget->GetActorLocation() - GetActorLocation()).GetSafeNormal() : GetActorForwardVector());
+
+    UPrimitiveComponent* ObjectMesh = Cast<UPrimitiveComponent>(GrabbedObject->GetRootComponent());
+    if (ObjectMesh)
+    {
+        // 부착 해제
+        GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        // 물리 시뮬레이션 다시 활성화
+        ObjectMesh->SetSimulatePhysics(true);
+        // 힘을 가해 던짐
+        ObjectMesh->AddImpulse(ThrowDirection * ThrowForce, NAME_None, true);
+    }
+    // 잡고 있던 물건 초기화
+    GrabbedObject = nullptr;
+    // 다시 순찰 상태로 돌아감
+    SetEnemyState(EEnemyState::ES_Patrolling);
+}
