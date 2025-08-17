@@ -27,6 +27,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	UMaterial* DefaultMaterial;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsHeavy;
 	
 public:
 	// Change Material

@@ -24,6 +24,7 @@ public:
 	FORCEINLINE float GetGrabTraceDistance() const { return GrabTraceDistance; }
 	FORCEINLINE float GetGrabDistance() const { return GrabDistance; }
 	FORCEINLINE FName GetRightHandBoneName() const { return RightHandBoneName; }
+	FORCEINLINE FName GetLeftHandBoneName() const { return LeftHandBoneName; }
 	FORCEINLINE bool GetIsGrabbing() const { return bIsGrabbing; }
 
 	FORCEINLINE void SetGrabTraceDistance(const float& InDistance) { GrabTraceDistance = InDistance; }
@@ -33,9 +34,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* LightCone;
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UDecalComponent* CrosshairDecal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseSpeed = 300.f;
 
 
 protected:
@@ -55,13 +58,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsGrabbing;
 
-
-private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
+	
+	
+
+
+private:
+
 
 	
 };
