@@ -66,6 +66,7 @@ static FQuat MakePalmFacingQuat(const FVector& N_ws, const FVector& T_ws, const 
 void UInteractiveComponent::TryGrab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
+	if (!Character) return;
 	FVector Start = Character->GetActorLocation();
 	FVector End = Start + Character->GetActorForwardVector() * Character->GetGrabTraceDistance();
 
@@ -75,7 +76,7 @@ void UInteractiveComponent::TryGrab()
 	DrawDebugLineTrace(GetWorld(), Start, End);
 	Character->SetIsGrabbing(true);
 
-	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params))
+	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(200.f), Params))
 	{
 
 		if (UPrimitiveComponent* HitComp = HitResult.GetComponent())
@@ -138,7 +139,6 @@ void UInteractiveComponent::ThrowAim()
 		
 		FVector Start = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
 		FVector AimDir = Character->GetActorForwardVector() * 100.f;
-		float ThrowSpeed = 10.f;
 
 		DrawDebugLineTrace(GetWorld(), Start, Character->GetActorLocation() + AimDir);
 
@@ -173,9 +173,11 @@ void UInteractiveComponent::ThrowRelease()
 		HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		HitResult.GetComponent()->SetEnableGravity(true);
 		HitResult.GetComponent()->SetSimulatePhysics(true);
-		FVector AimDir = Character->GetActorForwardVector() * 10.f;
-		float ThrowSpeed = 100.f;
-		FVector LaunchVel = AimDir * ThrowSpeed;
+		FVector AimDir = Character->GetActorForwardVector();
+		FRotator AimRot = AimDir.Rotation();
+		AimRot.Pitch += ThrowAngle;
+		FVector ThrowDir = AimRot.Vector();
+		FVector LaunchVel = ThrowDir * ThrowSpeed * 10.f;
 		HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
 	}
 	

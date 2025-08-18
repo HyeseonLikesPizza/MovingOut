@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -27,6 +26,8 @@ class MOVINGOUT_API UInteractiveComponent : public UActorComponent
 
 public:	
 	UInteractiveComponent();
+
+	/* Grab, Throw */
 	void TryGrab();
 	void GrabRelease();
 	void ThrowAim();
@@ -34,7 +35,19 @@ public:
 	void SetThrowIndicatorVisible(bool bVisible);
 	void CancelThrowAming();
 	bool PickFaceEdgesAndSetIK();
+	void SetGripMidPoint(FName RSock, FName LSock);
+	FTransform MakeCarryFrame();
+	
+	float ThrowAngle = 30.f;
+	float ThrowSpeed = 100.f;
 
+	/* Tick */
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void TickCarry_Light(float DeltaTime, const FCarrySettings& S);
+	void TickCarry_Heavy(float DeltaTime, const FCarrySettings& S);
+	void TickCarry_MoveCoupled(float DeltaTime, float posSpeed = 12.f, float rotSpeed = 10.f);
+
+	/* Getter, Setter */
 	FORCEINLINE bool GetIsAming() const { return IsAming; }
 	FORCEINLINE void SetIsAming(const bool& InAming) { IsAming = InAming; }
 	FORCEINLINE bool IsGrabbingSomething() 
@@ -46,24 +59,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void TickCarry_Light(float DeltaTime, const FCarrySettings& S);
-	void TickCarry_Heavy(float DeltaTime, const FCarrySettings& S);
-	void TickCarry_MoveCoupled(float DeltaTime, float posSpeed = 12.f, float rotSpeed = 10.f);
-	void SetGripMidPoint(FName RSock, FName LSock);
-	FTransform MakeCarryFrame();
-
 private:
 	UPROPERTY()
 	AMovingOutCharacter* Character;
-
 	FHitResult HitResult;
-
 	FVector AimPoint;
-
 	bool IsAming;
-
 	float CachedAimYaw;
 
 	UPROPERTY()
@@ -71,7 +72,6 @@ private:
 
 	FTransform GripLocal;
 	FCarrySettings Settings;
-
 	FTransform RelObjFromCarry;
 
 	FName LeftSocketName;
