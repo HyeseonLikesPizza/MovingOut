@@ -256,6 +256,28 @@ void AEnemyMovingOutCharacter::OnPlayerLost(UPrimitiveComponent* OverlappedComp,
 // 적이 무언가에 부딪혔을 때 호출
 void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+    // 충돌한 액터가 유효한지 확인하고, 자기 자신이 아닌지 확인
+    if (!OtherActor || OtherActor == this)
+    {
+        return;
+    }
+
+    // 충돌한 액터가 플레이어 캐릭터인지 확인
+    APlayerMovingOutCharacter* Player = Cast<APlayerMovingOutCharacter>(OtherActor);
+
+    if (Player)
+    {
+        // 플레이어로부터 멀어지는 방향 벡터 계산
+        FVector AwayFromPlayerDirection = (GetActorLocation() - Player->GetActorLocation()).GetSafeNormal();
+
+        // 5만큼 밀어낼 위치 계산
+        FVector PushbackLocation = GetActorLocation() + AwayFromPlayerDirection * 5.0f;
+
+        // 즉시 해당 위치로 캐릭터 이동
+        SetActorLocation(PushbackLocation, true);
+        return;
+    }
+
     // 충돌한 오브젝트가 Props 채널이 아닐 때만 반응함
     UPrimitiveComponent* OtherPrimComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
     if (OtherActor && OtherActor != this && OtherPrimComp && OtherPrimComp->GetCollisionObjectType() != COLLISION_CHANNEL_Probs)
@@ -276,6 +298,7 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
           TargetRotation = GetActorRotation().Add(0.0f, FMath::RandBool() ? 110.f : -110.f, 0.0f);
           // 0.7초 후에 충돌 반응 상태를 끝내도록 타이머 설정
           GetWorldTimerManager().SetTimer(HitReactionTimer, this, &AEnemyMovingOutCharacter::EndHitReaction, 0.7f, false);
+           
        }
     }
 }
@@ -333,11 +356,10 @@ void AEnemyMovingOutCharacter::AttemptToGrabObject()
             // 물리 시뮬레이션 중인 오브젝트만 골라냄
             if (PrimComp && PrimComp->IsSimulatingPhysics())
             {
-                UE_LOG(LogTemp, Warning, TEXT("Found a Prop to grab: %s"), *Actor->GetName());
+                bFound = true;
                 TargetObject = Actor;
                 SetEnemyState(EEnemyState::ES_Grabbing);
                 UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), TargetObject);
-                bFound = true;
                 return; // 가장 먼저 찾은 오브젝트로 이동!
             }
         }
