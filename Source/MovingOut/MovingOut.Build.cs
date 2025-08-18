@@ -8,7 +8,7 @@ public class MovingOut : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new [] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "GameplayTags", "Chaos", "ChaosSolverEngine", "GeometryCollectionEngine", "FieldSystemEngine" });
+		PublicDependencyModuleNames.AddRange(new [] { "Core", "CoreUObject", "Engine", "InputCore", "PhysicsCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "GameplayTags", "Chaos", "ChaosSolverEngine", "GeometryCollectionEngine", "FieldSystemEngine" });
     }
 	
 }

@@ -27,10 +27,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	UMaterial* DefaultMaterial;
-	
-public:
-	// Change Material
-	void ChangeMaterial(UMaterial* NewMaterial);
-	// To default material
-	void SetDefaultMaterial();
 };

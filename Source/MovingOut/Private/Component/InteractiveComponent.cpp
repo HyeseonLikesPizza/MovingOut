@@ -23,36 +23,39 @@ void UInteractiveComponent::TryGrab()
 	DrawDebugLineTrace(GetWorld(), Start, End);
 	Character->SetIsGrabbing(true);
 
-	if (GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(50.f), Params))
+	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params))
 	{
-
 		if (UPrimitiveComponent* HitComp = HitResult.GetComponent())
 		{
-			HitComp->SetSimulatePhysics(false);
-			HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-			FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+			if (HitComp->GetCollisionObjectType() == Props)
+			{
+				HitComp->SetSimulatePhysics(false);
+				HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+				FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-			FVector vec = HitResult.GetActor()->GetActorLocation();
-			vec.Z = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()).Z;
-			HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
+				FVector vec = HitResult.GetActor()->GetActorLocation();
+				vec.Z = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()).Z;
+				HitResult.GetActor()->SetActorLocation(Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName()));
 			
-			//HitComp->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
+				//HitComp->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
 
-			/*
-			PhysicsHandle->GrabComponentAtLocationWithRotation(
-				HitComp,
-				RightHandBoneName,
-				Hit.ImpactPoint,
-				HitComp->GetComponentRotation());
-			*/
+				/*
+				PhysicsHandle->GrabComponentAtLocationWithRotation(
+					HitComp,
+					RightHandBoneName,
+					Hit.ImpactPoint,
+					HitComp->GetComponentRotation());
+				*/
 
 			
 
 
-			DrawDebugHitPoint(GetWorld(), HitResult);
-			//HitComp->SetAngularDamping(100.f);
-			FString Msg = FString::Printf(TEXT("Component Name : %s"), *HitResult.GetComponent()->GetName());
-			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
+				DrawDebugHitPoint(GetWorld(), HitResult);
+				//HitComp->SetAngularDamping(100.f);
+				FString Msg = FString::Printf(TEXT("Component Name : %s"), *HitResult.GetComponent()->GetName());
+				GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Magenta, Msg);
+			}
+			
 			
 		}
 	}
