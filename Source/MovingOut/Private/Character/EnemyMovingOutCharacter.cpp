@@ -317,12 +317,14 @@ void AEnemyMovingOutCharacter::EndHitReaction()
 void AEnemyMovingOutCharacter::AttemptToGrabObject()
 {
     if (CurrentState != EEnemyState::ES_Patrolling) return;
-
+    
     TArray<AActor*> OverlappingActors;
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
     // Props 채널을 가진 오브젝트를 찾음
     ObjectTypes.Add(UEngineTypes::ConvertToObjectType(COLLISION_CHANNEL_Probs));
-
+    
+    bFound = false;
+    
     if (UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), ObjectSearchRadius, ObjectTypes, AActor::StaticClass(), {}, OverlappingActors))
     {
         for (AActor* Actor : OverlappingActors)
@@ -335,9 +337,14 @@ void AEnemyMovingOutCharacter::AttemptToGrabObject()
                 TargetObject = Actor;
                 SetEnemyState(EEnemyState::ES_Grabbing);
                 UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), TargetObject);
+                bFound = true;
                 return; // 가장 먼저 찾은 오브젝트로 이동!
             }
         }
+    }
+    if (!bFound)
+    {
+        FindAndMoveToNewPatrolDestination();
     }
 }
 
