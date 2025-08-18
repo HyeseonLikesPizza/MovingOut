@@ -173,12 +173,59 @@ void UInteractiveComponent::ThrowRelease()
 		HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		HitResult.GetComponent()->SetEnableGravity(true);
 		HitResult.GetComponent()->SetSimulatePhysics(true);
+
+		// 시작점과 목표점
+		const FVector Start = HitResult.GetComponent()->GetComponentLocation();
+		const FVector Target = Character->CrosshairDecal->GetComponentLocation();
+		const FVector ToTarget = Target - Start;
+
+		// 수평면(XY)에서의 거리와 Yaw
+		const double R   = FVector(ToTarget.X, ToTarget.Y, 0).Length();
+		const double dZ  = ToTarget.Z;
+		const double g   = -GetWorld()->GetGravityZ();      // 양수
+
+		// 네가 원하는 발사 피치(수평 기준 각도, +면 위로)
+		const double PitchDeg = DesiredPitchDegrees;        // 예: 25.0
+		const double theta    = FMath::DegreesToRadians(PitchDeg);
+
+		const double cosT = FMath::Cos(theta);
+		const double sinT = FMath::Sin(theta);
+		const double tanT = FMath::Tan(theta);
+
+		const double denom = (R * tanT - dZ) * 2.0 * cosT * cosT;
+
+		if (R < KINDA_SMALL_NUMBER || denom <= 0.0 || cosT == 0.0)
+		{
+			// 이 각도로는 해가 없음: 각도를 높이거나(더 포물선), 다른 방식으로 계산
+			// 안전한 폴백: 비행시간 T 기반 방식(이전 메시지)으로 V0 계산
+			const double T = FMath::Clamp(DesiredFlightTimeSeconds, 0.25, 3.0);
+			const FVector V0 = (ToTarget / T) - 0.5 * FVector(0,0,-g) * T;
+			HitResult.GetComponent()->SetPhysicsLinearVelocity(V0, true);
+			return;
+		}
+
+		const double v2 = (g * R * R) / denom;
+		const double v  = FMath::Sqrt(FMath::Max(v2, 0.0));
+
+		// Yaw 는 목표를 바라보게, Pitch 는 네가 정한 각도를 사용
+		const double YawDeg = FMath::RadiansToDegrees(FMath::Atan2(ToTarget.Y, ToTarget.X));
+		const FRotator LaunchRot(PitchDeg, YawDeg, 0.0);
+
+		const FVector LaunchVel = LaunchRot.Vector() * v;   // cm/s
+		HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
+		
+		/*
+		HitResult.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		HitResult.GetComponent()->SetEnableGravity(true);
+		HitResult.GetComponent()->SetSimulatePhysics(true);
 		FVector AimDir = Character->GetActorForwardVector();
 		FRotator AimRot = AimDir.Rotation();
 		AimRot.Pitch += ThrowAngle;
 		FVector ThrowDir = AimRot.Vector();
 		FVector LaunchVel = ThrowDir * ThrowSpeed * 10.f;
 		HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
+		*/
 	}
 	
 	
@@ -272,9 +319,7 @@ bool UInteractiveComponent::PickFaceEdgesAndSetIK()
 	// 4) IK 타깃 전달 (AnimBP에서 Component Space로 변환해서 쓰기)
 	AnimInstance->SetLeftHandTarget(L_WS);
 	AnimInstance->SetRightHandTarget(R_WS);
-
 	
-
 	
 
     // (선택) 디버그

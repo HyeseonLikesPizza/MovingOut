@@ -38,8 +38,10 @@ public:
 	void SetGripMidPoint(FName RSock, FName LSock);
 	FTransform MakeCarryFrame();
 	
-	float ThrowAngle = 30.f;
-	float ThrowSpeed = 100.f;
+	float ThrowAngle = 0.f;
+	float ThrowSpeed = 30.f;
+	float DesiredFlightTimeSeconds = 3.f;
+	float DesiredPitchDegrees = 30.f;
 
 	/* Tick */
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
