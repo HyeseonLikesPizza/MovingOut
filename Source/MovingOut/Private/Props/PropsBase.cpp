@@ -2,6 +2,8 @@
 
 
 #include "Props/PropsBase.h"
+#include "MovingOut/MovingOut.h"
+
 
 // Sets default values
 APropsBase::APropsBase()
@@ -17,10 +19,17 @@ APropsBase::APropsBase()
 	{
 		DefaultMaterial = MaterialRef.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UPhysicalMaterial> PhysMaterialRef(TEXT("/Script/PhysicsCore.PhysicalMaterial'/Game/Assets/Characters/Player/PM_Sticky.PM_Sticky'"));
+	if (PhysMaterialRef.Succeeded())
+	{
+		Mesh->SetPhysMaterialOverride(PhysMaterialRef.Object);
+	}
+
 	
 	// Mesh Collision
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Mesh->SetCollisionObjectType(ECC_WorldDynamic);
+	Mesh->SetCollisionObjectType(Props);
 	Mesh->SetCollisionResponseToAllChannels((ECR_Block));
 
 	// Physics on
@@ -33,19 +42,5 @@ void APropsBase::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
-void APropsBase::ChangeMaterial(UMaterial* NewMaterial)
-{
-	if (Mesh && NewMaterial)
-	{
-		Mesh->SetMaterial(0, NewMaterial);
-	}
-}
-
-void APropsBase::SetDefaultMaterial()
-{
-	Mesh->SetMaterial(0, DefaultMaterial);
-}
-
 
 
