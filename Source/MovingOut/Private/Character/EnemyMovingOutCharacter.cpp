@@ -21,7 +21,7 @@ AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
     // 플레이어를 감지하기 위한 구체 컴포넌트 생성 및 설정
     PlayerDetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectionSphere"));
     PlayerDetectionSphere->SetupAttachment(RootComponent);
-    PlayerDetectionSphere->SetSphereRadius(950.0f);
+    PlayerDetectionSphere->SetSphereRadius(1100.0f);
     PlayerDetectionSphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
     
     // 플레이어 감지용 구체 컴포넌트에 이벤트 함수 바인딩
@@ -114,8 +114,8 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
     {
         case EEnemyState::ES_Patrolling:
             MovementComponent->MaxWalkSpeed = PatrolSpeed;
-            // 30초마다 물건을 잡으려 시도하는 타이머를 설정해둠
-            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 30.0f, true);
+            // 10초마다 물건을 잡으려 시도하는 타이머를 설정해둠
+            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 10.0f, true);
             FindAndMoveToNewPatrolDestination();
             break;
         case EEnemyState::ES_Chasing:
@@ -178,7 +178,7 @@ void AEnemyMovingOutCharacter::HandleGrabbing(float DeltaTime)
         return;
     }
     const float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetObject->GetActorLocation());
-    if (DistanceToTarget < 200.f)
+    if (DistanceToTarget < 250.f)
     {
         // 목표에 충분히 가까워지면 이동을 멈춤
         GetController()->StopMovement();
