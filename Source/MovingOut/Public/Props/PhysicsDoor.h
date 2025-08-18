@@ -10,6 +10,8 @@
  * Door opens physically when object or player push
  */
 
+class UBoxComponent;
+
 UCLASS()
 class MOVINGOUT_API APhysicsDoor : public AActor
 {
@@ -47,5 +49,18 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ForceLimit = 0.f;
-	
+
+protected:
+	// 문 MaxCount만큼 열리면 떨어져 나감
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UBoxComponent* CountCollision;
+
+	UPROPERTY(EditAnywhere)
+	int32 OpenCount = 0;
+
+	int32 MaxCount = 5;
+
+public:
+	UFUNCTION()
+	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
