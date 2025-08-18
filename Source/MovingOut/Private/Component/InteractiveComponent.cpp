@@ -391,8 +391,6 @@ void UInteractiveComponent::TickCarry_Light(float DeltaTime, const FCarrySetting
 	const FVector EdgeDir = CompTM.GetUnitAxis(EAxis::Z);
 
 	// 손 스켈레톤 보정(한 번만 맞추면 됨)
-	//   - 만약 네 스켈레톤이 "손바닥 법선=로컬 +X, 손가락=로컬 +Y"가 아니라면
-	//     아래 Offset을 바꿔서 맞춰줘.
 	const FRotator HandOffset_R = FRotator(0, 90.f, 0.f);     // 필요시 미세조정
 	const FRotator HandOffset_L = FRotator(0, -90.f, 90.f);     // 왼손이 뒤집혀 보이면 Yaw 180 등
 
@@ -418,6 +416,9 @@ void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTime, float posSpee
 	if (!HitResult.GetComponent()) return;
 	UPrimitiveComponent* HeldComp = HitResult.GetComponent();
 
+	
+	
+	/*
 	// ① 목표 오브젝트 변환 = (새 캐리프레임) * (저장된 상대)
 	const FTransform carryWS = MakeCarryFrame();
 	const FTransform targetWS = RelObjFromCarry * carryWS; // 또는 carryWS * RelObjFromCarry (UE 버전에 맞게 확인)
@@ -426,16 +427,16 @@ void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTime, float posSpee
 	// ② 부드럽게 보간(스윕 금지, 텔레포트)
 	const FVector newLoc = FMath::VInterpTo(curr.GetLocation(), targetWS.GetLocation(), DeltaTime, posSpeed);
 	const FQuat   newRot = FMath::QInterpTo(curr.GetRotation(), targetWS.GetRotation(), DeltaTime, rotSpeed);
-	HeldComp->SetWorldTransform(FTransform(newRot, newLoc, curr.GetScale3D()),
-		/*bSweep=*/false, nullptr, ETeleportType::TeleportPhysics);
-
-
+	HeldComp->SetWorldTransform(FTransform(newRot, newLoc, curr.GetScale3D()),false, nullptr, ETeleportType::TeleportPhysics);
+	*/
+	
 
 	// ③ 손 IK 목표(월드 → AnimBP에서 컴포넌트로 변환)
 	const FTransform R_WS = HeldComp->GetSocketTransform(RightSocketName, RTS_World);
 	const FTransform L_WS = HeldComp->GetSocketTransform(LeftSocketName, RTS_World);
 	AnimInstance->SetRightHandTarget(R_WS);
 	AnimInstance->SetLeftHandTarget(L_WS);
+	
 }
 
 void UInteractiveComponent::SetGripMidPoint(FName RSock, FName LSock)
@@ -445,6 +446,8 @@ void UInteractiveComponent::SetGripMidPoint(FName RSock, FName LSock)
 	UPrimitiveComponent* HeldComp = HitResult.GetComponent();
 	RightSocketName = RSock;
 	LeftSocketName = LSock;
+
+	HitResult.GetComponent()->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, Character->GetRightHandBoneName());
 
 	const FTransform R_CS = HeldComp->GetSocketTransform(RightSocketName, RTS_Component);
 	const FTransform L_CS = HeldComp->GetSocketTransform(LeftSocketName, RTS_Component);
