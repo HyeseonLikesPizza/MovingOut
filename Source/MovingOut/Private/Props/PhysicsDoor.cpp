@@ -13,7 +13,7 @@ APhysicsDoor::APhysicsDoor()
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
-
+	
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Assets/Furniture_Free/Meshes/SM_door_001.SM_door_001'"));
 	if (MeshRef.Succeeded())
