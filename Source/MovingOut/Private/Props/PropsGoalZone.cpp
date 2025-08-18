@@ -5,8 +5,9 @@
 
 #include "Components/BoxComponent.h"
 #include "Props/PropsBase.h"
-
 #include "Components/MeshComponent.h"
+#include "Props/CountProps.h"
+#include "MovingOut/MovingOut.h"
 
 // Sets default values
 APropsGoalZone::APropsGoalZone()
@@ -23,6 +24,8 @@ APropsGoalZone::APropsGoalZone()
 	{
 		Highlight = MaterialRef.Object;
 	}
+
+	OverlapCollision->SetCollisionResponseToChannel(Props, ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +51,7 @@ void APropsGoalZone::NotifyActorBeginOverlap(AActor* OtherActor)
 	 * TotalProps++
 	 * 
 	 */
-	APropsBase* InProps = Cast<APropsBase>(OtherActor);
+	ACountProps* InProps = Cast<ACountProps>(OtherActor);
 	if (InProps)
 	{
 		InProps->ChangeMaterial(Highlight);
@@ -62,7 +65,7 @@ void APropsGoalZone::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 
-	APropsBase* InProps = Cast<APropsBase>(OtherActor);
+	ACountProps* InProps = Cast<ACountProps>(OtherActor);
 	if (InProps)
 	{
 		InProps->SetDefaultMaterial();
