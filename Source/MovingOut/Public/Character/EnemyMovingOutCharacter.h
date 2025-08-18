@@ -66,6 +66,7 @@ protected:
     UPROPERTY()
     TObjectPtr<AActor> GrabbedObject;
 
+    bool bFound ;
     FVector PatrolDestination;
     FRotator TargetRotation;
     FTimerHandle HitReactionTimer;
@@ -98,4 +99,5 @@ protected:
     void EndHitReaction();
     void AttemptToGrabObject();
     void PerformThrow();
+   
 };
