@@ -4,7 +4,6 @@
 #include "Props/PropsGoalZone.h"
 
 #include "Components/BoxComponent.h"
-#include "Props/PropsBase.h"
 #include "Components/MeshComponent.h"
 #include "Props/CountProps.h"
 #include "MovingOut/MovingOut.h"
@@ -51,12 +50,15 @@ void APropsGoalZone::NotifyActorBeginOverlap(AActor* OtherActor)
 	 * TotalProps++
 	 * 
 	 */
+	 
+	 UE_LOG(LogTemp, Warning, TEXT("Name : %s"), *OtherActor->GetName());
+	 
 	ACountProps* InProps = Cast<ACountProps>(OtherActor);
 	if (InProps)
 	{
 		InProps->ChangeMaterial(Highlight);
 		TotalProps++;
-		
+
 		UE_LOG(LogTemp, Warning, TEXT("In! Total: %d"), TotalProps);
 	}
 }
