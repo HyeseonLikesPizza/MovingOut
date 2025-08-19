@@ -411,7 +411,7 @@ void UInteractiveComponent::TickCarry_Heavy(float DeltaTime, const FCarrySetting
 
 }
 
-void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTime, float posSpeed, float rotSpeed)
+void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTwime, float posSpeed, float rotSpeed)
 {
 	if (!HitResult.GetComponent()) return;
 	UPrimitiveComponent* HeldComp = HitResult.GetComponent();
