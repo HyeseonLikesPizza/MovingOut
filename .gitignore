@@ -75,3 +75,8 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 
 .idea/*
+/Plugins
+/.idea
+/.idea/.idea.MovingOut
+/.idea/.idea.MovingOut/.idea
+.idea/.idea.MovingOut/.idea/workspace.xml
