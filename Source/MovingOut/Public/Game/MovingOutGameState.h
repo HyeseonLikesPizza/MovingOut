@@ -16,6 +16,7 @@ enum class EMedal : uint8
 	Fail
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemsProgress, int32, Remaining, int32, Total);
 
 UCLASS()
 class MOVINGOUT_API AMovingOutGameState : public AGameStateBase
@@ -50,6 +51,21 @@ public:
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bVictory = false;
 
+	// 목표
+
+	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
+	int32 ItemsTotal = 0;
+
+	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
+	int32 ItemsDelivered = 0;
+
+
+	UFUNCTION(BlueprintPure)
+	int32 GetItemsRemaining() const { return FMath::Max(0, ItemsTotal - ItemsDelivered); }
+
+	UPROPERTY(BlueprintAssignable)
+	FOnItemsProgress OnItemsProgress;
+	
 
 	// 시작 (서버에서 호출)
 	UFUNCTION(BlueprintCallable)
@@ -75,5 +91,12 @@ public:
 
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
-	
+
+
+private:
+	UFUNCTION()
+	void OnRep_ItemsProgress()
+	{
+		OnItemsProgress.Broadcast(GetItemsRemaining(), ItemsTotal);
+	}
 };
