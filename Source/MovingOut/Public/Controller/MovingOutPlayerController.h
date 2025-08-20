@@ -14,6 +14,9 @@ class MOVINGOUT_API AMovingOutPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	void BeginPlay() override;
+
 protected:
 	virtual void SetupInputComponent() override;
 	
@@ -35,6 +38,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputAction* ThrowAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
+	UInputAction* PauseAction;
+
 	void PlayerMove(const FInputActionValue& Value);
 	void Grab();
 	void Release();
@@ -42,4 +48,5 @@ protected:
 	void StopJumping();
 	void ThrowAim();
 	void ThrowRelease();
+	void OnTogglePause();
 };

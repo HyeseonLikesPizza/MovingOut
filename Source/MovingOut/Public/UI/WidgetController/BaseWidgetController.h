@@ -31,12 +31,15 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	TWeakObjectPtr<APlayerController> PC;
+	
 	UPROPERTY(BlueprintReadOnly)
 	TWeakObjectPtr<APlayerState> PS;
+	
 	UPROPERTY(BlueprintReadOnly)
-	TWeakObjectPtr<AMovingOutGameState> GS;
+	AMovingOutGameState* GS;
+	
 	UPROPERTY(BlueprintReadOnly)
-	TWeakObjectPtr<AMovingOutGameMode> GM;
+	AMovingOutGameMode* GM;
 
 	// 편의 함수
 	FText FormatElapsed(float Seconds) const;

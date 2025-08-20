@@ -2,8 +2,25 @@
 #include "Controller/MovingOutPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 #include "Character/PlayerMovingOutCharacter.h"
 #include "Component/InteractiveComponent.h"
+#include "UI/Subsystem/UIManagerSubsystem.h"
+
+void AMovingOutPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!IsLocalController()) return;
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
+		{
+			UI->ShowScreen(EUIScreen::InGame);
+			UI->BindGameStateSignals();
+		}
+	}
+}
 
 void AMovingOutPlayerController::SetupInputComponent()
 {
@@ -23,6 +40,7 @@ void AMovingOutPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::StopJumping);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowAim);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::ThrowRelease);
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowRelease);
 	}
 }
 
@@ -79,5 +97,27 @@ void AMovingOutPlayerController::ThrowRelease()
 	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
 	{
 		PlayerCharacter->InteractiveComponent->ThrowRelease();
+	}
+}
+
+void AMovingOutPlayerController::OnTogglePause()
+{
+	if (!IsLocalController()) return;
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
+		{
+			if (UUserWidget* Pause = UI->GetScreenWidget(EUIScreen::Pause))
+			{
+				if (Pause && Pause->IsInViewport())
+				{
+					UI->ShowScreen(EUIScreen::InGame);
+				}
+				else
+				{
+					UI->ShowScreen(EUIScreen::Pause);
+				}
+			}
+		}
 	}
 }

@@ -21,6 +21,8 @@ class MOVINGOUT_API UUIManagerSubsystem : public ULocalPlayerSubsystem
 	GENERATED_BODY()
 
 public:
+	UUIManagerSubsystem();
+
 	
 	// 전환 대상 위젯 클래스들 (에디터에서 할당)
 	UPROPERTY(EditDefaultsOnly, Category="UI")
@@ -30,6 +32,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> ResultScreenClass;
 
+	// 읽기 전용 접근자
+	UFUNCTION(BlueprintPure, Category="UI")
+	UBaseWidgetController* GetController(EUIScreen Screen);
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TObjectPtr<class UUISettingAsset> UISettings;
+
+	// 제한적 등록/교체(필요할 때만 열기)
+	UFUNCTION(BlueprintCallable, Category="UI")
+	void RegisterControllerClass(EUIScreen Screen, TSubclassOf<UBaseWidgetController> Class);
+
 	// 진입/전환 API
 	UFUNCTION(BlueprintCallable) void ShowScreen(EUIScreen Screen);
 	UFUNCTION(BlueprintCallable) UUserWidget* GetScreenWidget(EUIScreen Screen) const;
@@ -37,17 +50,39 @@ public:
 	UFUNCTION(BlueprintCallable) void CloseTopModal();
 
 	// GameState 신호에 반응하여 자동 화면 전환(결과 화면 등)
-	UFUNCTION(BlueprintCallable) void BindGameStateSignals();
+	UFUNCTION(BlueprintCallable)
+	void BindGameStateSignals();
+
+	UFUNCTION(BlueprintCallable)
+	void SetInputModeGameOnly();
+	
+	UFUNCTION(BlueprintCallable)
+	void SetInputModeUIOnly(UUserWidget* Focus = nullptr);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetInputModeGameAndUI(UUserWidget* Focus = nullptr);
+
+	
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
+
+	// 설정(편집 전용) - 화면별로 어떤 컨트롤러 클래스를 쓸지
+	UPROPERTY(EditDefaultsOnly, Category="UI", meta=(AllowPrivateAccess="true"))
+	TMap<EUIScreen, TSubclassOf<UBaseWidgetController>> ControllerClassMap;
+
 private:
+
+	// 캐시(런타임 인스턴스)
+	UPROPERTY(Transient)
+	TMap<EUIScreen, TObjectPtr<UBaseWidgetController>> ControllerCache;
+	
 	// 캐시: 화면별 위젯 인스턴스
 	TMap<EUIScreen, TWeakObjectPtr<UUserWidget>> ScreenCache;
-	// 현재 표시 중인 메인 화면
 	TWeakObjectPtr<UUserWidget> Current;
+	
 	// 모달 스택 (위에 올린 순서대로)
 	TArray<TWeakObjectPtr<UUserWidget>> ModalStack;
 

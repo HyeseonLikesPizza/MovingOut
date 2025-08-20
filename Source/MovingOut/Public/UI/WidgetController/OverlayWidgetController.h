@@ -6,7 +6,7 @@
 #include "Game/MovingOutGameState.h"
 #include "OverlayWidgetController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimerTextChanged, FText, NewText);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimerTextChanged, const FText&, NewText);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnObjectiveChanged, int32, remaining, int32, Total);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMedalChanged, EMedal, Medal);
 
@@ -34,6 +34,8 @@ private:
 	EMedal LastMedal      = EMedal::None;
 
 	void TickUI(); // 타이머 텍스트/메달 변화 감지
+
+	UFUNCTION()
 	void HandleItemsProgress(int32 Remaining, int32 Total); // OnRep 이벤트 핸들러
 	
 

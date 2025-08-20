@@ -5,9 +5,17 @@
 void UBaseWidgetController::InitializeController(APlayerController* InPC, AMovingOutGameState* InGS,
 	AMovingOutGameMode* InGM)
 {
-	PC = InPC;
+	PC = TWeakObjectPtr<APlayerController>(InPC);
 	GS = InGS;
 	GM = InGM;
+}
+
+void UBaseWidgetController::Bind()
+{
+}
+
+void UBaseWidgetController::Unbind()
+{
 }
 
 FText UBaseWidgetController::FormatElapsed(float Seconds) const

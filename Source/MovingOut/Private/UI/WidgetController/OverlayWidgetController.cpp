@@ -3,7 +3,7 @@
 
 void UOverlayWidgetController::Bind()
 {
-	if (!GS.IsValid()) return;
+	if (!GS) return;
 
 	// 1) 목표 진행도 이벤트 바인딩
 	GS->OnItemsProgress.AddDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
@@ -28,7 +28,7 @@ void UOverlayWidgetController::Bind()
 
 void UOverlayWidgetController::Unbind()
 {
-	if (GS.IsValid())
+	if (GS)
 	{
 		GS->OnItemsProgress.RemoveDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
 		if (UWorld* World = GS->GetWorld())
@@ -40,7 +40,7 @@ void UOverlayWidgetController::Unbind()
 
 void UOverlayWidgetController::TickUI()
 {
-	if (!GS.IsValid()) return;
+	if (!GS) return;
 
 	// 1) 경과시간 텍스트
 	const float Elapsed = GS->GetElapsedTimeSeconds();
