@@ -26,16 +26,23 @@ AMovingOutGameMode::AMovingOutGameMode()
 void AMovingOutGameMode::StartPlay()
 {
 	Super::StartPlay();
+
+	UE_LOG(LogTemp, Warning, TEXT("[GM] StartPlay SERVER=%d"), HasAuthority());
+	StartMatchFlow();
 }
 
 void AMovingOutGameMode::StartMatchFlow()
 {
 	if (!HasAuthority()) return;
+	UE_LOG(LogTemp, Warning, TEXT("[GM] StartMatchFlow SERVER=%d"), HasAuthority());
+	auto* GS = GetGameState<AMovingOutGameState>();
+	//if (!GS || GS->bTimerRunning) return;
 
 	if (auto* G = GetMGameState())
 	{
 		// 시간 측정 시작
 		G->StartMatchTimer();
+		UE_LOG(LogTemp, Warning, TEXT("[GM] Called StartMatchTimer"));
 
 		// 타임아웃 타이머 무장
 		GetWorldTimerManager().ClearTimer(TimeoutHandle);

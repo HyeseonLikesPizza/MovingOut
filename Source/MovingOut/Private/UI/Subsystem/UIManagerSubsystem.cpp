@@ -17,36 +17,48 @@
 
 UUIManagerSubsystem::UUIManagerSubsystem()
 {
-	static ConstructorHelpers::FClassFinder<UInGameOverlayWidget> tempWidget(TEXT("/Game/Blueprints/UI/WBP_OverlayWidget.WBP_OverlayWidget_C"));
-	if (tempWidget.Succeeded())
+	// UISettings 등록
+	
+	static ConstructorHelpers::FObjectFinder<UUISettingAsset> UISettingBP(TEXT("/Game/Blueprints/Data/DA_UISettingAsset.DA_UISettingAsset"));
+	if (ensureMsgf(UISettingBP.Succeeded(), TEXT("DA_UISettingAsset not found. Check path.")))
 	{
-		OverlayHUDClass = tempWidget.Class;
+		UISettings = UISettingBP.Object;
 	}
+
+	// Controller Class Map 추가
+	
+	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
 }
 
 UBaseWidgetController* UUIManagerSubsystem::GetController(EUIScreen Screen)
 {
-	if (UBaseWidgetController* Found = (ControllerCache.Find(Screen)->Get()))
+	if (ControllerCache.Contains(Screen))
 	{
-		return Found;
+		TObjectPtr<UBaseWidgetController> Found = ControllerCache[Screen];
+		return Found.Get();
 	}
-
-	TSubclassOf<UBaseWidgetController> Cls = ControllerClassMap.Find(Screen)->Get();
-	if (!Cls) return nullptr;
-
-	UBaseWidgetController* WC = NewObject<UBaseWidgetController>(GetWorld(), Cls);
-
-	if (auto* PC = GetPC())
-	{
-		auto* GS = GetWorld()->GetGameState<AMovingOutGameState>();
-		auto* GM = GetWorld()->GetAuthGameMode<AMovingOutGameMode>();
-		WC->InitializeController(PC, GS, GM);
-		WC->Bind();
-	}
-
-	ControllerCache.Add(Screen, TObjectPtr<UBaseWidgetController>(WC));
 	
-	return WC;
+	if (!ControllerClassMap.Contains(Screen))
+	{
+		return nullptr;
+	}
+	else
+	{
+		TSubclassOf<UBaseWidgetController> Cls = ControllerClassMap[Screen];
+		UBaseWidgetController* WC = NewObject<UBaseWidgetController>(this, Cls);
+
+		if (auto* PC = GetPC())
+		{
+			auto* GS = GetWorld()->GetGameState<AMovingOutGameState>();
+			auto* GM = GetWorld()->GetAuthGameMode<AMovingOutGameMode>();
+			WC->InitializeController(PC, GS, GM);
+			WC->Bind();
+		}
+
+		ControllerCache.Add(Screen, TObjectPtr<UBaseWidgetController>(WC));
+
+		return WC;
+	}
 }
 
 void UUIManagerSubsystem::RegisterControllerClass(EUIScreen Screen, TSubclassOf<UBaseWidgetController> Class)
@@ -72,6 +84,7 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 			{
 				UOverlayWidgetController* WC = Cast<UOverlayWidgetController>(GetController(EUIScreen::InGame));
 				InGameUI->SetWidgetController(WC);
+				WC->Bind();
 			}
 			break;
 		}
@@ -103,10 +116,10 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 			SetInputModeGameOnly();
 			break;
 		case EUIScreen::Pause:
-			SetInputModeUIOnly();
+			SetInputModeUIOnly(Target);
 			break;
 		case EUIScreen::Result:
-			SetInputModeUIOnly();
+			SetInputModeUIOnly(Target);
 			break;
 	}
 	
@@ -114,8 +127,8 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 
 UUserWidget* UUIManagerSubsystem::GetScreenWidget(EUIScreen Screen) const
 {
-	if (UUserWidget* Found = ScreenCache.Find(Screen)->Get())
-		return Found;
+	if (const TWeakObjectPtr<UUserWidget>* P = ScreenCache.Find(Screen))
+		return P->Get();
 	return nullptr;
 }
 
@@ -136,9 +149,9 @@ void UUIManagerSubsystem::CloseTopModal()
 {
 	while (!ModalStack.IsEmpty())
 	{
-		TWeakObjectPtr<UUserWidget> Top = ModalStack.Top().Get();
+		TWeakObjectPtr<UUserWidget> Top = ModalStack.Top();
 		ModalStack.Pop();
-		if (Top.Get())
+		if (Top.IsValid())
 		{
 			Top->RemoveFromParent();
 			break;
@@ -216,13 +229,16 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	
-	//RegisterControllerClass(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
-	//OverlayHUDClass = UInGameOverlayWidget::StaticClass();
-	
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *OverlayHUDClass->GetName());
+	if (!OverlayHUDClass && UISettings && !UISettings->OverlayHUDClass.IsNull())
+	{
+		OverlayHUDClass = UISettings->OverlayHUDClass.LoadSynchronous();
+	}
 
-	//if (UISettings && UISettings->OverlayHUDClass.IsValid())
-	//	OverlayHUDClass = UISettings->OverlayHUDClass.LoadSynchronous();
+	if (!PauseMenuClass && UISettings && UISettings->PauseMenuClass.IsValid())
+	{
+		PauseMenuClass = UISettings->PauseMenuClass.LoadSynchronous();
+	}
+	
 }
 
 void UUIManagerSubsystem::Deinitialize()
@@ -267,9 +283,12 @@ TSubclassOf<UUserWidget> UUIManagerSubsystem::ResolveClass(EUIScreen Screen) con
 {
 	switch (Screen)
 	{
-	case EUIScreen::InGame: return OverlayHUDClass;
-	case EUIScreen::Pause:  return PauseMenuClass;
-	case EUIScreen::Result: return ResultScreenClass;
+	case EUIScreen::InGame:
+		return OverlayHUDClass;
+	case EUIScreen::Pause:
+		return PauseMenuClass;
+	case EUIScreen::Result: return
+		ResultScreenClass;
 	}
 	return nullptr;
 }

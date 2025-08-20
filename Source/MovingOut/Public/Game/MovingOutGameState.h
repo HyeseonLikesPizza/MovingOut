@@ -54,7 +54,7 @@ public:
 	// 목표
 
 	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	int32 ItemsTotal = 0;
+	int32 ItemsTotal = 14;
 
 	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
 	int32 ItemsDelivered = 0;

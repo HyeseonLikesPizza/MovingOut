@@ -11,6 +11,8 @@ void AMovingOutGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AMovingOutGameState, AccumulatedSeconds);
 	DOREPLIFETIME(AMovingOutGameState, RunningStartTime);
 	DOREPLIFETIME(AMovingOutGameState, bTimerRunning);
+	DOREPLIFETIME(AMovingOutGameState, bPlayStopped);
+	DOREPLIFETIME(AMovingOutGameState, FinalElapsedSeconds);
 }
 
 
@@ -27,6 +29,8 @@ void AMovingOutGameState::StartMatchTimer()
 	FinalElapsedSeconds = 0.f;
 	ResultMedal = EMedal::None;
 	bVictory = false;
+
+	UE_LOG(LogTemp, Warning, TEXT("[GS][Server] Start=%.2f Run=%d"), RunningStartTime, bTimerRunning);
 	
 }
 

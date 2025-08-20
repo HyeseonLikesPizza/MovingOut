@@ -43,7 +43,10 @@ void UOverlayWidgetController::TickUI()
 	if (!GS) return;
 
 	// 1) 경과시간 텍스트
-	const float Elapsed = GS->GetElapsedTimeSeconds();
+	const float Elapsed = GS ? GS->GetElapsedTimeSeconds() : -1.f;
+	const float Now = GS ? GS->GetServerWorldTimeSeconds() : -1.f;
+	UE_LOG(LogTemp, Warning, TEXT("[WC] Now=%.2f Elapsed=%.2f Run=%d Start=%.2f Acc=%.2f"),
+		Now, Elapsed, GS?GS->bTimerRunning:0, GS?GS->RunningStartTime:0.f, GS?GS->AccumulatedSeconds:0.f);
 	OnTimerTextChanged.Broadcast(FormatElapsed(Elapsed));
 
 	// 2) 메달/종료 상태 변화 감지해 한 번만 푸시
