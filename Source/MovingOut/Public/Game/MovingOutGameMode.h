@@ -16,6 +16,8 @@ class AMovingOutGameMode : public AGameModeBase
 public:
 	AMovingOutGameMode();
 
+	virtual void BeginPlay() override;
+
 	// 채점 기준
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Score|Rules")
 	float GoldSec = 180.f;

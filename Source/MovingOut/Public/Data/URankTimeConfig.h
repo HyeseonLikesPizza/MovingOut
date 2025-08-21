@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Types/MedalTypes.h"
+#include "MovingOut/Public/Type/MedalTypes.h"
 #include "URankTimeConfig.generated.h"
 
 UCLASS()

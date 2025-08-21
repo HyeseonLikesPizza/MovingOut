@@ -16,6 +16,7 @@ void AMovingOutPlayerController::BeginPlay()
 	{
 		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
 		{
+			
 			UI->ShowScreen(EUIScreen::InGame);
 			UI->BindGameStateSignals();
 		}
@@ -120,4 +121,20 @@ void AMovingOutPlayerController::OnTogglePause()
 			}
 		}
 	}
+}
+
+void AMovingOutPlayerController::ShowTitle()
+{
+	if (!IsLocalController()) return;
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
+		{
+			UI->ShowScreen(EUIScreen::Title);
+		}
+	}
+}
+
+void AMovingOutPlayerController::HandleStartRequested()
+{
 }

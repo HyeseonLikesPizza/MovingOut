@@ -22,7 +22,9 @@ public:
 	
 protected:
 	virtual void NativeDestruct() override;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EMedal CurrentState;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* TimerText = nullptr;
@@ -35,6 +37,8 @@ protected:
 
 	UPROPERTY()
 	UOverlayWidgetController* WC = nullptr;
+
+	
 
 	UFUNCTION()
 	void HandleTimerText(const FText& NewText);

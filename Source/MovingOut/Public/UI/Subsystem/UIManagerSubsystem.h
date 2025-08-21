@@ -8,8 +8,9 @@
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
 {
-	Intro,
+	Title,
 	Loading,
+	MainMenu,
 	InGame,
 	Pause,
 	Result
@@ -26,9 +27,16 @@ public:
 	
 	// 전환 대상 위젯 클래스들 (에디터에서 할당)
 	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> TitleScreenClass;
+
+	
+	
+	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> OverlayHUDClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> PauseMenuClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> ResultScreenClass;
 
@@ -87,6 +95,7 @@ private:
 	TArray<TWeakObjectPtr<UUserWidget>> ModalStack;
 
 	UWorld* GetWorldChecked() const;
+	
 	APlayerController* GetPC() const;
 
 	UUserWidget* CreateIfNeeded(EUIScreen Screen);

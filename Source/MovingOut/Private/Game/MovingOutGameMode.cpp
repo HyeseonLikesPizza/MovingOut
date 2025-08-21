@@ -3,32 +3,39 @@
 #include "Controller/MovingOutPlayerController.h"
 #include "Data/URankTimeConfig.h"
 #include "Game/MovingOutGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Types/MedalTypes.h"
+#include "MovingOut/Public/Type/MedalTypes.h"
+#include "Props/CountProps.h"
 
 AMovingOutGameMode::AMovingOutGameMode()
 {
 	PlayerControllerClass = AMovingOutPlayerController::StaticClass();
-
 	
 	static ConstructorHelpers::FObjectFinder<UURankTimeConfig> MedalSettingsBP(TEXT("/Game/Blueprints/Data/DA_RankTimeConfig.DA_RankTimeConfig"));
 	if (ensureMsgf(MedalSettingsBP.Succeeded(), TEXT("DA_Medal not found. Check path.")))
 	{
 		MedalThresholdDA = MedalSettingsBP.Object;
-
-		if (AMovingOutGameState* GS = GetGameState<AMovingOutGameState>())
-		{
-			if (MedalThresholdDA)
-			{
-				GS->MedalThresholds = MedalThresholdDA.Get()->Thresholds; // 값 복사
-				//GS->ForceNetUpdate(); // 필요 시
-			}
-		}
 	}
 	
 	
 
 	
+}
+
+void AMovingOutGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (AMovingOutGameState* GS = GetGameState<AMovingOutGameState>())
+	{
+		if (MedalThresholdDA)
+		{
+			GS->MedalThresholds = MedalThresholdDA.Get()->Thresholds; // 값 복사
+			UE_LOG(LogTemp, Warning, TEXT("MedalThresholds Set"));
+			//GS->ForceNetUpdate(); // 필요 시
+		}
+	}
 }
 
 void AMovingOutGameMode::StartPlay()

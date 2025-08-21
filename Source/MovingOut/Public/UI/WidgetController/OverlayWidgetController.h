@@ -4,7 +4,7 @@
 #include "CoreMinimal.h"
 #include "BaseWidgetController.h"
 #include "Game/MovingOutGameState.h"
-#include "Types/MedalTypes.h"
+#include "MovingOut/Public/Type/MedalTypes.h"
 #include "OverlayWidgetController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimerTextChanged, const FText&, NewText);
@@ -45,7 +45,7 @@ private:
 	UFUNCTION()
 	void HandleItemsProgress(int32 Remaining, int32 Total); // OnRep 이벤트 핸들러
 	
-
+	EMedal ComputeStage(float ElapsedSecond) const;
 
 	
 };

@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/MeshComponent.h"
+#include "Game/MovingOutGameState.h"
 #include "Props/CountProps.h"
 #include "MovingOut/MovingOut.h"
 
@@ -57,6 +58,10 @@ void APropsGoalZone::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (InProps)
 	{
 		InProps->ChangeMaterial(Highlight);
+		if (AMovingOutGameState* GS = GetWorld()->GetGameState<AMovingOutGameState>())
+		{
+			GS->ItemsDelivered++;
+		}
 		TotalProps++;
 
 		UE_LOG(LogTemp, Warning, TEXT("In! Total: %d"), TotalProps);
@@ -71,6 +76,10 @@ void APropsGoalZone::NotifyActorEndOverlap(AActor* OtherActor)
 	if (InProps)
 	{
 		InProps->SetDefaultMaterial();
+		if (AMovingOutGameState* GS = GetWorld()->GetGameState<AMovingOutGameState>())
+		{
+			GS->ItemsDelivered--;
+		}
 		TotalProps--;
 
 		UE_LOG(LogTemp, Warning, TEXT("Out! Total: %d"), TotalProps);
