@@ -3,6 +3,7 @@
 
 #include "Props/PhysicsDoor.h"
 
+#include "Components/BoxComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 
 // Sets default values
@@ -15,13 +16,17 @@ APhysicsDoor::APhysicsDoor()
 	RootComponent = Root;
 	
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
+	DoorMesh->SetupAttachment(Root);
+	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Assets/Furniture_Free/Meshes/SM_door_001.SM_door_001'"));
 	if (MeshRef.Succeeded())
 	{
 		DoorMesh->SetStaticMesh(MeshRef.Object);
 	}
+
+	CountCollision =CreateDefaultSubobject<UBoxComponent>(TEXT("CountCollision"));
+	CountCollision->SetupAttachment(GetRootComponent());
 	
-	DoorMesh->SetupAttachment(Root);
 	DoorMesh->SetSimulatePhysics(true);
 	// 충돌한 액터의 이름 반환
 	DoorMesh->SetNotifyRigidBodyCollision(true);
@@ -58,6 +63,10 @@ void APhysicsDoor::BeginPlay()
 
 	PhysicsConstraint->SetAngularVelocityDriveTwistAndSwing(false, false);
 	PhysicsConstraint->SetAngularOrientationDrive(true, true);
+
+	// CountCollision 다이나믹
+	CountCollision->OnComponentBeginOverlap.AddDynamic(this, &APhysicsDoor::OnComponentBeginOverlap);
+
 }
 
 void APhysicsDoor::Tick(float DeltaTime)
@@ -65,3 +74,23 @@ void APhysicsDoor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 }
+
+void APhysicsDoor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherComp == DoorMesh)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Count: %d"), OpenCount);
+
+		if (OpenCount == MaxCount)
+		{
+			PhysicsConstraint->BreakConstraint();
+		}
+		else
+		{
+			OpenCount++;
+		}
+	}
+}
+
+
