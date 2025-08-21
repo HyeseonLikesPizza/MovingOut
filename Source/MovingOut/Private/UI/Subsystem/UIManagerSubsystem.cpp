@@ -12,6 +12,7 @@
 #include "UI/WidgetController/BaseWidgetController.h"
 #include "GameFramework/PlayerController.h"
 #include "UI/Widget/InGameOverlayWidget.h"
+#include "UI/Widget/TitleScreenWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 
 
@@ -88,6 +89,10 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 			}
 			break;
 		}
+	case EUIScreen::Title:
+		{
+			// Title Widget은 위젯 컨트롤러 필요 없음
+		}
 	case EUIScreen::Result:
 		{
 			// if (auto* ResultUI = Cast<UResultWidget>(Target))
@@ -112,6 +117,9 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 	// 입력 모드 맞추기
 	switch (Screen)
 	{
+		case EUIScreen::Title:
+			SetInputModeUIOnly();
+			break;
 		case EUIScreen::InGame:
 			SetInputModeGameOnly();
 			break;
@@ -234,9 +242,9 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		OverlayHUDClass = UISettings->OverlayHUDClass.LoadSynchronous();
 	}
 
-	if (!PauseMenuClass && UISettings && UISettings->PauseMenuClass.IsValid())
+	if (!TitleScreenClass && UISettings && !UISettings->TitleScreenWidgetClass.IsNull())
 	{
-		PauseMenuClass = UISettings->PauseMenuClass.LoadSynchronous();
+		TitleScreenClass = UISettings->TitleScreenWidgetClass.LoadSynchronous();
 	}
 	
 }
@@ -283,12 +291,14 @@ TSubclassOf<UUserWidget> UUIManagerSubsystem::ResolveClass(EUIScreen Screen) con
 {
 	switch (Screen)
 	{
+	case EUIScreen::Title:
+		return TitleScreenClass;
 	case EUIScreen::InGame:
 		return OverlayHUDClass;
 	case EUIScreen::Pause:
 		return PauseMenuClass;
-	case EUIScreen::Result: return
-		ResultScreenClass;
+	case EUIScreen::Result:
+		return ResultScreenClass;
 	}
 	return nullptr;
 }

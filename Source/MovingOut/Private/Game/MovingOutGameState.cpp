@@ -2,7 +2,9 @@
 #include "Game/MovingOutGameState.h"
 
 #include "Async/IAsyncTask.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Props/CountProps.h"
 
 void AMovingOutGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps ) const
 {
@@ -22,6 +24,11 @@ void AMovingOutGameState::StartMatchTimer()
 
 	const float Now = GetServerWorldTimeSeconds();
 
+	UGameplayStatics::GetAllActorsOfClass(this, ACountProps::StaticClass(), PropsContainer);
+	PlacedPropsCnt = PropsContainer.Num();
+
+	UE_LOG(LogTemp,Warning,TEXT("PropsContainer Num : %d"), PlacedPropsCnt);
+	
 	AccumulatedSeconds = 0.f;
 	RunningStartTime = Now;
 	bTimerRunning = true;
@@ -75,6 +82,7 @@ float AMovingOutGameState::GetElapsedTimeSeconds() const
 	
 	const float Now = GetServerWorldTimeSeconds();
 	return AccumulatedSeconds + (bTimerRunning ? (Now-RunningStartTime) : 0.f);
+	
 }
 
 EMedal AMovingOutGameState::EvaluateMedal(float GoldSec, float SilverSec, float BronzeSec, float FailOverSec) const

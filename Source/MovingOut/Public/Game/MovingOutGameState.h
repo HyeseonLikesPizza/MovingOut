@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "Types/MedalTypes.h"
+#include "MovingOut/Public/Type/MedalTypes.h"
 #include "MovingOutGameState.generated.h"
 
 
@@ -30,6 +30,10 @@ public:
 	UPROPERTY()
 	FMedalThresholds MedalThresholds;
 
+	TArray<AActor*> PropsContainer;
+
+	
+
 	
 
 	// 종료 고정값, 플래그
@@ -48,15 +52,18 @@ public:
 
 	// 목표
 
-	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	int32 ItemsTotal = 14;
+	//UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
+	//int32 ItemsTotal = 14;
 
 	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
 	int32 ItemsDelivered = 0;
 
+	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
+	int32 PlacedPropsCnt;
+
 
 	UFUNCTION(BlueprintPure)
-	int32 GetItemsRemaining() const { return FMath::Max(0, ItemsTotal - ItemsDelivered); }
+	int32 GetItemsRemaining() const { return FMath::Max(0, PlacedPropsCnt - ItemsDelivered); }
 
 	// Delegate
 	
@@ -94,6 +101,6 @@ private:
 	UFUNCTION()
 	void OnRep_ItemsProgress()
 	{
-		OnItemsProgress.Broadcast(ItemsDelivered, ItemsTotal);
+		OnItemsProgress.Broadcast(ItemsDelivered, PlacedPropsCnt);
 	}
 };
