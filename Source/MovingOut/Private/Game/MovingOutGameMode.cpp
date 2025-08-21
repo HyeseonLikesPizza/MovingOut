@@ -1,26 +1,34 @@
 
 #include "Game/MovingOutGameMode.h"
 #include "Controller/MovingOutPlayerController.h"
+#include "Data/URankTimeConfig.h"
 #include "Game/MovingOutGameState.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Types/MedalTypes.h"
 
 AMovingOutGameMode::AMovingOutGameMode()
 {
 	PlayerControllerClass = AMovingOutPlayerController::StaticClass();
 
-	/*
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownCharacter"));
-	if (PlayerPawnBPClass.Class != nullptr)
+	
+	static ConstructorHelpers::FObjectFinder<UURankTimeConfig> MedalSettingsBP(TEXT("/Game/Blueprints/Data/DA_RankTimeConfig.DA_RankTimeConfig"));
+	if (ensureMsgf(MedalSettingsBP.Succeeded(), TEXT("DA_Medal not found. Check path.")))
 	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
+		MedalThresholdDA = MedalSettingsBP.Object;
+
+		if (AMovingOutGameState* GS = GetGameState<AMovingOutGameState>())
+		{
+			if (MedalThresholdDA)
+			{
+				GS->MedalThresholds = MedalThresholdDA.Get()->Thresholds; // 값 복사
+				//GS->ForceNetUpdate(); // 필요 시
+			}
+		}
 	}
 	
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownPlayerController"));
-	if(PlayerControllerBPClass.Class != NULL)
-	{
-		PlayerControllerClass = PlayerControllerBPClass.Class;
-	}
-	*/
+	
+
+	
 }
 
 void AMovingOutGameMode::StartPlay()

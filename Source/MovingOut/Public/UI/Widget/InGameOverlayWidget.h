@@ -40,12 +40,12 @@ protected:
 	void HandleTimerText(const FText& NewText);
 
 	UFUNCTION()
-	void HandleObjective(int32 Remaining, int32 Total);
+	void HandleObjective(int32 Delivered, int32 Total);
 
 	UFUNCTION()
 	void HandleMedal(EMedal Medal);
 
-
-	void UpdateTimeProgressBar(int32 ElapsedTime, int32 Total);
+	UFUNCTION()
+	void UpdateTimeProgressBar(float ElapsedTime, float Total);
 	
 };

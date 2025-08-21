@@ -3,20 +3,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "Types/MedalTypes.h"
 #include "MovingOutGameState.generated.h"
 
 
-UENUM(BlueprintType)
-enum class EMedal : uint8
-{
-	None,
-	Gold,
-	Silver,
-	Bronze,
-	Fail
-};
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemsProgress, int32, Remaining, int32, Total);
+
 
 UCLASS()
 class MOVINGOUT_API AMovingOutGameState : public AGameStateBase
@@ -34,6 +26,9 @@ public:
 
 	UPROPERTY(Replicated)
 	bool bTimerRunning = false;
+
+	UPROPERTY()
+	FMedalThresholds MedalThresholds;
 
 	
 
@@ -63,6 +58,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	int32 GetItemsRemaining() const { return FMath::Max(0, ItemsTotal - ItemsDelivered); }
 
+	// Delegate
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnItemsProgress OnItemsProgress;
 	
@@ -97,6 +94,6 @@ private:
 	UFUNCTION()
 	void OnRep_ItemsProgress()
 	{
-		OnItemsProgress.Broadcast(GetItemsRemaining(), ItemsTotal);
+		OnItemsProgress.Broadcast(ItemsDelivered, ItemsTotal);
 	}
 };

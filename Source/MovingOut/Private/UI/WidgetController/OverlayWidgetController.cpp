@@ -7,8 +7,13 @@ void UOverlayWidgetController::Bind()
 
 	// 1) 목표 진행도 이벤트 바인딩
 	GS->OnItemsProgress.AddDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
+
+	
+	StartTimeCache = GS->RunningStartTime;
+	
+	
 	// 초기 한번 푸시
-	HandleItemsProgress(GS->GetItemsRemaining(), GS->ItemsTotal);
+	HandleItemsProgress(GS->ItemsDelivered, GS->ItemsTotal);
 
 	// 2) 타이머 텍스트 갱신(루프 타이머) — 0.1~0.25s 추천
 	if (UWorld* World = GS->GetWorld())
@@ -48,6 +53,12 @@ void UOverlayWidgetController::TickUI()
 	UE_LOG(LogTemp, Warning, TEXT("[WC] Now=%.2f Elapsed=%.2f Run=%d Start=%.2f Acc=%.2f"),
 		Now, Elapsed, GS?GS->bTimerRunning:0, GS?GS->RunningStartTime:0.f, GS?GS->AccumulatedSeconds:0.f);
 	OnTimerTextChanged.Broadcast(FormatElapsed(Elapsed));
+
+
+	// 프로그레스바 업데이트
+	const float FailOverSec = GS->MedalThresholds.FailOverSeconds;
+	OnTimeProgressChanged.Broadcast(Elapsed, FailOverSec);
+	
 
 	// 2) 메달/종료 상태 변화 감지해 한 번만 푸시
 	if (GS->bPlayStopped != bLastPlayStopped || GS->ResultMedal != LastMedal)

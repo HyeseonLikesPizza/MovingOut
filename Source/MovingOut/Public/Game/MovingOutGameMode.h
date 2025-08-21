@@ -6,6 +6,7 @@
 #include "MovingOutGameMode.generated.h"
 
 class AMovingOutGameState;
+class UURankTimeConfig;
 
 UCLASS(minimalapi)
 class AMovingOutGameMode : public AGameModeBase
@@ -27,6 +28,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Score|Rules")
 	float FailOverSec = 180.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Medal")
+	TObjectPtr<UURankTimeConfig> MedalThresholdDA;
+	
 	
 
 	// 흐름 제어
