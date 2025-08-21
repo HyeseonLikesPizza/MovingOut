@@ -17,10 +17,6 @@ AMovingOutGameMode::AMovingOutGameMode()
 	{
 		MedalThresholdDA = MedalSettingsBP.Object;
 	}
-	
-	
-
-	
 }
 
 void AMovingOutGameMode::BeginPlay()
@@ -32,7 +28,6 @@ void AMovingOutGameMode::BeginPlay()
 		if (MedalThresholdDA)
 		{
 			GS->MedalThresholds = MedalThresholdDA.Get()->Thresholds; // 값 복사
-			UE_LOG(LogTemp, Warning, TEXT("MedalThresholds Set"));
 			//GS->ForceNetUpdate(); // 필요 시
 		}
 	}
@@ -42,7 +37,11 @@ void AMovingOutGameMode::StartPlay()
 {
 	Super::StartPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("[GM] StartPlay SERVER=%d"), HasAuthority());
+	if (AMovingOutGameState* GS = GetGameState<AMovingOutGameState>())
+	{
+		GS->InitializePlacedPropsCnt();
+	}
+	
 	StartMatchFlow();
 }
 

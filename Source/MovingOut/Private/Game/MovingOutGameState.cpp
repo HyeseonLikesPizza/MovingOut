@@ -18,14 +18,18 @@ void AMovingOutGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 }
 
 
+void AMovingOutGameState::InitializePlacedPropsCnt()
+{
+	TArray<AActor*> Arr;
+	UGameplayStatics::GetAllActorsOfClass(this, ACountProps::StaticClass(), Arr);
+	PlacedPropsCnt = Arr.Num();
+}
+
 void AMovingOutGameState::StartMatchTimer()
 {
 	if (!HasAuthority()) return;
 
 	const float Now = GetServerWorldTimeSeconds();
-
-	UGameplayStatics::GetAllActorsOfClass(this, ACountProps::StaticClass(), PropsContainer);
-	PlacedPropsCnt = PropsContainer.Num();
 
 	UE_LOG(LogTemp,Warning,TEXT("PropsContainer Num : %d"), PlacedPropsCnt);
 	
