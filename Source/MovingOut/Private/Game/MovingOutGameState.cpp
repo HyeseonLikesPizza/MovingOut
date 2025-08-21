@@ -40,8 +40,6 @@ void AMovingOutGameState::StartMatchTimer()
 	FinalElapsedSeconds = 0.f;
 	ResultMedal = EMedal::None;
 	bVictory = false;
-
-	UE_LOG(LogTemp, Warning, TEXT("[GS][Server] Start=%.2f Run=%d"), RunningStartTime, bTimerRunning);
 	
 }
 

@@ -31,6 +31,11 @@ UUIManagerSubsystem::UUIManagerSubsystem()
 	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
 }
 
+UUserWidget* UUIManagerSubsystem::GetCurrentWidget() const
+{
+	return Current.Get();
+}
+
 UBaseWidgetController* UUIManagerSubsystem::GetController(EUIScreen Screen)
 {
 	if (ControllerCache.Contains(Screen))
@@ -71,14 +76,25 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 {
 	UUserWidget* Target = CreateIfNeeded(Screen);
 	if (!Target) return;
+	
 
 	// 기존 메인 화면 내리기
 	if (Current.IsValid())
 		Current->RemoveFromParent();
 
-	// 2) 화면별 컨트롤러 주입 (필요한 화면들만)
+
+	
+	// 화면별 컨트롤러 주입 (필요한 화면들만)
 	switch (Screen)
 	{
+	case EUIScreen::Title:
+		{
+			// Title Widget은 위젯 컨트롤러 필요 없음
+		}
+	case EUIScreen::MainMenu:
+		{
+			// Main Menu 는 위젯 컨트롤러 필요 없음	
+		}
 	case EUIScreen::InGame:
 		{
 			if (auto* InGameUI = Cast<UInGameOverlayWidget>(Target))
@@ -88,10 +104,6 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 				WC->Bind();
 			}
 			break;
-		}
-	case EUIScreen::Title:
-		{
-			// Title Widget은 위젯 컨트롤러 필요 없음
 		}
 	case EUIScreen::Result:
 		{
@@ -107,17 +119,20 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 		break;
 	}
 
+
+	// 뷰포트에 위젯 추가
 	Target->AddToViewport(0);
 	Current = TWeakObjectPtr<UUserWidget>(Target);
 	
-
-	APlayerController* PC = GetPC();
-
+	
 	
 	// 입력 모드 맞추기
 	switch (Screen)
 	{
 		case EUIScreen::Title:
+			SetInputModeUIOnly();
+			break;
+		case EUIScreen::MainMenu:
 			SetInputModeUIOnly();
 			break;
 		case EUIScreen::InGame:
@@ -217,6 +232,9 @@ void UUIManagerSubsystem::SetInputModeUIOnly(UUserWidget* Focus)
 		M.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 		PC->SetInputMode(M);
 		PC->bShowMouseCursor = true;
+
+		//Focus->SetKeyboardFocus();
+		//Focus->SetUserFocus(PC);
 	}
 }
 
@@ -245,6 +263,11 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	if (!TitleScreenClass && UISettings && !UISettings->TitleScreenWidgetClass.IsNull())
 	{
 		TitleScreenClass = UISettings->TitleScreenWidgetClass.LoadSynchronous();
+	}
+
+	if (!MainMenuScreenClass && UISettings && !UISettings->MainMenuWidgetClass.IsNull())
+	{
+		MainMenuScreenClass = UISettings->MainMenuWidgetClass.LoadSynchronous();
 	}
 	
 }
@@ -279,11 +302,7 @@ UUserWidget* UUIManagerSubsystem::CreateIfNeeded(EUIScreen Screen)
 
 	UUserWidget* W = CreateWidget<UUserWidget>(PC, Cls);
 	ScreenCache.Add(Screen, W);
-
-	// 컨트롤러 주입이 필요하면 여기서 호출
-	// if (InGameWidgetController && Screen == EUIScreen::InGame)
-	//     W->CallFunctionByNameWithArguments(TEXT("SetWidgetController"), ...); // 또는 C++ 캐스팅 후 세터 호출
-
+	
 	return W;
 }
 

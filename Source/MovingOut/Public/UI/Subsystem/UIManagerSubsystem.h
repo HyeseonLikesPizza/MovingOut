@@ -24,12 +24,16 @@ class MOVINGOUT_API UUIManagerSubsystem : public ULocalPlayerSubsystem
 public:
 	UUIManagerSubsystem();
 
+	// Getter
+	UUserWidget* GetCurrentWidget() const;
+
 	
 	// 전환 대상 위젯 클래스들 (에디터에서 할당)
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> TitleScreenClass;
 
-	
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> MainMenuScreenClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> OverlayHUDClass;

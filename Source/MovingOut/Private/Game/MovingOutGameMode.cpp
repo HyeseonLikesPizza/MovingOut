@@ -48,7 +48,6 @@ void AMovingOutGameMode::StartPlay()
 void AMovingOutGameMode::StartMatchFlow()
 {
 	if (!HasAuthority()) return;
-	UE_LOG(LogTemp, Warning, TEXT("[GM] StartMatchFlow SERVER=%d"), HasAuthority());
 	auto* GS = GetGameState<AMovingOutGameState>();
 	//if (!GS || GS->bTimerRunning) return;
 

@@ -42,11 +42,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputAction* PauseAction;
 
-	UPROPERTY()
-	UTitleScreenWidget* Title;
-
-	TSubclassOf<UTitleScreenWidget> TitleClass;
-
 	void PlayerMove(const FInputActionValue& Value);
 	void Grab();
 	void Release();
@@ -56,6 +51,8 @@ protected:
 	void ThrowRelease();
 	void OnTogglePause();
 	void ShowTitle();
+
+	UFUNCTION()
 	void HandleStartRequested();
 	
 };

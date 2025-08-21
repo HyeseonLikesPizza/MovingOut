@@ -11,6 +11,8 @@ FReply UTitleScreenWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FK
 {
 	const FKey Key = InKeyEvent.GetKey();
 
+	UE_LOG(LogTemp, Warning, TEXT("Space Bar Pressed"));
+
 	if (Key == EKeys::SpaceBar)
 	{
 		OnStartRequested.Broadcast();

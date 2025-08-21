@@ -19,6 +19,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnStartRequested OnStartRequested;
-
+	
 	
 };
