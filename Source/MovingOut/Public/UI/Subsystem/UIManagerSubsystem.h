@@ -8,6 +8,7 @@
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
 {
+	None,
 	Title,
 	Loading,
 	MainMenu,
@@ -56,15 +57,29 @@ public:
 	void RegisterControllerClass(EUIScreen Screen, TSubclassOf<UBaseWidgetController> Class);
 
 	// 진입/전환 API
-	UFUNCTION(BlueprintCallable) void ShowScreen(EUIScreen Screen);
-	UFUNCTION(BlueprintCallable) UUserWidget* GetScreenWidget(EUIScreen Screen) const;
-	UFUNCTION(BlueprintCallable) void ShowModal(TSubclassOf<UUserWidget> ModalClass, int32 ZOrder = 1000);
-	UFUNCTION(BlueprintCallable) void CloseTopModal();
+	UFUNCTION(BlueprintCallable)
+	void ShowScreen(EUIScreen Screen);
+	
+	UFUNCTION(BlueprintCallable)
+	UUserWidget* GetScreenWidget(EUIScreen Screen) const;
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowModal(TSubclassOf<UUserWidget> ModalClass, int32 ZOrder = 1000);
+	
+	UFUNCTION(BlueprintCallable)
+	void CloseTopModal();
+
+
+	// 레벨 오픈 시 게임 모드의 Initial Screen에 따라 UI를 띄움
+	void ApplyInitialUI();
+	
 
 	// GameState 신호에 반응하여 자동 화면 전환(결과 화면 등)
 	UFUNCTION(BlueprintCallable)
 	void BindGameStateSignals();
 
+
+	// Widget Input Mode
 	UFUNCTION(BlueprintCallable)
 	void SetInputModeGameOnly();
 	

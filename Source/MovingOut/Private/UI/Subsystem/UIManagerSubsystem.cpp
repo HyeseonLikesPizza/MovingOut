@@ -11,6 +11,7 @@
 #include "Game/MovingOutGameMode.h"
 #include "UI/WidgetController/BaseWidgetController.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/Widget/InGameOverlayWidget.h"
 #include "UI/Widget/TitleScreenWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
@@ -183,6 +184,46 @@ void UUIManagerSubsystem::CloseTopModal()
 	// 모달이 없어졌다면 메인 화면 포커스로 복귀
 	if (ModalStack.IsEmpty() && Current.IsValid())
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetPC(), Current.Get());
+}
+
+void UUIManagerSubsystem::ApplyInitialUI()
+{
+	EUIScreen Screen = EUIScreen::None;
+	
+	if (AMovingOutGameMode* GM = Cast<AMovingOutGameMode>(UGameplayStatics::GetGameMode(GetPC())))
+	{
+		Screen = GM->GetInitialScreen();
+
+		// 기존 화면 제거
+		if (Current.Get())
+		{
+			Current.Get()->RemoveFromParent();
+			Current = nullptr;
+		}
+
+		// 새 화면 생성
+		TSubclassOf<UUserWidget> Cls = nullptr;
+		switch (Screen)
+		{
+		case EUIScreen::Title:
+			Cls = TitleScreenClass;
+			break;
+		case EUIScreen::InGame:
+			Cls = OverlayHUDClass;
+			BindGameStateSignals();
+			break;
+		case EUIScreen::Result:
+			break;
+		}
+
+		if (Cls)
+		{
+			Current = CreateWidget<UUserWidget>(GetPC(), Cls);
+			if (Current.Get())
+				Current->AddToViewport();
+		}
+		
+	}
 }
 
 void UUIManagerSubsystem::BindGameStateSignals()

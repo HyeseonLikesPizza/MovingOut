@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "UI/Subsystem/UIManagerSubsystem.h"
 #include "MovingOutGameMode.generated.h"
 
 class AMovingOutGameState;
@@ -33,6 +34,10 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Medal")
 	TObjectPtr<UURankTimeConfig> MedalThresholdDA;
+
+	
+	void SetInitialScreen(EUIScreen InScreen);
+	EUIScreen GetInitialScreen() const;
 	
 	
 
@@ -56,7 +61,7 @@ protected:
 
 private:
 	FTimerHandle TimeoutHandle;
-
+	EUIScreen InitialScreen;
 
 	// 유틸
 	AMovingOutGameState* GetMGameState() const;

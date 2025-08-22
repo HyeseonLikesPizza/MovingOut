@@ -7,6 +7,7 @@
 #include "Component/InteractiveComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Subsystem/UIManagerSubsystem.h"
+#include "UI/Widget/MainMenuScreenWidget.h"
 #include "UI/Widget/TitleScreenWidget.h"
 
 AMovingOutPlayerController::AMovingOutPlayerController()
@@ -18,26 +19,16 @@ void AMovingOutPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ShowTitle();
-
 	if (!IsLocalController()) return;
 	if (ULocalPlayer* LP = GetLocalPlayer())
 	{
 		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
 		{
-			// Title 위젯 생성
-			UI->ShowScreen(EUIScreen::InGame);
-			UI->BindGameStateSignals();
-
-			/*
-			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(UI->GetCurrentWidget()))
-			{
-				// 델리게이트 구독
-				TitleWidget->OnStartRequested.AddDynamic(this, &AMovingOutPlayerController::HandleStartRequested);
-			}
-			*/
+			UI->ApplyInitialUI();
+			//UI->ShowScreen(EUIScreen::Title);
 		}
 	}
+	
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
@@ -162,6 +153,20 @@ void AMovingOutPlayerController::ShowTitle()
 	}
 }
 
+void AMovingOutPlayerController::ShowIngameWidget()
+{
+	if (!IsLocalController()) return;
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
+		{
+			// InGame 위젯 생성
+			UI->ShowScreen(EUIScreen::InGame);
+			UI->BindGameStateSignals();
+		}
+	}
+}
+
 void AMovingOutPlayerController::HandleRequestNewGame()
 {
 	UGameplayStatics::OpenLevel(this, FName("Stage1"));
@@ -176,6 +181,13 @@ void AMovingOutPlayerController::HandleStartRequested()
 		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
 		{
 			UI->ShowScreen(EUIScreen::MainMenu);
+
+			// 델리게이트 구독
+			if (UMainMenuScreenWidget* MainMenuWidget = Cast<UMainMenuScreenWidget>(UI->GetCurrentWidget()))
+			{
+				// 새 레벨 열기
+				MainMenuWidget->OnRequestNewGame.AddDynamic(this, &AMovingOutPlayerController::HandleRequestNewGame);
+			}
 		}
 	}
 }

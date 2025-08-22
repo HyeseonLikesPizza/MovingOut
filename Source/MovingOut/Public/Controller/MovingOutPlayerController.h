@@ -60,6 +60,7 @@ protected:
 	void ThrowRelease();
 	void OnTogglePause();
 	void ShowTitle();
+	void ShowIngameWidget();
 
 	UFUNCTION()
 	void HandleStartRequested();

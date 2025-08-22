@@ -18,6 +18,7 @@
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +32,15 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/Datasmith/DatasmithExporterUI/Private/Widgets/SDirectLinkStreamManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Developer/Profiler/Private/Widgets/SProfilerGraphPanel.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Editor/WorldBrowser/Public/IWorldTreeItem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/AutomationTool/Scripts/Bisect.Automation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/AutomationTool/Scripts/SyncProject.Automation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Core/HelpUtils.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Core/Log.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.MsBuild/CsProjBuilder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Programs/Shared/EpicGames.Perforce/PerforceMetadataLogger.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/AIModule/Private/Blueprint/AIBlueprintHelperLibrary.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Core/Public/Containers/SparseArray.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
@@ -60,7 +70,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Lauren",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -245,7 +255,7 @@
       <workItem from="1755742302364" duration="6912000" />
       <workItem from="1755755948161" duration="329000" />
       <workItem from="1755763562747" duration="1598000" />
-      <workItem from="1755844376433" duration="3202000" />
+      <workItem from="1755844376433" duration="6545000" />
     </task>
     <servers />
   </component>
