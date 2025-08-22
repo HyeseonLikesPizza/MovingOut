@@ -15,13 +15,36 @@
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Enemy/BP_MoveToLoction.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/Enemy/BP_MoveToLoction.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/BP_PhysicsDoor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/BP_PhysicsDoor.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Materials/M_GlowYellow.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Materials/M_GlowYellow.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Materials/M_MaterialSlide.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Materials/M_MaterialSlide.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Materials/lambert1_001.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Materials/lambert1_001.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone_002.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone_002.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone_006.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone_006.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone_011.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Cone_011.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Material_001.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Nature/Grass/Material_001.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Building_15.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Crosswalk_Large.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Metal.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/STOP_Text_004.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Stop_Sign_5.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Stop_sign_005.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Street_Sign_1.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Street_Sign_White.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Nature/StreetProps/Streetlight.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/BP_MovingCar.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/BP_MovingCar.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Bed.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Bed.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Box.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Box.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Fridge.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Fridge.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Sofa.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Sofa.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_WasingMachine.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_WasingMachine.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PhysicsDoor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PhysicsDoor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PropsGoalZone.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PropsGoalZone.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Props/PhysicsDoor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Props/PhysicsDoor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MovingOut.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/MovingOut.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/MovingOut.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/MovingOut.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Props/CountProps.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Props/CountProps.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PropsBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PropsBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Props/CountProps.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Props/CountProps.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Props/PropsBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Props/PropsBase.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +58,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Components/PrimitiveComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/Actor.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Private/Props/CountProps.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/MovingOut/Public/Props/CountProps.h" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -191,6 +216,18 @@
       <workItem from="1755480188948" duration="55000" />
       <workItem from="1755480732255" duration="635000" />
       <workItem from="1755497459286" duration="3045000" />
+      <workItem from="1755583729762" duration="18228000" />
+      <workItem from="1755607567681" duration="122000" />
+      <workItem from="1755648851795" duration="37000" />
+      <workItem from="1755648973414" duration="208000" />
+      <workItem from="1755650198249" duration="366000" />
+      <workItem from="1755650589886" duration="1589000" />
+      <workItem from="1755675887792" duration="644000" />
+      <workItem from="1755763122068" duration="796000" />
+      <workItem from="1755775413021" duration="754000" />
+      <workItem from="1755776535377" duration="1785000" />
+      <workItem from="1755840350423" duration="3162000" />
+      <workItem from="1755846997649" duration="3067000" />
     </task>
     <servers />
   </component>

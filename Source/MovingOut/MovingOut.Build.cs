@@ -10,7 +10,7 @@ public class MovingOut : ModuleRules
 		
 		
 
-		PublicDependencyModuleNames.AddRange(new [] { "Core", "CoreUObject", "Engine", "InputCore", "PhysicsCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "GameplayTags", "Chaos", "ChaosSolverEngine", "GeometryCollectionEngine", "FieldSystemEngine" });
+		PublicDependencyModuleNames.AddRange(new [] { "Core", "CoreUObject", "Engine", "InputCore", "PhysicsCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput", "GameplayTags", "GeometryCollectionEngine", "FieldSystemEngine", "CableComponent" });
     }
 	
 }
