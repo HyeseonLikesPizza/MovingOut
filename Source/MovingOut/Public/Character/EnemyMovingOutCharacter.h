@@ -17,6 +17,8 @@ enum class EEnemyState : uint8
     ES_HitReaction UMETA(DisplayName = "HitReaction")
 };
 
+
+
 UCLASS()
 class MOVINGOUT_API AEnemyMovingOutCharacter : public ACharacter
 {
