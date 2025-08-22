@@ -3,6 +3,7 @@
 
 #include "Props/PropsBase.h"
 #include "MovingOut/MovingOut.h"
+#include "CableComponent.h"
 
 
 // Sets default values
@@ -12,6 +13,7 @@ APropsBase::APropsBase()
 	PrimaryActorTick.bCanEverTick = false;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	SetRootComponent(Mesh);
 	DefaultMaterial = CreateDefaultSubobject<UMaterial>(TEXT("DefaultMaterial"));
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT("/Script/Engine.Material'/Game/Assets/Furniture_Free/Materials/M_MaterialSlide.M_MaterialSlide'"));
@@ -25,7 +27,6 @@ APropsBase::APropsBase()
 	{
 		Mesh->SetPhysMaterialOverride(PhysMaterialRef.Object);
 	}
-
 	
 	// Mesh Collision
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -40,7 +41,8 @@ APropsBase::APropsBase()
 void APropsBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
+
 
 

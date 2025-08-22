@@ -36,4 +36,5 @@ public:
 	void ChangeMaterial(UMaterial* NewMaterial);
 	// To default material
 	void SetDefaultMaterial();
+	
 };
