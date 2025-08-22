@@ -224,12 +224,12 @@ void UUIManagerSubsystem::SetInputModeUIOnly(UUserWidget* Focus)
 	if (APlayerController* PC = GetPC())
 	{
 		FInputModeUIOnly M;
-		if (Focus) M.SetWidgetToFocus(Focus->TakeWidget());
 		M.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 		PC->SetInputMode(M);
 		PC->bShowMouseCursor = true;
 		if (Focus)
 		{
+			M.SetWidgetToFocus(Focus->TakeWidget());
 			Focus->SetKeyboardFocus();
 			Focus->SetUserFocus(PC);
 		}
@@ -241,8 +241,9 @@ void UUIManagerSubsystem::SetInputModeGameAndUI(UUserWidget* Focus)
 	if (APlayerController* PC = GetPC())
 	{
 		FInputModeGameAndUI M;
-		if (Focus) M.SetWidgetToFocus(Focus->TakeWidget());
+		M.SetHideCursorDuringCapture(false);
 		M.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		if (Focus) M.SetWidgetToFocus(Focus->TakeWidget());
 		PC->SetInputMode(M);
 		PC->bShowMouseCursor = true;
 	}
@@ -297,7 +298,8 @@ UUserWidget* UUIManagerSubsystem::CreateIfNeeded(EUIScreen Screen)
 	if (!PC) return nullptr;
 
 	UUserWidget* W = CreateWidget<UUserWidget>(PC, Cls);
-	ScreenCache.Add(Screen, W);
+	if (W)
+		ScreenCache.Add(Screen, W);
 
 	return W;
 }
@@ -308,6 +310,8 @@ TSubclassOf<UUserWidget> UUIManagerSubsystem::ResolveClass(EUIScreen Screen) con
 	{
 	case EUIScreen::Title:
 		return TitleScreenClass;
+	case EUIScreen::MainMenu:
+		return MainMenuScreenClass;
 	case EUIScreen::InGame:
 		return OverlayHUDClass;
 	case EUIScreen::Pause:

@@ -38,7 +38,8 @@ void AMovingOutPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::StopJumping);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowAim);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::ThrowRelease);
-		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowRelease);
+		//EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowRelease);
+		//EnhancedInputComponent->BindAction(PressToStartAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::HandleStartRequested);
 	}
 
 }
@@ -130,14 +131,13 @@ void AMovingOutPlayerController::ShowTitle()
 		{
 			// Title 위젯 생성
 			UI->ShowScreen(EUIScreen::Title);
-			HandleStartRequested();
-			/*
+			
 			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(UI->GetCurrentWidget()))
 			{
 				// 델리게이트 구독
 				TitleWidget->OnStartRequested.AddDynamic(this, &AMovingOutPlayerController::HandleStartRequested);
 			}
-			*/
+			
 		}
 	}
 }
