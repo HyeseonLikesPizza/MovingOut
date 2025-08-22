@@ -164,7 +164,7 @@ void AMovingOutPlayerController::ShowTitle()
 
 void AMovingOutPlayerController::HandleRequestNewGame()
 {
-	UGameplayStatics::OpenLevel(this, FName(""));
+	UGameplayStatics::OpenLevel(this, FName("Stage1"));
 }
 
 void AMovingOutPlayerController::HandleStartRequested()
