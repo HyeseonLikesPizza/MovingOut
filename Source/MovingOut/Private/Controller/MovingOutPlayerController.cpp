@@ -6,21 +6,18 @@
 #include "Character/PlayerMovingOutCharacter.h"
 #include "Component/InteractiveComponent.h"
 #include "UI/Subsystem/UIManagerSubsystem.h"
+#include "UI/Widget/TitleScreenWidget.h"
+
+AMovingOutPlayerController::AMovingOutPlayerController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 void AMovingOutPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!IsLocalController()) return;
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
-		{
-			
-			UI->ShowScreen(EUIScreen::InGame);
-			UI->BindGameStateSignals();
-		}
-	}
+	ShowTitle();
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
@@ -43,6 +40,7 @@ void AMovingOutPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::ThrowRelease);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowRelease);
 	}
+
 }
 
 void AMovingOutPlayerController::PlayerMove(const FInputActionValue& Value)
@@ -130,11 +128,29 @@ void AMovingOutPlayerController::ShowTitle()
 	{
 		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
 		{
+			// Title 위젯 생성
 			UI->ShowScreen(EUIScreen::Title);
+			HandleStartRequested();
+			/*
+			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(UI->GetCurrentWidget()))
+			{
+				// 델리게이트 구독
+				TitleWidget->OnStartRequested.AddDynamic(this, &AMovingOutPlayerController::HandleStartRequested);
+			}
+			*/
 		}
 	}
 }
 
 void AMovingOutPlayerController::HandleStartRequested()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleStartRequested Called"));
+	if (!IsLocalController()) return;
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
+		{
+			UI->ShowScreen(EUIScreen::MainMenu);
+		}
+	}
 }

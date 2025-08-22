@@ -24,12 +24,16 @@ class MOVINGOUT_API UUIManagerSubsystem : public ULocalPlayerSubsystem
 public:
 	UUIManagerSubsystem();
 
+	// Getter
+	UUserWidget* GetCurrentWidget() const;
+
 	
 	// 전환 대상 위젯 클래스들 (에디터에서 할당)
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> TitleScreenClass;
 
-	
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> MainMenuScreenClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> OverlayHUDClass;
@@ -88,10 +92,12 @@ private:
 	TMap<EUIScreen, TObjectPtr<UBaseWidgetController>> ControllerCache;
 	
 	// 캐시: 화면별 위젯 인스턴스
+	UPROPERTY()
 	TMap<EUIScreen, TWeakObjectPtr<UUserWidget>> ScreenCache;
 	TWeakObjectPtr<UUserWidget> Current;
 	
 	// 모달 스택 (위에 올린 순서대로)
+	UPROPERTY()
 	TArray<TWeakObjectPtr<UUserWidget>> ModalStack;
 
 	UWorld* GetWorldChecked() const;

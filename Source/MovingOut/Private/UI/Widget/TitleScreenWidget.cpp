@@ -1,6 +1,11 @@
 
 #include "UI/Widget/TitleScreenWidget.h"
 
+UTitleScreenWidget::UTitleScreenWidget(const FObjectInitializer& OI) : Super(OI)
+{
+	bIsFocusable = true;
+}
+
 void UTitleScreenWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -10,6 +15,8 @@ void UTitleScreenWidget::NativeConstruct()
 FReply UTitleScreenWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
 	const FKey Key = InKeyEvent.GetKey();
+
+	UE_LOG(LogTemp, Warning, TEXT("Space Bar Pressed"));
 
 	if (Key == EKeys::SpaceBar)
 	{
