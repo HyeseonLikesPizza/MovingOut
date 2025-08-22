@@ -270,8 +270,8 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
         // 플레이어로부터 멀어지는 방향 벡터 계산
         FVector AwayFromPlayerDirection = (GetActorLocation() - Player->GetActorLocation()).GetSafeNormal();
 
-        // 5만큼 밀어낼 위치 계산
-        FVector PushbackLocation = GetActorLocation() + AwayFromPlayerDirection * 5.0f;
+        // 8만큼 밀어낼 위치 계산
+        FVector PushbackLocation = GetActorLocation() + AwayFromPlayerDirection * 8.0f;
 
         // 즉시 해당 위치로 캐릭터 이동
         SetActorLocation(PushbackLocation, true);
