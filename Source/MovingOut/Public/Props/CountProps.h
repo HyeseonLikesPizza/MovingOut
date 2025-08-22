@@ -38,6 +38,6 @@ public:
 	void SetDefaultMaterial();
 
 	// Reference
-	class UInteractiveComponent* CharacterComponentRef;
+	//class UInteractiveComponent* CharacterComponentRef;
 	
 };
