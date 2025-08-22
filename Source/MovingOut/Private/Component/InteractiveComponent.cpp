@@ -22,7 +22,7 @@ void UInteractiveComponent::BeginPlay()
 	if (Character) AddTickPrerequisiteActor(Character);
 }
 
-// Ä³¸® ÇÁ·¹ÀÓ(¿ùµå): °ñ¹Ý À§Ä¡, Yaw=Actor Forward, Up=+Z
+// Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½): ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡, Yaw=Actor Forward, Up=+Z
 FTransform UInteractiveComponent::MakeCarryFrame()
 {
 	const FVector Hips = Character->GetMesh()->GetSocketLocation(TEXT("Hips"));
@@ -32,7 +32,7 @@ FTransform UInteractiveComponent::MakeCarryFrame()
 	return FTransform(rot, Hips);
 }
 
-// ¼ÒÄÏ ÀÌ¸§¿¡¼­ ¶óº§ »Ì±â
+// ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì±ï¿½
 static FString LabelFrom(const FString& Name) {
 	if (Name.Contains(TEXT("Forward"), ESearchCase::IgnoreCase)) return TEXT("Forward");
 	if (Name.Contains(TEXT("Backward"), ESearchCase::IgnoreCase)) return TEXT("Backward");
@@ -41,7 +41,7 @@ static FString LabelFrom(const FString& Name) {
 	return TEXT("");
 }
 
-// ¶óº§ ¡æ ÇØ´ç ¸éÀÇ ¿ùµå ¹ý¼±
+// ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 static FVector FaceNormalWS(const FString& Label, const FTransform& CompTM) {
 	if (Label == "Forward")  return  CompTM.GetUnitAxis(EAxis::X);
 	if (Label == "Backward") return -CompTM.GetUnitAxis(EAxis::X);
@@ -50,22 +50,21 @@ static FVector FaceNormalWS(const FString& Label, const FTransform& CompTM) {
 	return CompTM.GetUnitAxis(EAxis::X); // fallback
 }
 
-// N=¸é ¹ý¼±, T=¿§Áö ¹æÇâ(+Z). ¼Õ ·ÎÄÃ +X(¼Õ¹Ù´Ú ¹ý¼±) = -N, ¼Õ ·ÎÄÃ +Y(¼Õ°¡¶ô) = T ·Î ¸ÂÃã.
-// ¼Õ ½ºÄÌ·¹Åæ¿¡ µû¶ó ¿ÀÇÁ¼ÂÀ¸·Î ¹Ì¼¼Á¶Á¤ °¡´É.
+// N=ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, T=ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(+Z). ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +X(ï¿½Õ¹Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½) = -N, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +Y(ï¿½Õ°ï¿½ï¿½ï¿½) = T ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+// ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½æ¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 static FQuat MakePalmFacingQuat(const FVector& N_ws, const FVector& T_ws, const FRotator& HandOffset)
 {
 	const FVector N = N_ws.GetSafeNormal();
-	FVector T = (T_ws - FVector::DotProduct(T_ws, N) * N).GetSafeNormal(); // N¿¡ Á÷±³È­
+	FVector T = (T_ws - FVector::DotProduct(T_ws, N) * N).GetSafeNormal(); // Nï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
 
-	// ·ÎÄÃ +X(¼Õ¹Ù´Ú) = -N, ·ÎÄÃ +Y(¼Õ°¡¶ô) = T
-	const FQuat basisQ = FRotationMatrix::MakeFromXY(-N, T).ToQuat(); // ¡ç ¿©±â!
+	// ï¿½ï¿½ï¿½ï¿½ +X(ï¿½Õ¹Ù´ï¿½) = -N, ï¿½ï¿½ï¿½ï¿½ +Y(ï¿½Õ°ï¿½ï¿½ï¿½) = T
+	const FQuat basisQ = FRotationMatrix::MakeFromXY(-N, T).ToQuat(); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!
 	return basisQ * HandOffset.Quaternion();
 }
 
 
 void UInteractiveComponent::TryGrab()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TryGrab Called"));
 	if (!Character) return;
 	FVector Start = Character->GetActorLocation();
 	FVector End = Start + Character->GetActorForwardVector() * Character->GetGrabTraceDistance();
@@ -102,7 +101,6 @@ void UInteractiveComponent::TryGrab()
 
 void UInteractiveComponent::GrabRelease()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TryRelease Called"));
 	Character->SetIsGrabbing(false);
 	if (HitResult.GetActor())
 	{
@@ -128,7 +126,6 @@ void UInteractiveComponent::GrabRelease()
 
 void UInteractiveComponent::ThrowAim()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ThrowAim Called"));
 	bool bIsGrabbing = Character->GetIsGrabbing();
 	
 	if (bIsGrabbing)
@@ -161,7 +158,6 @@ void UInteractiveComponent::ThrowAim()
 
 void UInteractiveComponent::ThrowRelease()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ThrowRelease Called"));
 	IsAming = false;
 
 	Character->LightCone->SetVisibility(false);
@@ -174,18 +170,18 @@ void UInteractiveComponent::ThrowRelease()
 		HitResult.GetComponent()->SetEnableGravity(true);
 		HitResult.GetComponent()->SetSimulatePhysics(true);
 
-		// ½ÃÀÛÁ¡°ú ¸ñÇ¥Á¡
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½
 		const FVector Start = HitResult.GetComponent()->GetComponentLocation();
 		const FVector Target = Character->CrosshairDecal->GetComponentLocation();
 		const FVector ToTarget = Target - Start;
 
-		// ¼öÆò¸é(XY)¿¡¼­ÀÇ °Å¸®¿Í Yaw
+		// ï¿½ï¿½ï¿½ï¿½ï¿½(XY)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ Yaw
 		const double R   = FVector(ToTarget.X, ToTarget.Y, 0).Length();
 		const double dZ  = ToTarget.Z;
-		const double g   = -GetWorld()->GetGravityZ();      // ¾ç¼ö
+		const double g   = -GetWorld()->GetGravityZ();      // ï¿½ï¿½ï¿½
 
-		// ³×°¡ ¿øÇÏ´Â ¹ß»ç ÇÇÄ¡(¼öÆò ±âÁØ °¢µµ, +¸é À§·Î)
-		const double PitchDeg = DesiredPitchDegrees;        // ¿¹: 25.0
+		// ï¿½×°ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ß»ï¿½ ï¿½ï¿½Ä¡(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, +ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+		const double PitchDeg = DesiredPitchDegrees;        // ï¿½ï¿½: 25.0
 		const double theta    = FMath::DegreesToRadians(PitchDeg);
 
 		const double cosT = FMath::Cos(theta);
@@ -196,8 +192,8 @@ void UInteractiveComponent::ThrowRelease()
 
 		if (R < KINDA_SMALL_NUMBER || denom <= 0.0 || cosT == 0.0)
 		{
-			// ÀÌ °¢µµ·Î´Â ÇØ°¡ ¾øÀ½: °¢µµ¸¦ ³ôÀÌ°Å³ª(´õ Æ÷¹°¼±), ´Ù¸¥ ¹æ½ÄÀ¸·Î °è»ê
-			// ¾ÈÀüÇÑ Æú¹é: ºñÇà½Ã°£ T ±â¹Ý ¹æ½Ä(ÀÌÀü ¸Þ½ÃÁö)À¸·Î V0 °è»ê
+			// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ ï¿½Ø°ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°Å³ï¿½(ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½), ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ T ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ V0 ï¿½ï¿½ï¿½
 			const double T = FMath::Clamp(DesiredFlightTimeSeconds, 0.25, 3.0);
 			const FVector V0 = (ToTarget / T) - 0.5 * FVector(0,0,-g) * T;
 			HitResult.GetComponent()->SetPhysicsLinearVelocity(V0, true);
@@ -207,7 +203,7 @@ void UInteractiveComponent::ThrowRelease()
 		const double v2 = (g * R * R) / denom;
 		const double v  = FMath::Sqrt(FMath::Max(v2, 0.0));
 
-		// Yaw ´Â ¸ñÇ¥¸¦ ¹Ù¶óº¸°Ô, Pitch ´Â ³×°¡ Á¤ÇÑ °¢µµ¸¦ »ç¿ë
+		// Yaw ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ù¶óº¸°ï¿½, Pitch ï¿½ï¿½ ï¿½×°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		const double YawDeg = FMath::RadiansToDegrees(FMath::Atan2(ToTarget.Y, ToTarget.X));
 		const FRotator LaunchRot(PitchDeg, YawDeg, 0.0);
 
@@ -260,7 +256,7 @@ bool UInteractiveComponent::PickFaceEdgesAndSetIK()
 
 	const FTransform CompTM = Comp->GetComponentTransform();
 
-	// 1) ÇÊ¿äÇÑ ¼ÒÄÏµé¸¸ ¸ðÀ¸±â
+	// 1) ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµé¸¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	auto FindSocket = [&](const TCHAR* Key)->TOptional<FTransform>
 		{
 			TArray<FName> Names; 
@@ -280,16 +276,16 @@ bool UInteractiveComponent::PickFaceEdgesAndSetIK()
 	const TOptional<FTransform> SockL = FindSocket(TEXT("Left"));
 	const TOptional<FTransform> SockR = FindSocket(TEXT("Right"));
 
-	// ÃÖ¼ÒÇÑ ÇÑ Ãà Æä¾î´Â ÀÖ¾î¾ß ÇÔ
+	// ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½ï¿½
 	const bool HasXPair = SockF.IsSet() && SockB.IsSet();
 	const bool HasYPair = SockL.IsSet() && SockR.IsSet();
 	if (!HasXPair && !HasYPair) return false;
 
-	// 2) ÇÃ·¹ÀÌ¾î°¡ ¾î´À "¸é"¿¡ ´õ °¡±î¿îÁö(·ÎÄÃ ÁÂÇ¥·Î ÆÇÁ¤)
+	// 2) ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ "ï¿½ï¿½"ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	const FVector PlayerLS = CompTM.InverseTransformPosition(Character->GetActorLocation());
 
-	// ¾Õ/µÚ(¡¾X)¿Í ÁÂ/¿ì(¡¾Y)±îÁöÀÇ °Å¸®
-	// ¼ÒÄÏµéÀÌ ¿§Áö Áß°£Á¡ÀÌ¸é min/max ´ë½Å ´Ü¼øÈ÷ X/YÀÇ Àý´ë°ª ºñ±³·Î ÃæºÐ
+	// ï¿½ï¿½/ï¿½ï¿½(ï¿½ï¿½X)ï¿½ï¿½ ï¿½ï¿½/ï¿½ï¿½(ï¿½ï¿½Y)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
+	// ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ min/max ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½ï¿½ X/Yï¿½ï¿½ ï¿½ï¿½ï¿½ë°ª ï¿½ñ±³·ï¿½ ï¿½ï¿½ï¿½
 	const float dX = FMath::Abs(PlayerLS.X);
 	const float dY = FMath::Abs(PlayerLS.Y);
 
@@ -297,32 +293,32 @@ bool UInteractiveComponent::PickFaceEdgesAndSetIK()
 	EAxis UseAxis;
 	if (!HasYPair) UseAxis = EAxis::X;
 	else if (!HasXPair) UseAxis = EAxis::Y;
-	else UseAxis = (dX >= dY) ? EAxis::Y : EAxis::X; // ¾Õ/µÚ¿¡ ´õ °¡±î¿ì¸é YÃà Æä¾î¸¦, ÁÂ/¿ì¿¡ ´õ °¡±î¿ì¸é XÃà Æä¾î¸¦
+	else UseAxis = (dX >= dY) ? EAxis::Y : EAxis::X; // ï¿½ï¿½/ï¿½Ú¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Yï¿½ï¿½ ï¿½ï¿½î¸¦, ï¿½ï¿½/ï¿½ì¿¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Xï¿½ï¿½ ï¿½ï¿½î¸¦
 
-	// 3) ±³Â÷ ¸ÅÇÎ
+	// 3) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	FTransform L_WS, R_WS;
-	if (UseAxis == EAxis::Y) // Left/Right Æä¾î »ç¿ë ¡æ ±³Â÷: L=Right, R=Left
+	if (UseAxis == EAxis::Y) // Left/Right ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: L=Right, R=Left
 	{
 		if (!HasYPair) return false;
-		L_WS = SockR.GetValue(); // ¿Þ¼ÕÀÌ Right
-		R_WS = SockL.GetValue(); // ¿À¸¥¼ÕÀÌ Left
+		L_WS = SockR.GetValue(); // ï¿½Þ¼ï¿½ï¿½ï¿½ Right
+		R_WS = SockL.GetValue(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Left
 		SetGripMidPoint(FName("Edge_Left"), FName("Edge_Right"));
 	}
-	else // EAxis::X  ¡æ Forward/Backward Æä¾î »ç¿ë ¡æ ±³Â÷: L=Forward, R=Backward
+	else // EAxis::X  ï¿½ï¿½ Forward/Backward ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: L=Forward, R=Backward
 	{
 		if (!HasXPair) return false;
-		L_WS = SockF.GetValue(); // ¿Þ¼ÕÀÌ Forward
-		R_WS = SockB.GetValue(); // ¿À¸¥¼ÕÀÌ Backward
+		L_WS = SockF.GetValue(); // ï¿½Þ¼ï¿½ï¿½ï¿½ Forward
+		R_WS = SockB.GetValue(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Backward
 		SetGripMidPoint(FName("Edge_Backward"), FName("Edge_Forward"));
 	}
 
-	// 4) IK Å¸±ê Àü´Þ (AnimBP¿¡¼­ Component Space·Î º¯È¯ÇØ¼­ ¾²±â)
+	// 4) IK Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (AnimBPï¿½ï¿½ï¿½ï¿½ Component Spaceï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	AnimInstance->SetLeftHandTarget(L_WS);
 	AnimInstance->SetRightHandTarget(R_WS);
 	
 	
 
-    // (¼±ÅÃ) µð¹ö±×
+    // (ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½
     //DrawDebugSphere(GetWorld(), LEdge_WS.GetLocation(), 6.f, 12, FColor::Green, false, 1.f);
     //DrawDebugSphere(GetWorld(), REdge_WS.GetLocation(), 6.f, 12, FColor::Blue,  false, 1.f);
 
@@ -354,45 +350,45 @@ void UInteractiveComponent::TickCarry_Light(float DeltaTime, const FCarrySetting
 	UPrimitiveComponent* Comp = HitResult.GetComponent();
 	const FTransform CompTM = Comp->GetComponentTransform();
 
-	// 1) ¸ñÇ¥ "±×¸³ ±âÁØÁ¡" À§Ä¡(ÇÃ·¹ÀÌ¾î ¾Õ)
-	const FVector PelvisWS = Character->GetMesh()->GetBoneLocation(TEXT("Hips")); // ¶Ç´Â Ä¸½¶/¸Þ½Ã À§Ä¡
+	// 1) ï¿½ï¿½Ç¥ "ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" ï¿½ï¿½Ä¡(ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½)
+	const FVector PelvisWS = Character->GetMesh()->GetBoneLocation(TEXT("Hips")); // ï¿½Ç´ï¿½ Ä¸ï¿½ï¿½/ï¿½Þ½ï¿½ ï¿½ï¿½Ä¡
 	const FVector Fwd = Character->GetActorForwardVector();
 	const FVector Up = FVector::UpVector;
 
 	FTransform DesiredMid_WS;
 	DesiredMid_WS.SetLocation(PelvisWS + Fwd * S.CarryDist + Up * S.CarryHeight);
 
-	// (¼±ÅÃ) ¿ÀºêÁ§Æ®°¡ ÇÃ·¹ÀÌ¾î¸¦ ÇâÇÏ°Ô: Yaw¸¸ Á¤·Ä
-	const FRotator Face = FRotationMatrix::MakeFromXZ(-Fwd, Up).Rotator(); // Àü¸éÀÌ ÇÃ·¹ÀÌ¾î¸¦ º¸°Ô
+	// (ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½Ï°ï¿½: Yawï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	const FRotator Face = FRotationMatrix::MakeFromXZ(-Fwd, Up).Rotator(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½
 	DesiredMid_WS.SetRotation(Face.Quaternion());
 
-	// 2) ¿ÀºêÁ§Æ® »õ Æ®·£½ºÆû = ¸ñÇ¥ ±×¸³ * (·ÎÄÃ ±×¸³)^-1
+	// 2) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ = ï¿½ï¿½Ç¥ ï¿½×¸ï¿½ * (ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½)^-1
 	const FTransform Curr = Comp->GetComponentTransform();
 	const FTransform TargetWS = DesiredMid_WS * GripLocal.Inverse();
 
-	// 3) ºÎµå·´°Ô º¸°£ + ÅÚ·¹Æ÷Æ® ¼³Á¤(½ºÀ¬ X)
+	// 3) ï¿½Îµå·´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ + ï¿½Ú·ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ X)
 	const FVector NewLoc = FMath::VInterpTo(Curr.GetLocation(), TargetWS.GetLocation(), DeltaTime, S.MovePosSpeed);
 	const FQuat   NewRot = FMath::QInterpTo(Curr.GetRotation(), TargetWS.GetRotation(), DeltaTime, S.MoveRotSpeed);
 	FTransform NewTM(NewRot, NewLoc, Curr.GetScale3D());
 
 	Comp->SetWorldTransform(NewTM, /*bSweep=*/false, nullptr, ETeleportType::TeleportPhysics);
 
-	// 4) ¼Õ IK ¸ñÇ¥ °»½Å (È¸Àü Æ÷ÇÔ)
+	// 4) ï¿½ï¿½ IK ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ (È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	const FTransform R_SocketWS = Comp->GetSocketTransform(RightSocketName, RTS_World);
 	const FTransform L_SocketWS = Comp->GetSocketTransform(LeftSocketName, RTS_World);
 
-	// ¶óº§ ¡æ ¸é ¹ý¼±
+	// ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	const FString RLabel = LabelFrom(RightSocketName.ToString());
 	const FString LLabel = LabelFrom(LeftSocketName.ToString());
 	const FVector N_R = FaceNormalWS(RLabel, CompTM);
 	const FVector N_L = FaceNormalWS(LLabel, CompTM);
 
-	// ¿§Áö ¹æÇâÀº ¼¼·Î(+Z)¶ó °¡Á¤ (³ªÁß¿¡ Top/Bottom ¿§Áö¸¦ ¾²¸é ¿©±â¼­ ºÐ±â)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(+Z)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ß¿ï¿½ Top/Bottom ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­ ï¿½Ð±ï¿½)
 	const FVector EdgeDir = CompTM.GetUnitAxis(EAxis::Z);
 
-	// ¼Õ ½ºÄÌ·¹Åæ º¸Á¤(ÇÑ ¹ø¸¸ ¸ÂÃß¸é µÊ)
-	const FRotator HandOffset_R = FRotator(0, 90.f, 0.f);     // ÇÊ¿ä½Ã ¹Ì¼¼Á¶Á¤
-	const FRotator HandOffset_L = FRotator(0, -90.f, 90.f);     // ¿Þ¼ÕÀÌ µÚÁýÇô º¸ÀÌ¸é Yaw 180 µî
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ ï¿½ï¿½)
+	const FRotator HandOffset_R = FRotator(0, 90.f, 0.f);     // ï¿½Ê¿ï¿½ï¿½ ï¿½Ì¼ï¿½ï¿½ï¿½ï¿½ï¿½
+	const FRotator HandOffset_L = FRotator(0, -90.f, 90.f);     // ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ Yaw 180 ï¿½ï¿½
 
 	FTransform R_WS = R_SocketWS;
 	FTransform L_WS = L_SocketWS;
@@ -402,7 +398,7 @@ void UInteractiveComponent::TickCarry_Light(float DeltaTime, const FCarrySetting
 	AnimInstance->SetRightHandTarget(R_WS);
 	AnimInstance->SetLeftHandTarget(L_WS);
 
-	// 5) ¾Ö´Ô ÇÁ·ÎÆÄÀÏ: Light »ç¿ë
+	// 5) ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: Light ï¿½ï¿½ï¿½
 	//AnimInstance->bUseLightCarryProfile = true;
 }
 
@@ -419,19 +415,19 @@ void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTwime, float posSpe
 	
 	
 	/*
-	// ¨ç ¸ñÇ¥ ¿ÀºêÁ§Æ® º¯È¯ = (»õ Ä³¸®ÇÁ·¹ÀÓ) * (ÀúÀåµÈ »ó´ë)
+	// ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¯ = (ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) * (ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
 	const FTransform carryWS = MakeCarryFrame();
-	const FTransform targetWS = RelObjFromCarry * carryWS; // ¶Ç´Â carryWS * RelObjFromCarry (UE ¹öÀü¿¡ ¸Â°Ô È®ÀÎ)
+	const FTransform targetWS = RelObjFromCarry * carryWS; // ï¿½Ç´ï¿½ carryWS * RelObjFromCarry (UE ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â°ï¿½ È®ï¿½ï¿½)
 	const FTransform curr = HeldComp->GetComponentTransform();
 
-	// ¨è ºÎµå·´°Ô º¸°£(½ºÀ¬ ±ÝÁö, ÅÚ·¹Æ÷Æ®)
+	// ï¿½ï¿½ ï¿½Îµå·´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Ú·ï¿½ï¿½ï¿½Æ®)
 	const FVector newLoc = FMath::VInterpTo(curr.GetLocation(), targetWS.GetLocation(), DeltaTime, posSpeed);
 	const FQuat   newRot = FMath::QInterpTo(curr.GetRotation(), targetWS.GetRotation(), DeltaTime, rotSpeed);
 	HeldComp->SetWorldTransform(FTransform(newRot, newLoc, curr.GetScale3D()),false, nullptr, ETeleportType::TeleportPhysics);
 	*/
 	
 
-	// ¨é ¼Õ IK ¸ñÇ¥(¿ùµå ¡æ AnimBP¿¡¼­ ÄÄÆ÷³ÍÆ®·Î º¯È¯)
+	// ï¿½ï¿½ ï¿½ï¿½ IK ï¿½ï¿½Ç¥(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ AnimBPï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½È¯)
 	const FTransform R_WS = HeldComp->GetSocketTransform(RightSocketName, RTS_World);
 	const FTransform L_WS = HeldComp->GetSocketTransform(LeftSocketName, RTS_World);
 	AnimInstance->SetRightHandTarget(R_WS);
@@ -453,9 +449,9 @@ void UInteractiveComponent::SetGripMidPoint(FName RSock, FName LSock)
 	const FTransform L_CS = HeldComp->GetSocketTransform(LeftSocketName, RTS_Component);
 
 	const FVector Mid_CS = (R_CS.GetLocation() + L_CS.GetLocation()) * 0.5f;
-	GripLocal = FTransform(FRotator::ZeroRotator, Mid_CS, FVector::OneVector); // **ÄÄÆ÷³ÍÆ® °ø°£**
+	GripLocal = FTransform(FRotator::ZeroRotator, Mid_CS, FVector::OneVector); // **ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½**
 
-	// ÇöÀç ¿ÀºêÁ§Æ® À§Ä¡¸¦ Ä³¸® ÇÁ·¹ÀÓ ±âÁØÀ¸·Î ÀúÀå
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	const FTransform carryWS = MakeCarryFrame();
 	RelObjFromCarry = HeldComp->GetComponentTransform().GetRelativeTransform(carryWS);
 }

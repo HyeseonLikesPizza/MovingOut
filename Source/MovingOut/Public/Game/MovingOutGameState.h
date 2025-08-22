@@ -30,11 +30,6 @@ public:
 	UPROPERTY()
 	FMedalThresholds MedalThresholds;
 
-	TArray<AActor*> PropsContainer;
-
-	
-
-	
 
 	// 종료 고정값, 플래그
 
@@ -56,10 +51,12 @@ public:
 	//int32 ItemsTotal = 14;
 
 	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	int32 ItemsDelivered = 0;
+	int32 ItemsDelivered = -1;
 
 	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	int32 PlacedPropsCnt;
+	int32 PlacedPropsCnt = -1;
+
+	void InitializePlacedPropsCnt();
 
 
 	UFUNCTION(BlueprintPure)
