@@ -7,6 +7,8 @@ void UMainMenuScreenWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	bIsFocusable = true;
+	
 	if (NewGameButton)
 		NewGameButton->OnClicked.AddDynamic(this, &UMainMenuScreenWidget::HandleNewGameClicked);
 

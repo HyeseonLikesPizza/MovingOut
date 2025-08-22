@@ -91,7 +91,8 @@ void UInteractiveComponent::TryGrab()
 				HitComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 				PickFaceEdgesAndSetIK();
-				
+
+				IsGrabbingSomething();
 			
 			}
 			

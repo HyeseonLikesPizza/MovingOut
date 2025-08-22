@@ -24,6 +24,8 @@ public:
 
 protected:
 	virtual void SetupInputComponent() override;
+
+	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputMappingContext* MappingContext;
@@ -61,5 +63,7 @@ protected:
 
 	UFUNCTION()
 	void HandleStartRequested();
-	
+
+	UFUNCTION()
+	void HandleRequestNewGame();
 };

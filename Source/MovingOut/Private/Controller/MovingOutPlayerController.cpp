@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Character/PlayerMovingOutCharacter.h"
 #include "Component/InteractiveComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/Subsystem/UIManagerSubsystem.h"
 #include "UI/Widget/TitleScreenWidget.h"
 
@@ -17,7 +18,26 @@ void AMovingOutPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ShowTitle();
+	//ShowTitle();
+
+	if (!IsLocalController()) return;
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
+		{
+			// Title 위젯 생성
+			UI->ShowScreen(EUIScreen::InGame);
+			UI->BindGameStateSignals();
+
+			/*
+			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(UI->GetCurrentWidget()))
+			{
+				// 델리게이트 구독
+				TitleWidget->OnStartRequested.AddDynamic(this, &AMovingOutPlayerController::HandleStartRequested);
+			}
+			*/
+		}
+	}
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
@@ -140,6 +160,11 @@ void AMovingOutPlayerController::ShowTitle()
 			
 		}
 	}
+}
+
+void AMovingOutPlayerController::HandleRequestNewGame()
+{
+	UGameplayStatics::OpenLevel(this, FName(""));
 }
 
 void AMovingOutPlayerController::HandleStartRequested()
