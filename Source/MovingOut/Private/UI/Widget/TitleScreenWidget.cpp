@@ -1,6 +1,11 @@
 
 #include "UI/Widget/TitleScreenWidget.h"
 
+UTitleScreenWidget::UTitleScreenWidget(const FObjectInitializer& OI) : Super(OI)
+{
+	bIsFocusable = true;
+}
+
 void UTitleScreenWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

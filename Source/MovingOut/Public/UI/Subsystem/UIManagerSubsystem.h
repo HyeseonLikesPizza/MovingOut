@@ -92,10 +92,12 @@ private:
 	TMap<EUIScreen, TObjectPtr<UBaseWidgetController>> ControllerCache;
 	
 	// 캐시: 화면별 위젯 인스턴스
+	UPROPERTY()
 	TMap<EUIScreen, TWeakObjectPtr<UUserWidget>> ScreenCache;
 	TWeakObjectPtr<UUserWidget> Current;
 	
 	// 모달 스택 (위에 올린 순서대로)
+	UPROPERTY()
 	TArray<TWeakObjectPtr<UUserWidget>> ModalStack;
 
 	UWorld* GetWorldChecked() const;

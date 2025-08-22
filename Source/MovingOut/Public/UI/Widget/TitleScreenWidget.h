@@ -14,6 +14,7 @@ class MOVINGOUT_API UTitleScreenWidget : public UMovingOutWidget
 
 
 public:
+	UTitleScreenWidget(const FObjectInitializer& OI);
 	virtual void NativeConstruct() override;
 	virtual FReply NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
 

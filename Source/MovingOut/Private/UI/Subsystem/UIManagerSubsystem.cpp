@@ -19,15 +19,16 @@
 UUIManagerSubsystem::UUIManagerSubsystem()
 {
 	// UISettings 등록
-	
-	static ConstructorHelpers::FObjectFinder<UUISettingAsset> UISettingBP(TEXT("/Game/Blueprints/Data/DA_UISettingAsset.DA_UISettingAsset"));
+
+	static ConstructorHelpers::FObjectFinder<UUISettingAsset> UISettingBP(
+		TEXT("/Game/Blueprints/Data/DA_UISettingAsset.DA_UISettingAsset"));
 	if (ensureMsgf(UISettingBP.Succeeded(), TEXT("DA_UISettingAsset not found. Check path.")))
 	{
 		UISettings = UISettingBP.Object;
 	}
 
 	// Controller Class Map 추가
-	
+
 	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
 }
 
@@ -43,7 +44,7 @@ UBaseWidgetController* UUIManagerSubsystem::GetController(EUIScreen Screen)
 		TObjectPtr<UBaseWidgetController> Found = ControllerCache[Screen];
 		return Found.Get();
 	}
-	
+
 	if (!ControllerClassMap.Contains(Screen))
 	{
 		return nullptr;
@@ -76,14 +77,13 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 {
 	UUserWidget* Target = CreateIfNeeded(Screen);
 	if (!Target) return;
-	
+
 
 	// 기존 메인 화면 내리기
 	if (Current.IsValid())
 		Current->RemoveFromParent();
 
 
-	
 	// 화면별 컨트롤러 주입 (필요한 화면들만)
 	switch (Screen)
 	{
@@ -123,29 +123,27 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 	// 뷰포트에 위젯 추가
 	Target->AddToViewport(0);
 	Current = TWeakObjectPtr<UUserWidget>(Target);
-	
-	
-	
+
+
 	// 입력 모드 맞추기
 	switch (Screen)
 	{
-		case EUIScreen::Title:
-			SetInputModeUIOnly();
-			break;
-		case EUIScreen::MainMenu:
-			SetInputModeUIOnly();
-			break;
-		case EUIScreen::InGame:
-			SetInputModeGameOnly();
-			break;
-		case EUIScreen::Pause:
-			SetInputModeUIOnly(Target);
-			break;
-		case EUIScreen::Result:
-			SetInputModeUIOnly(Target);
-			break;
+	case EUIScreen::Title:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::MainMenu:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::InGame:
+		SetInputModeGameOnly();
+		break;
+	case EUIScreen::Pause:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::Result:
+		SetInputModeUIOnly(Target);
+		break;
 	}
-	
 }
 
 UUserWidget* UUIManagerSubsystem::GetScreenWidget(EUIScreen Screen) const
@@ -181,8 +179,7 @@ void UUIManagerSubsystem::CloseTopModal()
 		}
 	}
 
-	
-	
+
 	// 모달이 없어졌다면 메인 화면 포커스로 복귀
 	if (ModalStack.IsEmpty() && Current.IsValid())
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetPC(), Current.Get());
@@ -217,8 +214,7 @@ void UUIManagerSubsystem::SetInputModeGameOnly()
 {
 	if (APlayerController* PC = GetPC())
 	{
-		FInputModeGameOnly M;
-		PC->SetInputMode(M);
+		PC->SetInputMode(FInputModeGameOnly());
 		PC->bShowMouseCursor = false;
 	}
 }
@@ -232,9 +228,11 @@ void UUIManagerSubsystem::SetInputModeUIOnly(UUserWidget* Focus)
 		M.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 		PC->SetInputMode(M);
 		PC->bShowMouseCursor = true;
-
-		//Focus->SetKeyboardFocus();
-		//Focus->SetUserFocus(PC);
+		if (Focus)
+		{
+			Focus->SetKeyboardFocus();
+			Focus->SetUserFocus(PC);
+		}
 	}
 }
 
@@ -242,7 +240,6 @@ void UUIManagerSubsystem::SetInputModeGameAndUI(UUserWidget* Focus)
 {
 	if (APlayerController* PC = GetPC())
 	{
-		
 		FInputModeGameAndUI M;
 		if (Focus) M.SetWidgetToFocus(Focus->TakeWidget());
 		M.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
@@ -254,7 +251,7 @@ void UUIManagerSubsystem::SetInputModeGameAndUI(UUserWidget* Focus)
 void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	
+
 	if (!OverlayHUDClass && UISettings && !UISettings->OverlayHUDClass.IsNull())
 	{
 		OverlayHUDClass = UISettings->OverlayHUDClass.LoadSynchronous();
@@ -269,7 +266,6 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		MainMenuScreenClass = UISettings->MainMenuWidgetClass.LoadSynchronous();
 	}
-	
 }
 
 void UUIManagerSubsystem::Deinitialize()
@@ -295,14 +291,14 @@ UUserWidget* UUIManagerSubsystem::CreateIfNeeded(EUIScreen Screen)
 		return ScreenCache[Screen].Get();
 
 	TSubclassOf<UUserWidget> Cls = ResolveClass(Screen);
-	if (Cls==nullptr) return nullptr;
+	if (Cls == nullptr) return nullptr;
 
 	APlayerController* PC = GetPC();
 	if (!PC) return nullptr;
 
 	UUserWidget* W = CreateWidget<UUserWidget>(PC, Cls);
 	ScreenCache.Add(Screen, W);
-	
+
 	return W;
 }
 

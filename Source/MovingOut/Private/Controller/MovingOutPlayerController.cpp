@@ -8,25 +8,16 @@
 #include "UI/Subsystem/UIManagerSubsystem.h"
 #include "UI/Widget/TitleScreenWidget.h"
 
+AMovingOutPlayerController::AMovingOutPlayerController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
 void AMovingOutPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	ShowTitle();
-	
-	
-	if (!IsLocalController()) return;
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
-		{
-			
-			UI->ShowScreen(EUIScreen::Title);
-			//UI->BindGameStateSignals();
-		}
-	}
-
-	
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
@@ -137,18 +128,23 @@ void AMovingOutPlayerController::ShowTitle()
 	{
 		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
 		{
+			// Title 위젯 생성
 			UI->ShowScreen(EUIScreen::Title);
+			HandleStartRequested();
+			/*
 			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(UI->GetCurrentWidget()))
 			{
 				// 델리게이트 구독
 				TitleWidget->OnStartRequested.AddDynamic(this, &AMovingOutPlayerController::HandleStartRequested);
 			}
+			*/
 		}
 	}
 }
 
 void AMovingOutPlayerController::HandleStartRequested()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleStartRequested Called"));
 	if (!IsLocalController()) return;
 	if (ULocalPlayer* LP = GetLocalPlayer())
 	{
