@@ -54,8 +54,6 @@ void AMovingOutGameState::StartMatchTimer()
 	if (!HasAuthority()) return;
 
 	const float Now = GetServerWorldTimeSeconds();
-
-	UE_LOG(LogTemp,Warning,TEXT("PropsContainer Num : %d"), PlacedPropsCnt);
 	
 	AccumulatedSeconds = 0.f;
 	RunningStartTime = Now;
