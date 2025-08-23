@@ -6,7 +6,7 @@ void UOverlayWidgetController::Bind()
 	if (!GS) return;
 
 	// 1) 목표 진행도 이벤트 바인딩
-	GS->OnItemsProgress.AddDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
+	GS->OnItemsProgress.AddUniqueDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
 
 	
 	StartTimeCache = GS->RunningStartTime;
@@ -62,16 +62,6 @@ void UOverlayWidgetController::TickUI()
 	if (LastMedal != Medal)
 	{
 		OnMedalChanged.Broadcast(Medal);
-		
-		const UEnum* MedalEnum = StaticEnum<EMedal>();
-		const FString MedalStr = MedalEnum
-			? MedalEnum->GetNameStringByValue(static_cast<int64>(Medal)) // "Gold" 같은 이름만
-			: TEXT("Invalid");
-
-		GEngine->AddOnScreenDebugMessage(
-			/*Key*/-1, /*Time*/3.f, FColor::Blue,
-			FString::Printf(TEXT("Medal: %s"), *MedalStr)
-		);
 		LastMedal = Medal;
 	}
 

@@ -9,6 +9,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UTitleScreenWidget;
+class APlayerMovingOutCharacter;
 
 
 
@@ -45,12 +46,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputAction* ThrowAction;
 
+
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputAction* PauseAction;
-
+	/*
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
-	UInputAction* PressToStartAction;
-
+	UInputAction* ResumeAction;
+	*/
+	
 	void PlayerMove(const FInputActionValue& Value);
 	void Grab();
 	void Release();
@@ -58,13 +62,12 @@ protected:
 	void StopJumping();
 	void ThrowAim();
 	void ThrowRelease();
-	void OnTogglePause();
-	void ShowTitle();
-	void ShowIngameWidget();
 
-	UFUNCTION()
-	void HandleStartRequested();
 
-	UFUNCTION()
-	void HandleRequestNewGame();
+private:
+
+	APlayerMovingOutCharacter* PlayerCharacter;
+
+
+	void HandleESCPressed();
 };

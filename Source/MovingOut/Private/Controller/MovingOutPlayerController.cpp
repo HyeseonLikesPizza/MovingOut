@@ -28,18 +28,21 @@ void AMovingOutPlayerController::BeginPlay()
 			//UI->ShowScreen(EUIScreen::Title);
 		}
 	}
-	
+	// 플레이어 캐릭터 설정
+	PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn());
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	// IMC 설정
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(MappingContext, 0);
 	}
 
+	// Enhanced Input 바인딩
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMovingOutPlayerController::PlayerMove);
@@ -49,15 +52,14 @@ void AMovingOutPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::StopJumping);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowAim);
 		EnhancedInputComponent->BindAction(ThrowAction, ETriggerEvent::Completed, this, &AMovingOutPlayerController::ThrowRelease);
-		//EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::ThrowRelease);
-		//EnhancedInputComponent->BindAction(PressToStartAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::HandleStartRequested);
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &AMovingOutPlayerController::HandleESCPressed);
 	}
 
 }
 
 void AMovingOutPlayerController::PlayerMove(const FInputActionValue& Value)
 {
-	if (APlayerMovingOutCharacter* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->HandleMove(Value);
 	}
@@ -65,7 +67,7 @@ void AMovingOutPlayerController::PlayerMove(const FInputActionValue& Value)
 
 void AMovingOutPlayerController::Grab()
 {
-	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->InteractiveComponent->TryGrab();
 	}
@@ -73,7 +75,7 @@ void AMovingOutPlayerController::Grab()
 
 void AMovingOutPlayerController::Release()
 {
-	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->InteractiveComponent->GrabRelease();
 	}
@@ -81,7 +83,7 @@ void AMovingOutPlayerController::Release()
 
 void AMovingOutPlayerController::Jump()
 {
-	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->Jump();
 	}
@@ -89,7 +91,7 @@ void AMovingOutPlayerController::Jump()
 
 void AMovingOutPlayerController::StopJumping()
 {
-	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->StopJumping();
 	}
@@ -97,7 +99,7 @@ void AMovingOutPlayerController::StopJumping()
 
 void AMovingOutPlayerController::ThrowAim()
 {
-	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->InteractiveComponent->ThrowAim();
 	}
@@ -105,89 +107,21 @@ void AMovingOutPlayerController::ThrowAim()
 
 void AMovingOutPlayerController::ThrowRelease()
 {
-	if (auto* PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn()))
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->InteractiveComponent->ThrowRelease();
 	}
 }
 
-void AMovingOutPlayerController::OnTogglePause()
+void AMovingOutPlayerController::HandleESCPressed()
 {
 	if (!IsLocalController()) return;
 	if (ULocalPlayer* LP = GetLocalPlayer())
 	{
 		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
 		{
-			if (UUserWidget* Pause = UI->GetScreenWidget(EUIScreen::Pause))
-			{
-				if (Pause && Pause->IsInViewport())
-				{
-					UI->ShowScreen(EUIScreen::InGame);
-				}
-				else
-				{
-					UI->ShowScreen(EUIScreen::Pause);
-				}
-			}
-		}
-	}
-}
-
-void AMovingOutPlayerController::ShowTitle()
-{
-	if (!IsLocalController()) return;
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
-		{
-			// Title 위젯 생성
-			UI->ShowScreen(EUIScreen::Title);
-			
-			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(UI->GetCurrentWidget()))
-			{
-				// 델리게이트 구독
-				TitleWidget->OnStartRequested.AddDynamic(this, &AMovingOutPlayerController::HandleStartRequested);
-			}
-			
-		}
-	}
-}
-
-void AMovingOutPlayerController::ShowIngameWidget()
-{
-	if (!IsLocalController()) return;
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
-		{
-			// InGame 위젯 생성
-			UI->ShowScreen(EUIScreen::InGame);
-			UI->BindGameStateSignals();
-		}
-	}
-}
-
-void AMovingOutPlayerController::HandleRequestNewGame()
-{
-	UGameplayStatics::OpenLevel(this, FName("Stage1"));
-}
-
-void AMovingOutPlayerController::HandleStartRequested()
-{
-	UE_LOG(LogTemp, Warning, TEXT("HandleStartRequested Called"));
-	if (!IsLocalController()) return;
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
-		{
-			UI->ShowScreen(EUIScreen::MainMenu);
-
-			// 델리게이트 구독
-			if (UMainMenuScreenWidget* MainMenuWidget = Cast<UMainMenuScreenWidget>(UI->GetCurrentWidget()))
-			{
-				// 새 레벨 열기
-				MainMenuWidget->OnRequestNewGame.AddDynamic(this, &AMovingOutPlayerController::HandleRequestNewGame);
-			}
+			FlushPressedKeys();
+			UI->HandleEscPressed();
 		}
 	}
 }

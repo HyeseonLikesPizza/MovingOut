@@ -3,7 +3,7 @@
 
 UTitleScreenWidget::UTitleScreenWidget(const FObjectInitializer& OI) : Super(OI)
 {
-	bIsFocusable = true;
+	SetIsFocusable(true);
 }
 
 void UTitleScreenWidget::NativeConstruct()
