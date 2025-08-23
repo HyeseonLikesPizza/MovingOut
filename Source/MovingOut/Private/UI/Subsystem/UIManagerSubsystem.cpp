@@ -227,6 +227,9 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 	if (Current.IsValid())
 		Current->RemoveFromParent();
 
+	// 뷰포트에 위젯 추가
+	Target->AddToViewport(0);
+	Current = TWeakObjectPtr<UUserWidget>(Target);
 
 	// 화면별 컨트롤러 주입 (필요한 화면들만)
  	SetupScreenController(Screen, Target);
@@ -236,9 +239,7 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 	BindScreenEvents(Screen, Target);
 	
 
-	// 뷰포트에 위젯 추가
-	Target->AddToViewport(0);
-	Current = TWeakObjectPtr<UUserWidget>(Target);
+	
 
 
 	// 입력 모드 맞추기

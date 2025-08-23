@@ -13,7 +13,7 @@ void UOverlayWidgetController::Bind()
 	
 	
 	// 초기 한번 푸시
-	HandleItemsProgress(GS->ItemsDelivered, GS->PlacedPropsCnt);
+	HandleItemsProgress(GS->GetItemsDelivered(), GS->GetPlacedProps());
 
 	// 2) 타이머 텍스트 갱신(루프 타이머) — 0.1~0.25s 추천
 	if (UWorld* World = GS->GetWorld())
