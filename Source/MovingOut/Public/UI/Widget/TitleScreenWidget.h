@@ -20,6 +20,14 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnStartRequested OnStartRequested;
+
+protected:
+
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	UWidgetAnimation* T_Begin;
+
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	UWidgetAnimation* T_End;
 	
 	
 };

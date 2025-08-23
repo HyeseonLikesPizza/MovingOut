@@ -522,11 +522,8 @@ void UUIManagerSubsystem::ClosePauseModal_Internal()
 			// Pause로 추정되는 위젯을 발견하면 닫고 탈출
 			if (PauseWidgetWeak.IsValid() && Top.Get() == PauseWidgetWeak.Get())
 			{
-				if (UPauseWidget* PauseWidget = Cast<UPauseWidget>(Top.Get()))
-				{
-					Top->RemoveFromParent();
-					ModalStack.Pop();
-				}
+				Top->RemoveFromParent();
+				ModalStack.Pop();
 				break;
 			}
 			else
@@ -550,7 +547,7 @@ void UUIManagerSubsystem::ClosePauseModal_Internal()
 			UUserWidget* InGameW = GetScreenWidget(EUIScreen::InGame);
 			if (InGameW && Current.Get() == InGameW)
 			{
-				SetInputModeGameOnly();
+				ApplyInputModeForScreen(EUIScreen::InGame, InGameW);
 			}
 			else
 			{

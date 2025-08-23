@@ -16,24 +16,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/PauseWidget.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/PauseWidget.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/ABP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/ABP_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Controller/BP_MovingOutPlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Controller/BP_MovingOutPlayerController.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Data/DA_UISettingAsset.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Data/DA_UISettingAsset.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Input.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Input/IMC_Input.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_PauseMenu.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_PauseMenu.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Component/InteractiveComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Component/InteractiveComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Controller/MovingOutPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_MainMenuScreenWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_MainMenuScreenWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_TitleScreen.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_TitleScreen.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/InGameOverlayWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/InGameOverlayWidget.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/MainMenuScreenWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/MainMenuScreenWidget.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/TitleScreenWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/TitleScreenWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/WidgetController/OverlayWidgetController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/WidgetController/OverlayWidgetController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Controller/MovingOutPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Subsystem/UIManagerSubsystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Subsystem/UIManagerSubsystem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/MainMenuScreenWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/MainMenuScreenWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/TitleScreenWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/TitleScreenWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +38,8 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://28" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://30" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://31" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Programs/AutomationTool/Program.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/Core/Public/Containers/Array.h" root0="FORCE_HIGHLIGHTING" />
@@ -92,7 +83,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "C/C++ Project.MovingOut.executor": "Debug",
+    "C/C++ Project.MovingOut.executor": "Run",
     "C/C++ 프로젝트.MovingOut.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -284,7 +275,7 @@
       <workItem from="1755755948161" duration="329000" />
       <workItem from="1755763562747" duration="1598000" />
       <workItem from="1755844376433" duration="6545000" />
-      <workItem from="1755923080374" duration="27465000" />
+      <workItem from="1755923080374" duration="30076000" />
     </task>
     <servers />
   </component>
@@ -313,13 +304,8 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>530</line>
+          <line>528</line>
           <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>542</line>
-          <option name="timeStamp" value="49" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/PauseWidget.cpp</url>
@@ -328,12 +314,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>301</line>
+          <line>302</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>197</line>
+          <line>198</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -343,13 +329,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>230</line>
+          <line>231</line>
           <option name="timeStamp" value="64" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>220</line>
-          <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
