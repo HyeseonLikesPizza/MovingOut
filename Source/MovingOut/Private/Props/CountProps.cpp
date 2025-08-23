@@ -4,6 +4,7 @@
 #include "Props/CountProps.h"
 
 #include "Character/PlayerMovingOutCharacter.h"
+#include "Component/InteractiveComponent.h"
 #include "Components/BoxComponent.h"
 
 
@@ -37,13 +38,32 @@ void ACountProps::PostInitializeComponents()
 	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ACountProps::OnEndOverlap);
 }
 
+void ACountProps::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	/* If player character is grabbing this prop, turn off stencil
+	if (CharacterComponentRef->IsGrabbingSomething())
+	{
+		Mesh->SetRenderCustomDepth(true);
+	}
+	else
+	{
+		Mesh->SetRenderCustomDepth(false);
+	}
+	*/
+}
+
 void ACountProps::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APlayerMovingOutCharacter* Character = Cast<APlayerMovingOutCharacter>(OtherActor);
 	if (Character)
 	{
 		Mesh->SetRenderCustomDepth(true);
+
+		//CharacterComponentRef = Cast<UInteractiveComponent>(Character->InteractiveComponent);
+		//IsValid(CharacterComponentRef);
 	}
 }
 

@@ -18,6 +18,8 @@ public:
 	ACountProps();
 
 	virtual void PostInitializeComponents() override;
+
+	virtual void Tick(float DeltaTime) override;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -34,5 +36,8 @@ public:
 	void ChangeMaterial(UMaterial* NewMaterial);
 	// To default material
 	void SetDefaultMaterial();
+
+	// Reference
+	//class UInteractiveComponent* CharacterComponentRef;
 	
 };
