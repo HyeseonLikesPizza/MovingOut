@@ -5,6 +5,9 @@
 #include "Subsystems/LocalPlayerSubsystem.h"
 #include "UIManagerSubsystem.generated.h"
 
+class UTitleScreenWidget;
+class UMainMenuScreenWidget;
+
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
 {
@@ -55,6 +58,17 @@ public:
 	// 제한적 등록/교체(필요할 때만 열기)
 	UFUNCTION(BlueprintCallable, Category="UI")
 	void RegisterControllerClass(EUIScreen Screen, TSubclassOf<UBaseWidgetController> Class);
+	void ApplyInputModeForScreen(EUIScreen Screen, UUserWidget* Target);
+
+	// 델리게이트 바인딩
+	void WireTitleScreen(UTitleScreenWidget* Widget);
+	void WireMainMenu(UMainMenuScreenWidget* Widget);
+
+	UFUNCTION()
+	void HandleStartRequested(); // Title -> MainMenu
+
+	UFUNCTION()
+	void HandleRequestNewGame(); // MainMenu -> Stage1
 
 	// 진입/전환 API
 	UFUNCTION(BlueprintCallable)
@@ -121,4 +135,6 @@ private:
 
 	UUserWidget* CreateIfNeeded(EUIScreen Screen);
 	TSubclassOf<UUserWidget> ResolveClass(EUIScreen Screen) const;
+
+	EUIScreen InitialScreen;
 };

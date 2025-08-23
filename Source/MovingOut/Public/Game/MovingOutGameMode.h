@@ -34,11 +34,6 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Medal")
 	TObjectPtr<UURankTimeConfig> MedalThresholdDA;
-
-	
-	void SetInitialScreen(EUIScreen InScreen);
-	EUIScreen GetInitialScreen() const;
-	
 	
 
 	// 흐름 제어
@@ -61,7 +56,6 @@ protected:
 
 private:
 	FTimerHandle TimeoutHandle;
-	EUIScreen InitialScreen;
 
 	// 유틸
 	AMovingOutGameState* GetMGameState() const;

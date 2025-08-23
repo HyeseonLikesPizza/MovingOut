@@ -12,7 +12,7 @@
 
 AMovingOutPlayerController::AMovingOutPlayerController()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AMovingOutPlayerController::BeginPlay()

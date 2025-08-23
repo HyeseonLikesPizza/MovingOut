@@ -15,6 +15,7 @@ void UTitleScreenWidget::NativeConstruct()
 FReply UTitleScreenWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
 	const FKey Key = InKeyEvent.GetKey();
+	UE_LOG(LogTemp,Warning,TEXT("Native On Key Down"));
 
 	if (Key == EKeys::SpaceBar)
 	{

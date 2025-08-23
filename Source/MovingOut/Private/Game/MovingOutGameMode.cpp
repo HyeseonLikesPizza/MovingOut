@@ -17,8 +17,7 @@ AMovingOutGameMode::AMovingOutGameMode()
 	{
 		MedalThresholdDA = MedalSettingsBP.Object;
 	}
-
-	InitialScreen = EUIScreen::Title;
+	
 }
 
 void AMovingOutGameMode::BeginPlay()
@@ -47,15 +46,6 @@ void AMovingOutGameMode::StartPlay()
 	StartMatchFlow();
 }
 
-void AMovingOutGameMode::SetInitialScreen(EUIScreen InScreen)
-{
-	InitialScreen = InScreen;
-}
-
-EUIScreen AMovingOutGameMode::GetInitialScreen() const
-{
-	return InitialScreen;
-}
 
 void AMovingOutGameMode::StartMatchFlow()
 {

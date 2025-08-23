@@ -13,6 +13,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Widget/InGameOverlayWidget.h"
+#include "UI/Widget/MainMenuScreenWidget.h"
 #include "UI/Widget/TitleScreenWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 
@@ -31,6 +32,9 @@ UUIManagerSubsystem::UUIManagerSubsystem()
 	// Controller Class Map 추가
 
 	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
+
+	// InitialScreen 초기화
+	InitialScreen = EUIScreen::Title;
 }
 
 UUserWidget* UUIManagerSubsystem::GetCurrentWidget() const
@@ -72,6 +76,58 @@ UBaseWidgetController* UUIManagerSubsystem::GetController(EUIScreen Screen)
 void UUIManagerSubsystem::RegisterControllerClass(EUIScreen Screen, TSubclassOf<UBaseWidgetController> Class)
 {
 	ControllerClassMap.Add(Screen, Class);
+}
+
+void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget* Target)
+{
+	switch (Screen)
+	{
+	case EUIScreen::Title:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::MainMenu:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::InGame:
+		SetInputModeGameOnly();
+		break;
+	case EUIScreen::Pause:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::Result:
+		SetInputModeUIOnly(Target);
+		break;
+	}
+}
+
+void UUIManagerSubsystem::WireTitleScreen(UTitleScreenWidget* Widget)
+{
+	Widget->OnStartRequested.RemoveAll(this);
+	Widget->OnStartRequested.AddDynamic(this, &UUIManagerSubsystem::HandleStartRequested);
+}
+
+void UUIManagerSubsystem::WireMainMenu(UMainMenuScreenWidget* Widget)
+{
+	Widget->OnRequestNewGame.RemoveAll(this);
+	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+}
+
+void UUIManagerSubsystem::HandleStartRequested()
+{
+	ShowScreen(EUIScreen::MainMenu);
+}
+
+void UUIManagerSubsystem::HandleRequestNewGame()
+{
+	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
+	{
+		if (AMovingOutGameMode* GM = Cast<AMovingOutGameMode>(UGameplayStatics::GetGameMode(PC)))
+		{
+			InitialScreen = EUIScreen::InGame;
+		}
+		
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("Stage1")));
+	}
 }
 
 void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
@@ -120,6 +176,32 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 		break;
 	}
 
+	// 델리게이트 구독
+
+	switch (Screen)
+	{
+		case EUIScreen::Title:
+			{
+				if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(Target))
+				{
+					WireTitleScreen(TitleWidget);
+				}
+				break;
+			}
+		case EUIScreen::MainMenu:
+			{
+				if (UMainMenuScreenWidget* MainMenuWidget = Cast<UMainMenuScreenWidget>(Target))
+				{
+					WireMainMenu(MainMenuWidget);
+				}
+				break;
+			}
+		case EUIScreen::InGame:
+			{
+				break;
+			}
+	}
+	
 
 	// 뷰포트에 위젯 추가
 	Target->AddToViewport(0);
@@ -127,24 +209,10 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 
 
 	// 입력 모드 맞추기
-	switch (Screen)
-	{
-	case EUIScreen::Title:
-		SetInputModeUIOnly(Target);
-		break;
-	case EUIScreen::MainMenu:
-		SetInputModeUIOnly(Target);
-		break;
-	case EUIScreen::InGame:
-		SetInputModeGameOnly();
-		break;
-	case EUIScreen::Pause:
-		SetInputModeUIOnly(Target);
-		break;
-	case EUIScreen::Result:
-		SetInputModeUIOnly(Target);
-		break;
-	}
+	ApplyInputModeForScreen(Screen, Target);
+
+	
+	
 }
 
 UUserWidget* UUIManagerSubsystem::GetScreenWidget(EUIScreen Screen) const
@@ -192,37 +260,7 @@ void UUIManagerSubsystem::ApplyInitialUI()
 	
 	if (AMovingOutGameMode* GM = Cast<AMovingOutGameMode>(UGameplayStatics::GetGameMode(GetPC())))
 	{
-		Screen = GM->GetInitialScreen();
-
-		// 기존 화면 제거
-		if (Current.Get())
-		{
-			Current.Get()->RemoveFromParent();
-			Current = nullptr;
-		}
-
-		// 새 화면 생성
-		TSubclassOf<UUserWidget> Cls = nullptr;
-		switch (Screen)
-		{
-		case EUIScreen::Title:
-			Cls = TitleScreenClass;
-			break;
-		case EUIScreen::InGame:
-			Cls = OverlayHUDClass;
-			BindGameStateSignals();
-			break;
-		case EUIScreen::Result:
-			break;
-		}
-
-		if (Cls)
-		{
-			Current = CreateWidget<UUserWidget>(GetPC(), Cls);
-			if (Current.Get())
-				Current->AddToViewport();
-		}
-		
+		ShowScreen(InitialScreen);
 	}
 }
 
