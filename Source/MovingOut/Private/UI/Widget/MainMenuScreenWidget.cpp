@@ -43,6 +43,7 @@ void UMainMenuScreenWidget::NativeDestruct()
 void UMainMenuScreenWidget::HandleNewGameClicked()
 {
 	PlayAnimation(M_End);
+	PlayAnimation(M_Unhov_NewGame);
 	
 	FTimerHandle Th;
 	GetWorld()->GetTimerManager().SetTimer(
@@ -51,7 +52,7 @@ void UMainMenuScreenWidget::HandleNewGameClicked()
 		{
 			OnRequestNewGame.Broadcast();
 		},
-		0.75f,   // 대기 초
+		2.f,   // 대기 초
 		false   // 반복 여부
 	);
 	
