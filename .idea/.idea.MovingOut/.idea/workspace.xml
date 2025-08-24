@@ -17,6 +17,14 @@
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/ResultLeve.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/ResultLeve.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/SelectStageMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/SelectStageMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/EndGameWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/EndGameWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Game/MovingOutGameState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Game/MovingOutGameState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/EndGameWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/EndGameWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +38,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://7" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://14" root0="FORCE_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://15" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Developer/AITestSuite/Private/BehaviorTree/TestBTTask_TimerBasedLatent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Developer/AutomationController/Private/AutomationControllerManager.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Developer/AutomationWindow/Private/SAutomationWindow.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -59,6 +68,7 @@
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectPtr.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/UObjectBaseUtility.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/Engine/Classes/Engine/World.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/GameModeBase.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/Engine/Public/Subsystems/SubsystemCollection.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Program Files (x86)/UE_5.5/Engine/Source/Runtime/Experimental/JsonObjectGraph/Private/PrettyJsonWriter.h" root0="FORCE_HIGHLIGHTING" />
@@ -327,7 +337,7 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>656</line>
+          <line>657</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -341,9 +351,19 @@
           <option name="timeStamp" value="71" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp</url>
+          <line>138</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>354</line>
-          <option name="timeStamp" value="78" />
+          <line>198</line>
+          <option name="timeStamp" value="81" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
+          <line>195</line>
+          <option name="timeStamp" value="82" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
