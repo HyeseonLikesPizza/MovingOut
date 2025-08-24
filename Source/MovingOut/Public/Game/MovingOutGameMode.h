@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "UI/Subsystem/UIManagerSubsystem.h"
 #include "MovingOutGameMode.generated.h"
 
 class AMovingOutGameState;
@@ -34,7 +35,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Medal")
 	TObjectPtr<UURankTimeConfig> MedalThresholdDA;
 	
-	
 
 	// 흐름 제어
 	UFUNCTION(BlueprintCallable, Category = "Score|Flow")
@@ -56,7 +56,6 @@ protected:
 
 private:
 	FTimerHandle TimeoutHandle;
-
 
 	// 유틸
 	AMovingOutGameState* GetMGameState() const;

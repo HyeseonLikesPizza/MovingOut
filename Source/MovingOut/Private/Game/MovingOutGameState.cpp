@@ -15,14 +15,38 @@ void AMovingOutGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AMovingOutGameState, bTimerRunning);
 	DOREPLIFETIME(AMovingOutGameState, bPlayStopped);
 	DOREPLIFETIME(AMovingOutGameState, FinalElapsedSeconds);
+	DOREPLIFETIME(AMovingOutGameState, ItemsDelivered);
+	DOREPLIFETIME(AMovingOutGameState, PlacedPropsCnt);
 }
 
+
+void AMovingOutGameState::SetItemsDelivered(int32 InDelivered)
+{
+	ItemsDelivered = InDelivered;
+	OnItemsProgress.Broadcast(ItemsDelivered, PlacedPropsCnt);
+}
+
+int32 AMovingOutGameState::GetItemsDelivered() const
+{
+	return ItemsDelivered;
+}
+
+void AMovingOutGameState::SetPlacedProps(int32 InPlacedProps)
+{
+	PlacedPropsCnt = InPlacedProps;
+	OnItemsProgress.Broadcast(ItemsDelivered, PlacedPropsCnt);
+}
+
+int32 AMovingOutGameState::GetPlacedProps() const
+{
+	return PlacedPropsCnt;
+}
 
 void AMovingOutGameState::InitializePlacedPropsCnt()
 {
 	TArray<AActor*> Arr;
 	UGameplayStatics::GetAllActorsOfClass(this, ACountProps::StaticClass(), Arr);
-	PlacedPropsCnt = Arr.Num();
+	SetPlacedProps(Arr.Num());
 }
 
 void AMovingOutGameState::StartMatchTimer()
@@ -30,8 +54,6 @@ void AMovingOutGameState::StartMatchTimer()
 	if (!HasAuthority()) return;
 
 	const float Now = GetServerWorldTimeSeconds();
-
-	UE_LOG(LogTemp,Warning,TEXT("PropsContainer Num : %d"), PlacedPropsCnt);
 	
 	AccumulatedSeconds = 0.f;
 	RunningStartTime = Now;

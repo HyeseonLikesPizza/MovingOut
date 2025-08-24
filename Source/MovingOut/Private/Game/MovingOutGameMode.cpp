@@ -17,6 +17,7 @@ AMovingOutGameMode::AMovingOutGameMode()
 	{
 		MedalThresholdDA = MedalSettingsBP.Object;
 	}
+	
 }
 
 void AMovingOutGameMode::BeginPlay()
@@ -44,6 +45,7 @@ void AMovingOutGameMode::StartPlay()
 	
 	StartMatchFlow();
 }
+
 
 void AMovingOutGameMode::StartMatchFlow()
 {

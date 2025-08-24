@@ -17,6 +17,7 @@ UInteractiveComponent::UInteractiveComponent()
 
 void UInteractiveComponent::BeginPlay()
 {
+	Super::BeginPlay();
 	Character = Cast<AMovingOutCharacter>(GetOwner());
 	AnimInstance = Cast<UPlayerAnimInstance>(Character->GetMesh()->GetAnimInstance());
 	if (Character) AddTickPrerequisiteActor(Character);

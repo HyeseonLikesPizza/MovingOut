@@ -11,9 +11,13 @@
 #include "Game/MovingOutGameMode.h"
 #include "UI/WidgetController/BaseWidgetController.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/Widget/InGameOverlayWidget.h"
+#include "UI/Widget/MainMenuScreenWidget.h"
+#include "UI/Widget/PauseWidget.h"
 #include "UI/Widget/TitleScreenWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "UI/Widget/PauseWidget.h"
 
 
 UUIManagerSubsystem::UUIManagerSubsystem()
@@ -30,6 +34,9 @@ UUIManagerSubsystem::UUIManagerSubsystem()
 	// Controller Class Map 추가
 
 	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
+
+	// InitialScreen 초기화
+	InitialScreen = EUIScreen::Title;
 }
 
 UUserWidget* UUIManagerSubsystem::GetCurrentWidget() const
@@ -73,18 +80,106 @@ void UUIManagerSubsystem::RegisterControllerClass(EUIScreen Screen, TSubclassOf<
 	ControllerClassMap.Add(Screen, Class);
 }
 
-void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
+void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget* Target)
 {
-	UUserWidget* Target = CreateIfNeeded(Screen);
-	if (!Target) return;
+	switch (Screen)
+	{
+	case EUIScreen::Title:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::MainMenu:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::InGame:
+		SetInputModeGameAndUI();
+		break;
+	case EUIScreen::Pause:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::Result:
+		SetInputModeUIOnly(Target);
+		break;
+	}
+}
 
+void UUIManagerSubsystem::WireTitleScreen(UTitleScreenWidget* Widget)
+{
+	Widget->OnStartRequested.RemoveAll(this);
+	Widget->OnStartRequested.AddDynamic(this, &UUIManagerSubsystem::HandleStartRequested);
+}
 
-	// 기존 메인 화면 내리기
-	if (Current.IsValid())
-		Current->RemoveFromParent();
+void UUIManagerSubsystem::WireMainMenu(UMainMenuScreenWidget* Widget)
+{
+	Widget->OnRequestNewGame.RemoveAll(this);
+	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+}
 
+void UUIManagerSubsystem::WirePauseMenu(UPauseWidget* Widget)
+{
+	Widget->OnRequestResumeGame.RemoveAll(this);
+	Widget->OnRequestResumeGame.AddDynamic(this, &UUIManagerSubsystem::HandleResumeGame);
 
-	// 화면별 컨트롤러 주입 (필요한 화면들만)
+	Widget->OnRequestNewGame.RemoveAll(this);
+	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+}
+
+void UUIManagerSubsystem::HandleStartRequested()
+{
+	ShowScreen(EUIScreen::MainMenu);
+}
+
+void UUIManagerSubsystem::HandleRequestNewGame()
+{
+	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
+	{
+		InitialScreen = EUIScreen::InGame;
+		ControllerCache.Empty();
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("Stage1")));
+	}
+}
+
+void UUIManagerSubsystem::HandleResumeGame()
+{
+	ResumeFromPause();
+}
+
+void UUIManagerSubsystem::BindScreenEvents(EUIScreen Screen, UUserWidget* Target)
+{
+	switch (Screen)
+	{
+	case EUIScreen::Title:
+		{
+			if (UTitleScreenWidget* TitleWidget = Cast<UTitleScreenWidget>(Target))
+			{
+				WireTitleScreen(TitleWidget);
+			}
+			break;
+		}
+	case EUIScreen::MainMenu:
+		{
+			if (UMainMenuScreenWidget* MainMenuWidget = Cast<UMainMenuScreenWidget>(Target))
+			{
+				WireMainMenu(MainMenuWidget);
+			}
+			break;
+		}
+	case EUIScreen::InGame:
+		{
+			break;
+		}
+	case EUIScreen::Pause:
+		{
+			if (UPauseWidget* PauseWidget = Cast<UPauseWidget>(Target))
+			{
+				WirePauseMenu(PauseWidget);
+			}
+			break;
+		}
+	}
+}
+
+void UUIManagerSubsystem::SetupScreenController(EUIScreen Screen, UUserWidget* Target)
+{
 	switch (Screen)
 	{
 	case EUIScreen::Title:
@@ -115,35 +210,43 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 			// break;
 		}
 	case EUIScreen::Pause:
+		// Pause Widget은 위젯 컨트롤러 없음
+		break;
 	default:
 		break;
 	}
+}
 
+void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
+{
+	UUserWidget* Target = CreateIfNeeded(Screen);
+	if (!Target) return;
+	CurrentScreen = Screen;
+
+	// 기존 메인 화면 내리기
+	if (Current.IsValid())
+		Current->RemoveFromParent();
 
 	// 뷰포트에 위젯 추가
 	Target->AddToViewport(0);
 	Current = TWeakObjectPtr<UUserWidget>(Target);
 
+	// 화면별 컨트롤러 주입 (필요한 화면들만)
+ 	SetupScreenController(Screen, Target);
+
+	// 델리게이트 구독
+
+	BindScreenEvents(Screen, Target);
+	
+
+	
+
 
 	// 입력 모드 맞추기
-	switch (Screen)
-	{
-	case EUIScreen::Title:
-		SetInputModeUIOnly(Target);
-		break;
-	case EUIScreen::MainMenu:
-		SetInputModeUIOnly(Target);
-		break;
-	case EUIScreen::InGame:
-		SetInputModeGameOnly();
-		break;
-	case EUIScreen::Pause:
-		SetInputModeUIOnly(Target);
-		break;
-	case EUIScreen::Result:
-		SetInputModeUIOnly(Target);
-		break;
-	}
+	ApplyInputModeForScreen(Screen, Target);
+
+	
+	
 }
 
 UUserWidget* UUIManagerSubsystem::GetScreenWidget(EUIScreen Screen) const
@@ -153,17 +256,26 @@ UUserWidget* UUIManagerSubsystem::GetScreenWidget(EUIScreen Screen) const
 	return nullptr;
 }
 
-void UUIManagerSubsystem::ShowModal(TSubclassOf<UUserWidget> ModalClass, int32 ZOrder)
+void UUIManagerSubsystem::ShowModal(EUIScreen Screen, int32 ZOrder)
 {
-	if (!ModalClass) return;
 	APlayerController* PC = GetPC();
 	if (!PC) return;
-	UUserWidget* Modal = CreateWidget<UUserWidget>(PC, ModalClass);
+
+	// 모달 위젯 생성
+	UUserWidget* Modal = CreateIfNeeded(EUIScreen::Pause);
 	if (!Modal) return;
 
+	// 델리게이트 바인드
+	BindScreenEvents(Screen, Modal);
+
+	// 뷰포트에 추가
 	Modal->AddToViewport(ZOrder);
+
+	// 모달 스택에 추가
 	ModalStack.Push(Modal);
-	UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(PC, Modal);
+
+	// 입력모드 설정
+	ApplyInputModeForScreen(Screen, Modal);
 }
 
 void UUIManagerSubsystem::CloseTopModal()
@@ -183,6 +295,42 @@ void UUIManagerSubsystem::CloseTopModal()
 	// 모달이 없어졌다면 메인 화면 포커스로 복귀
 	if (ModalStack.IsEmpty() && Current.IsValid())
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetPC(), Current.Get());
+}
+
+void UUIManagerSubsystem::TogglePause()
+{
+	if (!GetWorld()) return;
+
+	if (!bPauseOpen)
+	{
+		OpenPauseModal_Internal();
+	}
+	else
+	{
+		ClosePauseModal_Internal();
+	}
+}
+
+void UUIManagerSubsystem::ResumeFromPause()
+{
+	if (bPauseOpen)
+	{
+		ClosePauseModal_Internal();
+	}
+}
+
+void UUIManagerSubsystem::HandleEscPressed()
+{
+	TogglePause();
+}
+
+
+void UUIManagerSubsystem::ApplyInitialUI()
+{
+	if (AMovingOutGameMode* GM = Cast<AMovingOutGameMode>(UGameplayStatics::GetGameMode(GetPC())))
+	{
+		ShowScreen(InitialScreen);
+	}
 }
 
 void UUIManagerSubsystem::BindGameStateSignals()
@@ -267,6 +415,16 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		MainMenuScreenClass = UISettings->MainMenuWidgetClass.LoadSynchronous();
 	}
+
+	if (!PauseMenuClass && UISettings && !UISettings->PauseMenuWidgetClass.IsNull())
+	{
+		PauseMenuClass = UISettings->PauseMenuWidgetClass.LoadSynchronous();
+	}
+
+	if (!ResultScreenClass && UISettings && !UISettings->ResultWidgetClass.IsNull())
+	{
+		ResultScreenClass = UISettings->ResultWidgetClass.LoadSynchronous();
+	}
 }
 
 void UUIManagerSubsystem::Deinitialize()
@@ -320,4 +478,83 @@ TSubclassOf<UUserWidget> UUIManagerSubsystem::ResolveClass(EUIScreen Screen) con
 		return ResultScreenClass;
 	}
 	return nullptr;
+}
+
+void UUIManagerSubsystem::OpenPauseModal_Internal()
+{
+	if (!PauseMenuClass) return;
+	if (bPauseOpen) return;
+	
+	// 인게임 상태에서만 열기 
+	if (!Current->IsA<UInGameOverlayWidget>()) return;
+	
+	
+	// 실제 게임 일시정지
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+	// 모달 위젯 생성 + 스택에 Push (기존 유틸 재사용)
+	ScreenCache.Add(EUIScreen::InGame, Current);
+	ShowModal(EUIScreen::Pause, /*ZOrder*/ 1000);
+
+	// 캐시(중복생성 방지)
+	if (!ModalStack.IsEmpty())
+	{
+		PauseWidgetWeak = ModalStack.Top(); // 최상단이 방금 띄운 Pause
+	}
+
+	bPauseOpen = true;
+}
+
+void UUIManagerSubsystem::ClosePauseModal_Internal()
+{
+	// 스택 최상단이 Pause면 닫기
+	if (bPauseOpen)
+	{
+		// 혹시 Pause가 아닌 게 올라와 있을 수도 있으니 안전하게 탐색
+		while (!ModalStack.IsEmpty())
+		{
+			TWeakObjectPtr<UUserWidget> Top = ModalStack.Top();
+			if (!Top.IsValid())
+			{
+				ModalStack.Pop();
+				continue;
+			}
+
+			// Pause로 추정되는 위젯을 발견하면 닫고 탈출
+			if (PauseWidgetWeak.IsValid() && Top.Get() == PauseWidgetWeak.Get())
+			{
+				Top->RemoveFromParent();
+				ModalStack.Pop();
+				break;
+			}
+			else
+			{
+				// 다른 모달이 위에 있다면 그것부터 닫음
+				Top->RemoveFromParent();
+				ModalStack.Pop();
+			}
+		}
+
+		PauseWidgetWeak = nullptr;
+		bPauseOpen = false;
+
+		// 게임 재개
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+		// 입력 모드 복귀: 인게임이면 GameOnly로
+		if (ScreenCache.Contains(EUIScreen::InGame))
+		{
+			// 인게임 위젯인지 확인
+			UUserWidget* InGameW = GetScreenWidget(EUIScreen::InGame);
+			if (InGameW && Current.Get() == InGameW)
+			{
+				ApplyInputModeForScreen(EUIScreen::InGame, InGameW);
+			}
+			else
+			{
+				// 안전장치 (혹시 다른 화면이면 기존 로직대로)
+				UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(GetPC(), Current.Get());
+			}
+		}
+	}
 }

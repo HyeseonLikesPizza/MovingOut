@@ -50,11 +50,13 @@ public:
 	//UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
 	//int32 ItemsTotal = 14;
 
-	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	int32 ItemsDelivered = -1;
+	void SetItemsDelivered(int32 InDelivered);
+	int32 GetItemsDelivered() const;
 
-	UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	int32 PlacedPropsCnt = -1;
+	void SetPlacedProps(int32 InPlacedProps);
+	int32 GetPlacedProps() const;
+
+	
 
 	void InitializePlacedPropsCnt();
 
@@ -93,11 +95,12 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 
-
 private:
-	UFUNCTION()
-	void OnRep_ItemsProgress()
-	{
-		OnItemsProgress.Broadcast(ItemsDelivered, PlacedPropsCnt);
-	}
+	UPROPERTY(Replicated)
+	int32 ItemsDelivered = 0;
+
+	UPROPERTY(Replicated)
+	int32 PlacedPropsCnt = -1;
+
+
 };

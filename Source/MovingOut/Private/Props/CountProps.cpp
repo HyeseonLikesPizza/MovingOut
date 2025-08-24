@@ -42,11 +42,16 @@ void ACountProps::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// If player character is grabbing this prop, turn off stencil
-	if (CharacterComponentRef)
+	/* If player character is grabbing this prop, turn off stencil
+	if (CharacterComponentRef->IsGrabbingSomething())
 	{
-		
+		Mesh->SetRenderCustomDepth(true);
 	}
+	else
+	{
+		Mesh->SetRenderCustomDepth(false);
+	}
+	*/
 }
 
 void ACountProps::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -57,8 +62,8 @@ void ACountProps::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		Mesh->SetRenderCustomDepth(true);
 
-		CharacterComponentRef = Cast<UInteractiveComponent>(Character->InteractiveComponent);
-		IsValid(CharacterComponentRef);
+		//CharacterComponentRef = Cast<UInteractiveComponent>(Character->InteractiveComponent);
+		//IsValid(CharacterComponentRef);
 	}
 }
 

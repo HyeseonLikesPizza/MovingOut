@@ -60,7 +60,7 @@ void APropsGoalZone::NotifyActorBeginOverlap(AActor* OtherActor)
 		InProps->ChangeMaterial(Highlight);
 		if (AMovingOutGameState* GS = GetWorld()->GetGameState<AMovingOutGameState>())
 		{
-			GS->ItemsDelivered++;
+			GS->SetItemsDelivered(GS->GetItemsDelivered()+1);
 		}
 		TotalProps++;
 
@@ -78,7 +78,7 @@ void APropsGoalZone::NotifyActorEndOverlap(AActor* OtherActor)
 		InProps->SetDefaultMaterial();
 		if (AMovingOutGameState* GS = GetWorld()->GetGameState<AMovingOutGameState>())
 		{
-			GS->ItemsDelivered--;
+			GS->SetItemsDelivered(GS->GetItemsDelivered()-1);
 		}
 		TotalProps--;
 

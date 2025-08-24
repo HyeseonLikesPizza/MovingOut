@@ -6,14 +6,14 @@ void UOverlayWidgetController::Bind()
 	if (!GS) return;
 
 	// 1) 목표 진행도 이벤트 바인딩
-	GS->OnItemsProgress.AddDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
+	GS->OnItemsProgress.AddUniqueDynamic(this, &UOverlayWidgetController::HandleItemsProgress);
 
 	
 	StartTimeCache = GS->RunningStartTime;
 	
 	
 	// 초기 한번 푸시
-	HandleItemsProgress(GS->ItemsDelivered, GS->PlacedPropsCnt);
+	HandleItemsProgress(GS->GetItemsDelivered(), GS->GetPlacedProps());
 
 	// 2) 타이머 텍스트 갱신(루프 타이머) — 0.1~0.25s 추천
 	if (UWorld* World = GS->GetWorld())
@@ -62,16 +62,6 @@ void UOverlayWidgetController::TickUI()
 	if (LastMedal != Medal)
 	{
 		OnMedalChanged.Broadcast(Medal);
-		
-		const UEnum* MedalEnum = StaticEnum<EMedal>();
-		const FString MedalStr = MedalEnum
-			? MedalEnum->GetNameStringByValue(static_cast<int64>(Medal)) // "Gold" 같은 이름만
-			: TEXT("Invalid");
-
-		GEngine->AddOnScreenDebugMessage(
-			/*Key*/-1, /*Time*/3.f, FColor::Blue,
-			FString::Printf(TEXT("Medal: %s"), *MedalStr)
-		);
 		LastMedal = Medal;
 	}
 

@@ -14,7 +14,6 @@ void UInGameOverlayWidget::SetWidgetController(UOverlayWidgetController* InWC)
 		WC->OnObjectiveChanged.RemoveDynamic(this, &UInGameOverlayWidget::HandleObjective);
 		WC->OnMedalChanged.RemoveDynamic(this, &UInGameOverlayWidget::HandleMedal);
 		WC->OnTimeProgressChanged.RemoveDynamic(this, &UInGameOverlayWidget::UpdateTimeProgressBar);
-		WC->OnMedalChanged.RemoveDynamic(this, &UInGameOverlayWidget::HandleMedal);
 	}
 
 	WC = InWC;
@@ -23,7 +22,6 @@ void UInGameOverlayWidget::SetWidgetController(UOverlayWidgetController* InWC)
 	if (WC || !WC->OnObjectiveChanged.IsBound()) WC->OnObjectiveChanged.AddDynamic(this, &UInGameOverlayWidget::HandleObjective);
 	if (WC || !WC->OnMedalChanged.IsBound()) WC->OnMedalChanged.AddDynamic(this, &UInGameOverlayWidget::HandleMedal);
 	if (WC || !WC->OnTimeProgressChanged.IsBound()) WC->OnTimeProgressChanged.AddDynamic(this, &UInGameOverlayWidget::UpdateTimeProgressBar);
-	if (WC || !WC->OnTimeProgressChanged.IsBound()) WC->OnMedalChanged.AddDynamic(this, &UInGameOverlayWidget::HandleMedal);
 }
 
 void UInGameOverlayWidget::NativeDestruct()
@@ -34,7 +32,6 @@ void UInGameOverlayWidget::NativeDestruct()
 		WC->OnObjectiveChanged.RemoveDynamic(this, &UInGameOverlayWidget::HandleObjective);
 		WC->OnMedalChanged.RemoveDynamic(this, &UInGameOverlayWidget::HandleMedal);
 		WC->OnTimeProgressChanged.RemoveDynamic(this, &UInGameOverlayWidget::UpdateTimeProgressBar);
-		WC->OnMedalChanged.RemoveDynamic(this, &UInGameOverlayWidget::HandleMedal);
 	}
 	Super::NativeDestruct();
 }
