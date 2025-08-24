@@ -24,10 +24,16 @@ public:
 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Car")
-	AActor* SplineActor;
+	USplineComponent* TargetSpline;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Car")
-	float MoveSpeed = 3000.0f; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Car", meta = (ClampMin = "0.0"))
+	float ThrottleForce = 500000.0f;
+
+	// 회전의 민첩함을 조절하는 변수를 추가합니다.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Car", meta = (ClampMin = "0.0"))
+	float SteeringStiffness = 150.0f;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* CarMesh; 
