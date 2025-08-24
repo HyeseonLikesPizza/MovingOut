@@ -6,6 +6,8 @@ void USelectStageWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	UE_LOG(LogTemp, Warning, TEXT("Select Stage Widget Created"));
+
 	FTimerHandle Timer;
 	GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
 	{
