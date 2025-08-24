@@ -8,14 +8,19 @@
 class UTitleScreenWidget;
 class UMainMenuScreenWidget;
 class UPauseWidget;
+class UIntroWidget;
+class USelectStageWidget;
 
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
 {
 	None,
 	Title,
-	Loading,
 	MainMenu,
+	Loading,
+	Intro,
+	SelectStage,
+	StageInfo,
 	InGame,
 	Pause,
 	Result
@@ -48,12 +53,23 @@ public:
 	void WireTitleScreen(UTitleScreenWidget* Widget);
 	void WireMainMenu(UMainMenuScreenWidget* Widget);
 	void WirePauseMenu(UPauseWidget* Widget);
+	void WireIntro(UIntroWidget* Widget);
+	void WireSelectStage(USelectStageWidget* Widget);
 
 	UFUNCTION()
 	void HandleStartRequested(); // Title -> MainMenu
 
 	UFUNCTION()
 	void HandleRequestNewGame(); // MainMenu -> Stage1
+
+	UFUNCTION()
+	void HandleRequestIntro(); // MainMenu -> Intro
+
+	UFUNCTION()
+	void HandleRequestSelectStage(); // Intro -> SelectStage
+
+	UFUNCTION()
+	void HandleRequestStageInfo(); // [임시] SelectStage 10초 뒤 -> StageInfo 위젯 팝업
 
 	UFUNCTION()
 	void HandleResumeGame();
@@ -85,7 +101,7 @@ public:
 	void HandleEscPressed();
 
 
-	// 레벨 오픈 시 게임 모드의 Initial Screen에 따라 UI를 띄움
+	// 레벨 오픈 시 Initial Screen에 따라 UI를 띄움
 	void ApplyInitialUI();
 	
 
@@ -122,6 +138,15 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> MainMenuScreenClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> IntroWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> SelectStageWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> StageInfoWidgetClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> OverlayHUDClass;

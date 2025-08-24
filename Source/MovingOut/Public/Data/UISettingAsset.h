@@ -17,6 +17,15 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSoftClassPtr<UUserWidget> MainMenuWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<UUserWidget> IntroWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<UUserWidget> SelectStageWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<UUserWidget> StageInfoWidgetClass;
 	
 	UPROPERTY(EditAnywhere)
 	TSoftClassPtr<UUserWidget> OverlayHUDClass;
