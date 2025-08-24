@@ -69,7 +69,7 @@ void AMovingOutGameState::OnRep_PlayStopped()
 	
 	if (bPlayStopped)
 	{
-		OnMatchStopped.Broadcast(bVictory, ResultMedal, FinalElapsedSeconds);
+		OnMatchStopped.Broadcast();
 	}
 }
 
@@ -130,7 +130,7 @@ void AMovingOutGameState::StopMatchTimer()
 
 
 	// 서버에서 브로드캐스트
-	OnMatchStopped.Broadcast(bVictory, ResultMedal, FinalElapsedSeconds);
+	OnMatchStopped.Broadcast();
 
 }
 

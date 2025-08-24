@@ -74,6 +74,9 @@ public:
 	void HandleRequestStageInfo(); // [임시] SelectStage 10초 뒤 -> StageInfo 위젯 팝업
 
 	UFUNCTION()
+	void HandleMatchStopped(); // InGame 게임 종료 시 -> Result Widget
+
+	UFUNCTION()
 	void HandleResumeGame();
 	void BindScreenEvents(EUIScreen Screen, UUserWidget* Target);
 	void SetupScreenController(EUIScreen Screen, UUserWidget* Target);

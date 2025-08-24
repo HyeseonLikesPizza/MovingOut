@@ -8,7 +8,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemsProgress, int32, Remaining, int32, Total);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnMatchStopped, bool, bVictory, EMedal, ResultMedal, float, FinalElapsedSeconds);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMatchStopped);
 
 UCLASS()
 class MOVINGOUT_API AMovingOutGameState : public AGameStateBase

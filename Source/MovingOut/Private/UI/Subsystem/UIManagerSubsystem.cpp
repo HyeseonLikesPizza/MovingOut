@@ -191,6 +191,16 @@ void UUIManagerSubsystem::HandleRequestStageInfo()
 	ShowModal(EUIScreen::StageInfo);
 }
 
+void UUIManagerSubsystem::HandleMatchStopped()
+{
+	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
+	{
+		InitialScreen = EUIScreen::Result;
+		ControllerCache.Empty();
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("ResultMap")));
+	}
+}
+
 void UUIManagerSubsystem::HandleResumeGame()
 {
 	ResumeFromPause();
@@ -242,6 +252,7 @@ void UUIManagerSubsystem::BindScreenEvents(EUIScreen Screen, UUserWidget* Target
         	}
 	case EUIScreen::InGame:
 		{
+			BindGameStateSignals();
 			break;
 		}
 	case EUIScreen::Pause:
@@ -418,21 +429,7 @@ void UUIManagerSubsystem::BindGameStateSignals()
 	{
 		if (auto* GS = World->GetGameState<AMovingOutGameState>())
 		{
-			// 예시: bPlayStopped가 true가 되면 결과 화면으로
-			// GameState에 OnMatchFinished 같은 델리게이트가 있다면 그걸 듣는 게 가장 깔끔
-			// 여기서는 폴링 대신 간단 루프타이머나 OnRep로 연결하는 방식을 추천
-
-			// 예) 루프 타이머로 상태 감시(가벼운 주기)
-			FTimerHandle H;
-			World->GetTimerManager().SetTimer(H, [this, GS]()
-			{
-				static bool bPrevStopped = false;
-				if (GS->bPlayStopped && !bPrevStopped)
-				{
-					bPrevStopped = true;
-					ShowScreen(EUIScreen::Result);
-				}
-			}, 0.1f, true);
+			GS->OnMatchStopped.AddUniqueDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
 		}
 	}
 }
