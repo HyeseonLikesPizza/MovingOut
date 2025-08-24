@@ -17,10 +17,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_GameEnd.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_GameEnd.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
