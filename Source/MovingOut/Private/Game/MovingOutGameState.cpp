@@ -44,6 +44,10 @@ void AMovingOutGameState::SetItemsDelivered(int32 InDelivered)
 {
 	ItemsDelivered = InDelivered;
 	OnItemsProgress.Broadcast(ItemsDelivered, PlacedPropsCnt);
+	if (ItemsDelivered >= PlacedPropsCnt)
+	{
+		StopMatchTimer();
+	}
 }
 
 int32 AMovingOutGameState::GetItemsDelivered() const
