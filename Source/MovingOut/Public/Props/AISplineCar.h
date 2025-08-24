@@ -24,7 +24,7 @@ public:
 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Car")
-	USplineComponent* TargetSpline; 
+	AActor* SplineActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Car")
 	float MoveSpeed = 3000.0f; 
@@ -33,9 +33,13 @@ public:
 	UStaticMeshComponent* CarMesh; 
 
 private:
-	float DistanceAlongSpline = 0.0f; 
+	float DistanceAlongSpline = 0.0f;
+	
+	UPROPERTY()
+	USplineComponent* TargetSplineComponent;
 	
 	// 함수
 	void FollowSpline(float DeltaTime); 
-	void InitializePhysics();       
+	void InitializePhysics();
+	void FindSpline();
 };

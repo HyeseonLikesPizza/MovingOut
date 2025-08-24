@@ -18,6 +18,7 @@ void AAISplineCar::BeginPlay()
 {
     Super::BeginPlay();
     InitializePhysics();
+    FindSpline();
 }
 
 
@@ -26,7 +27,7 @@ void AAISplineCar::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     
-    if (TargetSpline)
+    if (TargetSplineComponent)
     {
         FollowSpline(DeltaTime);
     }
@@ -44,38 +45,46 @@ void AAISplineCar::InitializePhysics()
     }
 }
 
+void AAISplineCar::FindSpline()
+{
+    if (SplineActor)
+    {
+        // 지정된 액터에서 SplineComponent를 찾습니다.
+        TargetSplineComponent = SplineActor->FindComponentByClass<USplineComponent>();
+
+        if (!TargetSplineComponent)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("AISplineCar: SplineActor is set, but it has no SplineComponent!"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("AISplineCar: SplineActor is not set!"));
+    }
+}
+
 
 // 스플라인을 따라 이동
 void AAISplineCar::FollowSpline(float DeltaTime)
 {
-    
-    const float SplineLength = TargetSpline->GetSplineLength();
+    const float SplineLength = TargetSplineComponent->GetSplineLength();
 
-    
     DistanceAlongSpline += MoveSpeed * DeltaTime;
-
     
     if (DistanceAlongSpline >= SplineLength)
     {
-        
         DistanceAlongSpline = 0.0f;
     }
 
-    // 현재 이동한 거리에 해당하는 스플라인 위의 위치와 방향
-    const FVector NewLocation = TargetSpline->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
-    const FRotator NewRotation = TargetSpline->GetRotationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
-
-
-    // 메쉬에 힘을 계산
+    const FVector NewLocation = TargetSplineComponent->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
+    const FRotator NewRotation = TargetSplineComponent->GetRotationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
     
     const FVector CurrentLocation = GetActorLocation();
     const FVector TargetDirection = (NewLocation - CurrentLocation).GetSafeNormal();
-    const FVector ForceToApply = TargetDirection * MoveSpeed * 100.0f; // 힘의 크기 조절
+    const FVector ForceToApply = TargetDirection * MoveSpeed * 100.0f;
 
-    // 목표 지점으로 이동(힘을 가해서)
-    CarMesh->AddForce(ForceToApply, NAME_None, true); 
+    CarMesh->AddForce(ForceToApply, NAME_None, true);
 
-    // 회전은 항상 보간
     const FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), NewRotation, DeltaTime, 2.0f);
     SetActorRotation(InterpolatedRotation);
 }
