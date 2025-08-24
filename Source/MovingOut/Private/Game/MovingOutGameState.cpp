@@ -20,6 +20,20 @@ void AMovingOutGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 }
 
 
+void AMovingOutGameState::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (!bPlayStopped)
+	{
+		// 경과 시간이 게임오버 시간을 초과했는지 체크
+		if (GetElapsedTimeSeconds() > MedalThresholds.FailOverSeconds)
+		{
+			StopMatchTimer();
+		}
+	}
+}
+
 void AMovingOutGameState::SetItemsDelivered(int32 InDelivered)
 {
 	ItemsDelivered = InDelivered;
@@ -47,6 +61,16 @@ void AMovingOutGameState::InitializePlacedPropsCnt()
 	TArray<AActor*> Arr;
 	UGameplayStatics::GetAllActorsOfClass(this, ACountProps::StaticClass(), Arr);
 	SetPlacedProps(Arr.Num());
+}
+
+void AMovingOutGameState::OnRep_PlayStopped()
+{
+	// 클라에서 bPlayStopped true로 바뀐 시점에 동기화된 결과를 알림
+	
+	if (bPlayStopped)
+	{
+		OnMatchStopped.Broadcast(bVictory, ResultMedal, FinalElapsedSeconds);
+	}
 }
 
 void AMovingOutGameState::StartMatchTimer()
@@ -94,8 +118,19 @@ void AMovingOutGameState::StopMatchTimer()
 	AccumulatedSeconds  = FinalElapsedSeconds; // 어디서 읽어도 동일
 	bTimerRunning = false;
 	bPlayStopped  = true;
+	
+	// 결과 등급 확정 (서버에서 결정)
+	const float FailOver = MedalThresholds.FailOverSeconds;
+	ResultMedal = EvaluateMedal(MedalThresholds.GoldWithinSeconds, MedalThresholds.SilverWithinSeconds,
+		MedalThresholds.BronzeWithinSeconds, MedalThresholds.FailOverSeconds);
 
-	// 결과 UI 알림, GameMode 에 알려서 상태 전환...
+
+	// bVictory 결정
+	bVictory = (ItemsDelivered >= PlacedPropsCnt) && (FinalElapsedSeconds <= FailOver);
+
+
+	// 서버에서 브로드캐스트
+	OnMatchStopped.Broadcast(bVictory, ResultMedal, FinalElapsedSeconds);
 
 }
 

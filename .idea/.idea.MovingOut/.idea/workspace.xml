@@ -17,7 +17,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameState.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +84,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Lauren",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -272,7 +271,7 @@
       <workItem from="1755755948161" duration="329000" />
       <workItem from="1755763562747" duration="1598000" />
       <workItem from="1755844376433" duration="6545000" />
-      <workItem from="1755923080374" duration="36063000" />
+      <workItem from="1755923080374" duration="37921000" />
     </task>
     <servers />
   </component>
@@ -301,17 +300,12 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>529</line>
+          <line>559</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/PauseWidget.cpp</url>
-          <line>16</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp</url>
-          <line>303</line>
+          <line>335</line>
           <option name="timeStamp" value="59" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

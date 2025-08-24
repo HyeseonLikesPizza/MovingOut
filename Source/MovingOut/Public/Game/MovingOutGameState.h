@@ -8,7 +8,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemsProgress, int32, Remaining, int32, Total);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnMatchStopped, bool, bVictory, EMedal, ResultMedal, float, FinalElapsedSeconds);
 
 UCLASS()
 class MOVINGOUT_API AMovingOutGameState : public AGameStateBase
@@ -16,6 +16,8 @@ class MOVINGOUT_API AMovingOutGameState : public AGameStateBase
 	GENERATED_BODY()
 
 public:
+
+	void Tick(float DeltaTime) override;
 
 	// 타이머 상태
 	UPROPERTY(Replicated)
@@ -27,13 +29,13 @@ public:
 	UPROPERTY(Replicated)
 	bool bTimerRunning = false;
 
+	// 시간 등급 정보
 	UPROPERTY()
 	FMedalThresholds MedalThresholds;
-
-
+	
 	// 종료 고정값, 플래그
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing = OnRep_PlayStopped)
 	bool bPlayStopped = true;
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
@@ -44,30 +46,28 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bVictory = false;
-
-	// 목표
-
-	//UPROPERTY(ReplicatedUsing = OnRep_ItemsProgress, BlueprintReadOnly)
-	//int32 ItemsTotal = 14;
-
+	
 	void SetItemsDelivered(int32 InDelivered);
 	int32 GetItemsDelivered() const;
-
 	void SetPlacedProps(int32 InPlacedProps);
 	int32 GetPlacedProps() const;
-
-	
-
 	void InitializePlacedPropsCnt();
-
-
+	
 	UFUNCTION(BlueprintPure)
 	int32 GetItemsRemaining() const { return FMath::Max(0, PlacedPropsCnt - ItemsDelivered); }
 
+	
 	// Delegate
+
+	UFUNCTION()
+	void OnRep_PlayStopped();
+
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnItemsProgress OnItemsProgress;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnMatchStopped OnMatchStopped;
 	
 
 	// 시작 (서버에서 호출)
@@ -91,11 +91,11 @@ public:
 	// 메달 채점
 	UFUNCTION(BlueprintPure)
 	EMedal EvaluateMedal(float GoldSec, float SilverSSec, float BronzeSec, float FailOverSec) const;
-
-
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 
 private:
+	
 	UPROPERTY(Replicated)
 	int32 ItemsDelivered = 0;
 
