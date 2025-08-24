@@ -1,90 +1,122 @@
-
-
 #include "Props/AISplineCar.h"
 #include "Components/StaticMeshComponent.h"
-
-
-
+#include "Components/SplineComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 AAISplineCar::AAISplineCar()
 {
     PrimaryActorTick.bCanEverTick = true;
     CarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CarMesh"));
     RootComponent = CarMesh;
+    CarMesh->SetSimulatePhysics(true);
+    CarMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
 }
-
 
 void AAISplineCar::BeginPlay()
 {
     Super::BeginPlay();
-    InitializePhysics();
     FindSpline();
 }
-
 
 void AAISplineCar::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
     
-    if (TargetSplineComponent)
+    if (!TargetSpline)
     {
-        FollowSpline(DeltaTime);
+        FindSpline();
+        return;
     }
-}
-
-// 물리 시뮬레이션을 활성화하고 설정합니다.
-void AAISplineCar::InitializePhysics()
-{
-    if (CarMesh)
-    {
-        // 물리 시뮬레이션을 활성화해야 충돌에 반응합니다.
-        CarMesh->SetSimulatePhysics(true);
-        // 무게 중심을 낮게 설정하여 안정성을 높입니다. (필요에 따라 조절)
-        CarMesh->SetCenterOfMass(FVector(0, 0, -50.0f));
-    }
+    
+    FollowSpline(DeltaTime);
+    HandleRecovery();
 }
 
 void AAISplineCar::FindSpline()
 {
-    if (SplineActor)
-    {
-        // 지정된 액터에서 SplineComponent를 찾습니다.
-        TargetSplineComponent = SplineActor->FindComponentByClass<USplineComponent>();
+    if (TargetSpline) return;
 
-        if (!TargetSplineComponent)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("AISplineCar: SplineActor is set, but it has no SplineComponent!"));
-        }
-    }
-    else
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), FoundActors);
+    
+    for (AActor* Actor : FoundActors)
     {
-        UE_LOG(LogTemp, Warning, TEXT("AISplineCar: SplineActor is not set!"));
+        if (Actor->GetName().Equals(TEXT("BP_RoadSpline"), ESearchCase::IgnoreCase))
+        {
+            TargetSpline = Actor->FindComponentByClass<USplineComponent>();
+            if (TargetSpline)
+            {
+                return;
+            }
+        }
     }
 }
 
-
-// 스플라인을 따라 이동
 void AAISplineCar::FollowSpline(float DeltaTime)
 {
-    const float SplineLength = TargetSplineComponent->GetSplineLength();
-
-    DistanceAlongSpline += MoveSpeed * DeltaTime;
+    FVector CarLocation = GetActorLocation();
     
-    if (DistanceAlongSpline >= SplineLength)
+    // 스플라인 근접점 찾기
+    float ClosestInputKey = TargetSpline->FindInputKeyClosestToWorldLocation(CarLocation);
+    DistanceAlongSpline = TargetSpline->GetDistanceAlongSplineAtSplineInputKey(ClosestInputKey);
+    
+    // 50cm 앞을 목표로
+    FVector ForwardPoint = TargetSpline->GetLocationAtDistanceAlongSpline(DistanceAlongSpline + 50.0f, ESplineCoordinateSpace::World);
+    
+    FVector CurrentVelocity = CarMesh->GetPhysicsLinearVelocity();
+    FVector TargetDirection = (ForwardPoint - CarLocation).GetSafeNormal();
+    FVector CarForward = GetActorForwardVector();
+    
+    // 조향력 계산 (정확도 향상)
+    FVector SteerTorque = GetActorUpVector() * FVector::CrossProduct(CarForward, TargetDirection).Z * SteeringForce;
+    CarMesh->AddTorqueInDegrees(SteerTorque, NAME_None, true);
+    
+    // 추진력 계산 (속도 제어)
+    float CurrentSpeed = FVector::DotProduct(CurrentVelocity, CarForward);
+    float SpeedRatio = FMath::Clamp(1.0f - FMath::Abs(CurrentSpeed) / MaxSpeed, 0.0f, 1.0f);
+    CarMesh->AddForce(CarForward * ThrottleForce * SpeedRatio, NAME_None, true);
+
+    // 차체를 바닥에 붙이는 힘 추가
+    FHitResult HitResult;
+    FVector LineTraceStart = CarLocation;
+    FVector LineTraceEnd = CarLocation - FVector::UpVector * 200.0f; // 200cm 아래
+    
+    bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, LineTraceStart, LineTraceEnd, ECC_Visibility);
+    
+    if (bHit)
     {
-        DistanceAlongSpline = 0.0f;
+        // 바닥과의 거리에 비례해 힘을 줘서 차를 바닥에 붙임
+        float DistanceToGround = HitResult.Distance;
+        float GroundForce = (150.0f - DistanceToGround) * 10000.0f; // 150cm 높이 유지
+        CarMesh->AddForce(FVector::UpVector * GroundForce, NAME_None, true);
     }
-
-    const FVector NewLocation = TargetSplineComponent->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
-    const FRotator NewRotation = TargetSplineComponent->GetRotationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World);
     
-    const FVector CurrentLocation = GetActorLocation();
-    const FVector TargetDirection = (NewLocation - CurrentLocation).GetSafeNormal();
-    const FVector ForceToApply = TargetDirection * MoveSpeed * 100.0f;
+    // 스플라인 이탈 시
+    float DistFromSpline = FVector::Dist(CarLocation, TargetSpline->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World));
+    if (DistFromSpline > 500.0f) // 5m 이상 이탈
+    {
+        FVector TowardsSpline = (TargetSpline->GetLocationAtDistanceAlongSpline(DistanceAlongSpline, ESplineCoordinateSpace::World) - CarLocation).GetSafeNormal();
+        CarMesh->AddForce(TowardsSpline * ThrottleForce, NAME_None, true);
+    }
+}
 
-    CarMesh->AddForce(ForceToApply, NAME_None, true);
+void AAISplineCar::HandleRecovery()
+{
+    FVector UpVector = GetActorUpVector();
+    float UpDot = FVector::DotProduct(UpVector, FVector::UpVector);
 
-    const FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), NewRotation, DeltaTime, 2.0f);
-    SetActorRotation(InterpolatedRotation);
+    if (UpDot < 0.2f)
+    {
+        FRotator TargetRotation = GetActorRotation();
+        TargetRotation.Roll = 0.0f;
+        TargetRotation.Pitch = 0.0f;
+
+        SetActorRotation(FMath::RInterpTo(GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f));
+    }
+}
+bool AAISplineCar::IsCarOverturned()
+{
+   
+    return false;
 }
