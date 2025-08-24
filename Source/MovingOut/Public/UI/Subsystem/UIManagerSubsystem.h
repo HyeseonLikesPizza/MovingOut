@@ -10,6 +10,7 @@ class UMainMenuScreenWidget;
 class UPauseWidget;
 class UIntroWidget;
 class USelectStageWidget;
+class UStageInfoWidget;
 
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
@@ -55,12 +56,13 @@ public:
 	void WirePauseMenu(UPauseWidget* Widget);
 	void WireIntro(UIntroWidget* Widget);
 	void WireSelectStage(USelectStageWidget* Widget);
+	void WireStageInfo(UStageInfoWidget* Widget);
 
 	UFUNCTION()
 	void HandleStartRequested(); // Title -> MainMenu
 
 	UFUNCTION()
-	void HandleRequestNewGame(); // MainMenu -> Stage1
+	void HandleRequestNewGame(); // (StageInfo -> Stage1) or (Pause[New Game] -> Stage1) 
 
 	UFUNCTION()
 	void HandleRequestIntro(); // MainMenu -> Intro

@@ -20,6 +20,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "UI/Widget/PauseWidget.h"
 #include "UI/Widget/SelectStageWidget.h"
+#include "UI/Widget/StageInfoWidget.h"
 
 
 UUIManagerSubsystem::UUIManagerSubsystem()
@@ -95,6 +96,9 @@ void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget*
 	case EUIScreen::Intro:
 		SetInputModeUIOnly(Target);
 		break;
+	case EUIScreen::StageInfo:
+		SetInputModeUIOnly(Target);
+		break;
 	case EUIScreen::InGame:
 		SetInputModeGameAndUI();
 		break;
@@ -138,6 +142,12 @@ void UUIManagerSubsystem::WireSelectStage(USelectStageWidget* Widget)
 {
 	Widget->OnRequestStageInfo.RemoveAll(this);
 	Widget->OnRequestStageInfo.AddDynamic(this, &UUIManagerSubsystem::HandleRequestStageInfo);
+}
+
+void UUIManagerSubsystem::WireStageInfo(UStageInfoWidget* Widget)
+{
+	Widget->OnRequestGameStart.RemoveAll(this);
+	Widget->OnRequestGameStart.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
 }
 
 void UUIManagerSubsystem::HandleStartRequested()
@@ -222,6 +232,14 @@ void UUIManagerSubsystem::BindScreenEvents(EUIScreen Screen, UUserWidget* Target
 			}
 			break;
 		}
+	case EUIScreen::StageInfo:
+        	{
+        		if (UStageInfoWidget* StageInfoWidget = Cast<UStageInfoWidget>(Target))
+        		{
+        			WireStageInfo(StageInfoWidget);
+        		}
+        		break;
+        	}
 	case EUIScreen::InGame:
 		{
 			break;
@@ -323,7 +341,7 @@ void UUIManagerSubsystem::ShowModal(EUIScreen Screen, int32 ZOrder)
 	if (!PC) return;
 
 	// 모달 위젯 생성
-	UUserWidget* Modal = CreateIfNeeded(EUIScreen::Pause);
+	UUserWidget* Modal = CreateIfNeeded(Screen);
 	if (!Modal) return;
 
 	// 델리게이트 바인드
@@ -484,7 +502,7 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	if (!SelectStageWidgetClass && UISettings && !UISettings->IntroWidgetClass.IsNull())
 	{
-		SelectStageWidgetClass = UISettings->IntroWidgetClass.LoadSynchronous();
+		SelectStageWidgetClass = UISettings->SelectStageWidgetClass.LoadSynchronous();
 	}
 
 	if (!StageInfoWidgetClass && UISettings && !UISettings->StageInfoWidgetClass.IsNull())
