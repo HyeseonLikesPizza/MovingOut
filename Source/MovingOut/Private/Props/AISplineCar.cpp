@@ -117,6 +117,6 @@ void AAISplineCar::HandleRecovery()
 }
 bool AAISplineCar::IsCarOverturned()
 {
-   
+    
     return false;
 }
