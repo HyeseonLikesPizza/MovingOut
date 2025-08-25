@@ -15,14 +15,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_Roding.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_Roding.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/EndGameWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Widget/EndGameWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/EndGameWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/EndGameWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/StageInfoWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Widget/StageInfoWidget.h" afterDir="false" />
-    </list>
+    <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -114,7 +107,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Lauren",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "E:/UnrealProject/MovingOut/Source/MovingOut",
     "node.js.detected.package.eslint": "true",

@@ -28,5 +28,5 @@ FText UBaseWidgetController::FormatElapsed(float Seconds) const
 	
 	if (MM > 99) { MM = 99; SS = 59; CC = 99; }
 	
-	return FText::FromString(FString::Printf(TEXT("%d:%02d.%02d"), MM, SS, CC));
+	return FText::FromString(FString::Printf(TEXT("%d:%02d:%02d"), MM, SS, CC));
 }
