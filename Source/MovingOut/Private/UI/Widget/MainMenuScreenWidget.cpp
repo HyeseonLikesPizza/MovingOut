@@ -50,7 +50,7 @@ void UMainMenuScreenWidget::HandleNewGameClicked()
 		Th,
 		[this]()
 		{
-			OnRequestNewGame.Broadcast();
+			OnRequestIntro.Broadcast();
 		},
 		2.f,   // 대기 초
 		false   // 반복 여부

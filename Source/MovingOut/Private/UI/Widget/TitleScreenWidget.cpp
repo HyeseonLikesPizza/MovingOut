@@ -11,17 +11,7 @@ void UTitleScreenWidget::NativeConstruct()
 	Super::NativeConstruct();
 	SetIsFocusable(true);
 	PlayAnimation(T_Begin);
-
-	FTimerHandle Th;
-	GetWorld()->GetTimerManager().SetTimer(
-		Th,
-		[this]()
-		{
-			PlayAnimation(T_End);
-		},
-		2.1f,   // 대기 초
-		false   // 반복 여부
-	);
+	
 }
 
 FReply UTitleScreenWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)

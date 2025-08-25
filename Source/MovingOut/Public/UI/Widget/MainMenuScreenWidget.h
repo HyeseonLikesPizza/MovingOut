@@ -7,7 +7,7 @@
 
 class UButton;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestNewGame);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestIntro);
 
 UCLASS()
 class MOVINGOUT_API UMainMenuScreenWidget : public UUserWidget
@@ -17,7 +17,7 @@ class MOVINGOUT_API UMainMenuScreenWidget : public UUserWidget
 public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FOnRequestNewGame OnRequestNewGame;
+	FOnRequestIntro OnRequestIntro;
 
 protected:
 

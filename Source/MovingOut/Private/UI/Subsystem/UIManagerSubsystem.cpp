@@ -13,11 +13,14 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Widget/InGameOverlayWidget.h"
+#include "UI/Widget/IntroWidget.h"
 #include "UI/Widget/MainMenuScreenWidget.h"
 #include "UI/Widget/PauseWidget.h"
 #include "UI/Widget/TitleScreenWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "UI/Widget/PauseWidget.h"
+#include "UI/Widget/SelectStageWidget.h"
+#include "UI/Widget/StageInfoWidget.h"
 
 
 UUIManagerSubsystem::UUIManagerSubsystem()
@@ -90,6 +93,12 @@ void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget*
 	case EUIScreen::MainMenu:
 		SetInputModeUIOnly(Target);
 		break;
+	case EUIScreen::Intro:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::StageInfo:
+		SetInputModeUIOnly(Target);
+		break;
 	case EUIScreen::InGame:
 		SetInputModeGameAndUI();
 		break;
@@ -110,8 +119,8 @@ void UUIManagerSubsystem::WireTitleScreen(UTitleScreenWidget* Widget)
 
 void UUIManagerSubsystem::WireMainMenu(UMainMenuScreenWidget* Widget)
 {
-	Widget->OnRequestNewGame.RemoveAll(this);
-	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+	Widget->OnRequestIntro.RemoveAll(this);
+	Widget->OnRequestIntro.AddDynamic(this, &UUIManagerSubsystem::HandleRequestIntro);
 }
 
 void UUIManagerSubsystem::WirePauseMenu(UPauseWidget* Widget)
@@ -123,6 +132,24 @@ void UUIManagerSubsystem::WirePauseMenu(UPauseWidget* Widget)
 	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
 }
 
+void UUIManagerSubsystem::WireIntro(UIntroWidget* Widget)
+{
+	Widget->OnRequestSelectLevel.RemoveAll(this);
+	Widget->OnRequestSelectLevel.AddDynamic(this, &UUIManagerSubsystem::HandleRequestSelectStage);
+}
+
+void UUIManagerSubsystem::WireSelectStage(USelectStageWidget* Widget)
+{
+	Widget->OnRequestStageInfo.RemoveAll(this);
+	Widget->OnRequestStageInfo.AddDynamic(this, &UUIManagerSubsystem::HandleRequestStageInfo);
+}
+
+void UUIManagerSubsystem::WireStageInfo(UStageInfoWidget* Widget)
+{
+	Widget->OnRequestGameStart.RemoveAll(this);
+	Widget->OnRequestGameStart.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+}
+
 void UUIManagerSubsystem::HandleStartRequested()
 {
 	ShowScreen(EUIScreen::MainMenu);
@@ -130,11 +157,47 @@ void UUIManagerSubsystem::HandleStartRequested()
 
 void UUIManagerSubsystem::HandleRequestNewGame()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Requested New Game"));
 	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
 	{
 		InitialScreen = EUIScreen::InGame;
 		ControllerCache.Empty();
 		UGameplayStatics::OpenLevel(PC, FName(TEXT("Stage1")));
+	}
+}
+
+void UUIManagerSubsystem::HandleRequestIntro()
+{
+	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
+	{
+		InitialScreen = EUIScreen::Intro;
+		ControllerCache.Empty();
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("IntroLevel")));
+	}
+}
+
+void UUIManagerSubsystem::HandleRequestSelectStage()
+{
+	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
+	{
+		InitialScreen = EUIScreen::SelectStage;
+		ControllerCache.Empty();
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("SelectStageMap")));
+	}
+}
+
+void UUIManagerSubsystem::HandleRequestStageInfo()
+{
+	ShowModal(EUIScreen::StageInfo);
+}
+
+void UUIManagerSubsystem::HandleMatchStopped()
+{
+	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
+	{
+		InitialScreen = EUIScreen::Result;
+		ControllerCache.Empty();
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("ResultMap")));
 	}
 }
 
@@ -163,8 +226,33 @@ void UUIManagerSubsystem::BindScreenEvents(EUIScreen Screen, UUserWidget* Target
 			}
 			break;
 		}
+	case EUIScreen::Intro:
+		{
+			if (UIntroWidget* IntroWidget = Cast<UIntroWidget>(Target))
+			{
+				WireIntro(IntroWidget);
+			}
+			break;
+		}
+	case EUIScreen::SelectStage:
+		{
+			if (USelectStageWidget* SelectStageWidget = Cast<USelectStageWidget>(Target))
+			{
+				WireSelectStage(SelectStageWidget);
+			}
+			break;
+		}
+	case EUIScreen::StageInfo:
+        	{
+        		if (UStageInfoWidget* StageInfoWidget = Cast<UStageInfoWidget>(Target))
+        		{
+        			WireStageInfo(StageInfoWidget);
+        		}
+        		break;
+        	}
 	case EUIScreen::InGame:
 		{
+			BindGameStateSignals();
 			break;
 		}
 	case EUIScreen::Pause:
@@ -185,10 +273,22 @@ void UUIManagerSubsystem::SetupScreenController(EUIScreen Screen, UUserWidget* T
 	case EUIScreen::Title:
 		{
 			// Title Widget은 위젯 컨트롤러 필요 없음
+			break;
 		}
 	case EUIScreen::MainMenu:
 		{
-			// Main Menu 는 위젯 컨트롤러 필요 없음	
+			// Main Menu 는 위젯 컨트롤러 필요 없음
+			break;
+		}
+	case EUIScreen::Intro:
+		{
+			// Intro 는 위젯 컨트롤러 필요 없음
+			break;
+		}
+	case EUIScreen::SelectStage:
+		{
+			// SelectStage 는 위젯 컨트롤러 필요 없음
+			break;
 		}
 	case EUIScreen::InGame:
 		{
@@ -202,16 +302,13 @@ void UUIManagerSubsystem::SetupScreenController(EUIScreen Screen, UUserWidget* T
 		}
 	case EUIScreen::Result:
 		{
-			// if (auto* ResultUI = Cast<UResultWidget>(Target))
-			// {
-			// 	auto* WC = GetOrCreateController<UResultWidgetController>(EUIScreen::Result);
-			// 	ResultUI->SetWidgetController(WC);
-			// }
-			// break;
+			break;
 		}
 	case EUIScreen::Pause:
-		// Pause Widget은 위젯 컨트롤러 없음
-		break;
+		{
+			// Pause Widget은 위젯 컨트롤러 없음
+			break;	
+		}
 	default:
 		break;
 	}
@@ -219,6 +316,7 @@ void UUIManagerSubsystem::SetupScreenController(EUIScreen Screen, UUserWidget* T
 
 void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
 {
+	// Screen 위젯 생성
 	UUserWidget* Target = CreateIfNeeded(Screen);
 	if (!Target) return;
 	CurrentScreen = Screen;
@@ -235,18 +333,10 @@ void UUIManagerSubsystem::ShowScreen(EUIScreen Screen)
  	SetupScreenController(Screen, Target);
 
 	// 델리게이트 구독
-
 	BindScreenEvents(Screen, Target);
 	
-
-	
-
-
 	// 입력 모드 맞추기
 	ApplyInputModeForScreen(Screen, Target);
-
-	
-	
 }
 
 UUserWidget* UUIManagerSubsystem::GetScreenWidget(EUIScreen Screen) const
@@ -262,7 +352,7 @@ void UUIManagerSubsystem::ShowModal(EUIScreen Screen, int32 ZOrder)
 	if (!PC) return;
 
 	// 모달 위젯 생성
-	UUserWidget* Modal = CreateIfNeeded(EUIScreen::Pause);
+	UUserWidget* Modal = CreateIfNeeded(Screen);
 	if (!Modal) return;
 
 	// 델리게이트 바인드
@@ -339,21 +429,7 @@ void UUIManagerSubsystem::BindGameStateSignals()
 	{
 		if (auto* GS = World->GetGameState<AMovingOutGameState>())
 		{
-			// 예시: bPlayStopped가 true가 되면 결과 화면으로
-			// GameState에 OnMatchFinished 같은 델리게이트가 있다면 그걸 듣는 게 가장 깔끔
-			// 여기서는 폴링 대신 간단 루프타이머나 OnRep로 연결하는 방식을 추천
-
-			// 예) 루프 타이머로 상태 감시(가벼운 주기)
-			FTimerHandle H;
-			World->GetTimerManager().SetTimer(H, [this, GS]()
-			{
-				static bool bPrevStopped = false;
-				if (GS->bPlayStopped && !bPrevStopped)
-				{
-					bPrevStopped = true;
-					ShowScreen(EUIScreen::Result);
-				}
-			}, 0.1f, true);
+			GS->OnMatchStopped.AddUniqueDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
 		}
 	}
 }
@@ -416,6 +492,21 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		MainMenuScreenClass = UISettings->MainMenuWidgetClass.LoadSynchronous();
 	}
 
+	if (!IntroWidgetClass && UISettings && !UISettings->IntroWidgetClass.IsNull())
+	{
+		IntroWidgetClass = UISettings->IntroWidgetClass.LoadSynchronous();
+	}
+
+	if (!SelectStageWidgetClass && UISettings && !UISettings->IntroWidgetClass.IsNull())
+	{
+		SelectStageWidgetClass = UISettings->SelectStageWidgetClass.LoadSynchronous();
+	}
+
+	if (!StageInfoWidgetClass && UISettings && !UISettings->StageInfoWidgetClass.IsNull())
+	{
+		StageInfoWidgetClass = UISettings->StageInfoWidgetClass.LoadSynchronous();
+	}
+
 	if (!PauseMenuClass && UISettings && !UISettings->PauseMenuWidgetClass.IsNull())
 	{
 		PauseMenuClass = UISettings->PauseMenuWidgetClass.LoadSynchronous();
@@ -470,6 +561,12 @@ TSubclassOf<UUserWidget> UUIManagerSubsystem::ResolveClass(EUIScreen Screen) con
 		return TitleScreenClass;
 	case EUIScreen::MainMenu:
 		return MainMenuScreenClass;
+	case EUIScreen::Intro:
+		return IntroWidgetClass;
+	case EUIScreen::SelectStage:
+		return SelectStageWidgetClass;
+	case EUIScreen::StageInfo:
+		return StageInfoWidgetClass;
 	case EUIScreen::InGame:
 		return OverlayHUDClass;
 	case EUIScreen::Pause:
