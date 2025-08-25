@@ -34,8 +34,8 @@ AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
     // 능력치 설정
     PatrolSpeed = 150.f;
     ChaseSpeed = 450.f;
-    PatrolRadius = 2000.f;
-    ObjectSearchRadius = 1500.f;
+    PatrolRadius = 2500.f;
+    ObjectSearchRadius = 1800.f;
     ThrowForce = 1500.f;
     TargetObject = nullptr;
     GrabbedObject = nullptr;
@@ -115,7 +115,7 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
         case EEnemyState::ES_Patrolling:
             MovementComponent->MaxWalkSpeed = PatrolSpeed;
             // 10초마다 물건을 잡으려 시도하는 타이머를 설정해둠
-            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 8.0f, true);
+            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 4.0f, true);
             FindAndMoveToNewPatrolDestination();
             break;
         case EEnemyState::ES_Chasing:
@@ -141,7 +141,7 @@ void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
 {
     // 목표 지점에 거의 다 왔는지 확인
     const float DistanceToGoal = FVector::Dist(GetActorLocation(), PatrolDestination);
-    if (DistanceToGoal < 140.f)
+    if (DistanceToGoal < 100.f)
     {
        // 목표에 도착했으니, 새로운 순찰 지점을 찾아서 이동 시!
        FindAndMoveToNewPatrolDestination();
@@ -178,7 +178,7 @@ void AEnemyMovingOutCharacter::HandleGrabbing(float DeltaTime)
         return;
     }
     const float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetObject->GetActorLocation());
-    if (DistanceToTarget < 250.f)
+    if (DistanceToTarget < 220.f)
     {
         // 목표에 충분히 가까워지면 이동을 멈춤
         GetController()->StopMovement();
@@ -194,7 +194,7 @@ void AEnemyMovingOutCharacter::HandleGrabbing(float DeltaTime)
             // 물건을 잡고 잠시 대기 상태로 전환
             SetEnemyState(EEnemyState::ES_Idle);
             // 1.5초 뒤에 물건을 던지도록 타이머 설정
-            GetWorldTimerManager().SetTimer(ThrowActionTimer, this, &AEnemyMovingOutCharacter::PerformThrow, 1.5f, false);
+            GetWorldTimerManager().SetTimer(ThrowActionTimer, this, &AEnemyMovingOutCharacter::PerformThrow, 0.8f, false);
         }
         else
         {
