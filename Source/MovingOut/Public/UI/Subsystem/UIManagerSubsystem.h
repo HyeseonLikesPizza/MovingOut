@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/LocalPlayerSubsystem.h"
+#include "Type/MedalTypes.h"
 #include "UIManagerSubsystem.generated.h"
 
 class UTitleScreenWidget;
@@ -11,6 +12,7 @@ class UPauseWidget;
 class UIntroWidget;
 class USelectStageWidget;
 class UStageInfoWidget;
+class AMovingOutGameState;
 
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
@@ -49,6 +51,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="UI")
 	void RegisterControllerClass(EUIScreen Screen, TSubclassOf<UBaseWidgetController> Class);
 	void ApplyInputModeForScreen(EUIScreen Screen, UUserWidget* Target);
+
+	// 최근 결과 꺼내기
+	UFUNCTION(BlueprintPure, Category = "Result")
+	const FGameResultData& GetLastResult() const { return LastResult; }
+
+	// GameState에서 게임 결과를 저장
+	void CaptureResultFromGameState(AMovingOutGameState* GS);
+	
 
 	// 델리게이트 바인딩
 	void WireTitleScreen(UTitleScreenWidget* Widget);
@@ -190,6 +200,9 @@ private:
 
 	UPROPERTY(Transient)
 	TWeakObjectPtr<UUserWidget> PauseWidgetWeak;
+
+	UPROPERTY(Transient)
+	FGameResultData LastResult;
 
 	void OpenPauseModal_Internal();
 	void ClosePauseModal_Internal();

@@ -51,3 +51,23 @@ struct FMedalThresholds
 	
 };
 
+USTRUCT(BlueprintType)
+struct FGameResultData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bVictory = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	EMedal Medal = EMedal::None;
+
+	UPROPERTY(BlueprintReadOnly)
+	float ClearTimeSeconds = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 ItemDelivered = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 ItemTotal = 0;
+};

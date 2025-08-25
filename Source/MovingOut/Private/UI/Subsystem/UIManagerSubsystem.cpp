@@ -111,6 +111,20 @@ void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget*
 	}
 }
 
+void UUIManagerSubsystem::CaptureResultFromGameState(AMovingOutGameState* GS)
+{
+	if (!GS) return;
+
+	LastResult.bVictory = GS->bVictory;
+	LastResult.Medal = GS->ResultMedal;
+	LastResult.ClearTimeSeconds = GS->FinalElapsedSeconds;
+
+	// 달성률
+	LastResult.ItemDelivered = GS->GetItemsDelivered();
+	LastResult.ItemTotal = GS->GetPlacedProps();
+	
+}
+
 void UUIManagerSubsystem::WireTitleScreen(UTitleScreenWidget* Widget)
 {
 	Widget->OnStartRequested.RemoveAll(this);
@@ -193,7 +207,13 @@ void UUIManagerSubsystem::HandleRequestStageInfo()
 
 void UUIManagerSubsystem::HandleMatchStopped()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleMatchStopped Called"));
+	// GameState에 저장된 결과 데이터를 캐시에 저장
+	if (auto* GS = GetWorld() ? GetWorld()->GetGameState<AMovingOutGameState>() : nullptr)
+	{
+		CaptureResultFromGameState(GS);
+	}
+
+	// 레벨 전환
 	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
 	{
 		InitialScreen = EUIScreen::Result;
