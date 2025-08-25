@@ -33,6 +33,13 @@ void ACarSpawnManager::BeginPlay()
 	}), WaitTime, true);
 }
 
+void ACarSpawnManager::Destroyed()
+{
+	Super::Destroyed();
+
+	GetWorld()->GetTimerManager().ClearTimer(SpawnHandle);
+}
+
 // Called every frame
 void ACarSpawnManager::Tick(float DeltaTime)
 {
