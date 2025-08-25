@@ -61,7 +61,7 @@ void ADestructibleWindow::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 		
 		AActor* ActorToSpawn = GetWorld()->SpawnActor<AActor>(MasterFieldClass, OtherActor->GetActorLocation(), FRotator::ZeroRotator);
 
-		GeometryCollection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		GeometryCollection->SetCollisionResponseToAllChannels(ECR_Ignore);
 		
 		// Destroy after WaitTime
 		GetWorld()->GetTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([&]()

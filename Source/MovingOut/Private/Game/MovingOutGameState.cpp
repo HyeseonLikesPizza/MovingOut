@@ -20,6 +20,12 @@ void AMovingOutGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 }
 
 
+AMovingOutGameState::AMovingOutGameState()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+}
+
 void AMovingOutGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -38,6 +44,10 @@ void AMovingOutGameState::SetItemsDelivered(int32 InDelivered)
 {
 	ItemsDelivered = InDelivered;
 	OnItemsProgress.Broadcast(ItemsDelivered, PlacedPropsCnt);
+	if (ItemsDelivered >= PlacedPropsCnt)
+	{
+		StopMatchTimer();
+	}
 }
 
 int32 AMovingOutGameState::GetItemsDelivered() const
@@ -131,7 +141,6 @@ void AMovingOutGameState::StopMatchTimer()
 
 	// 서버에서 브로드캐스트
 	OnMatchStopped.Broadcast();
-
 }
 
 float AMovingOutGameState::GetElapsedTimeSeconds() const
