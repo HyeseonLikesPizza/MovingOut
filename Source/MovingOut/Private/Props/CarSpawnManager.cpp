@@ -33,9 +33,9 @@ void ACarSpawnManager::BeginPlay()
 	}), WaitTime, true);
 }
 
-void ACarSpawnManager::Destroyed()
+void ACarSpawnManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Super::Destroyed();
+	Super::EndPlay(EndPlayReason);
 
 	GetWorld()->GetTimerManager().ClearTimer(SpawnHandle);
 }
