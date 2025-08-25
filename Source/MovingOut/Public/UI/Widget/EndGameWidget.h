@@ -10,5 +10,6 @@ class MOVINGOUT_API UEndGameWidget : public UMovingOutWidget
 {
 	GENERATED_BODY()
 	
-	
+protected:
+	virtual void NativeConstruct() override;
 };

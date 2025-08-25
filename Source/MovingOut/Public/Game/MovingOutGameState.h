@@ -17,7 +17,9 @@ class MOVINGOUT_API AMovingOutGameState : public AGameStateBase
 
 public:
 
-	void Tick(float DeltaTime) override;
+	AMovingOutGameState();
+
+	virtual void Tick(float DeltaTime) override;
 
 	// 타이머 상태
 	UPROPERTY(Replicated)
@@ -36,7 +38,7 @@ public:
 	// 종료 고정값, 플래그
 
 	UPROPERTY(ReplicatedUsing = OnRep_PlayStopped)
-	bool bPlayStopped = true;
+	bool bPlayStopped = false;
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	float FinalElapsedSeconds = 0.f;
