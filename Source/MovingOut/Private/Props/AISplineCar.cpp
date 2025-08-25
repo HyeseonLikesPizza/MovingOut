@@ -11,6 +11,7 @@ AAISplineCar::AAISplineCar()
     RootComponent = CarMesh;
     CarMesh->SetSimulatePhysics(true);
     CarMesh->SetCollisionProfileName(TEXT("PhysicsActor"));
+    
 }
 
 void AAISplineCar::BeginPlay()
