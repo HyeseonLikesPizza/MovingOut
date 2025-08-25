@@ -12,6 +12,7 @@
 #include "UI/WidgetController/BaseWidgetController.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/Widget/EndGameWidget.h"
 #include "UI/Widget/InGameOverlayWidget.h"
 #include "UI/Widget/IntroWidget.h"
 #include "UI/Widget/MainMenuScreenWidget.h"
@@ -21,6 +22,7 @@
 #include "UI/Widget/PauseWidget.h"
 #include "UI/Widget/SelectStageWidget.h"
 #include "UI/Widget/StageInfoWidget.h"
+#include "UI/WidgetController/ResultWidgetController.h"
 
 
 UUIManagerSubsystem::UUIManagerSubsystem()
@@ -37,6 +39,7 @@ UUIManagerSubsystem::UUIManagerSubsystem()
 	// Controller Class Map 추가
 
 	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
+	ControllerClassMap.Add(EUIScreen::Result, UResultWidgetController::StaticClass());
 
 	// InitialScreen 초기화
 	InitialScreen = EUIScreen::Title;
@@ -122,7 +125,7 @@ void UUIManagerSubsystem::CaptureResultFromGameState(AMovingOutGameState* GS)
 	// 달성률
 	LastResult.ItemDelivered = GS->GetItemsDelivered();
 	LastResult.ItemTotal = GS->GetPlacedProps();
-	
+	LastResult.Thresholds = GS->MedalThresholds;
 }
 
 void UUIManagerSubsystem::WireTitleScreen(UTitleScreenWidget* Widget)
@@ -323,6 +326,15 @@ void UUIManagerSubsystem::SetupScreenController(EUIScreen Screen, UUserWidget* T
 		}
 	case EUIScreen::Result:
 		{
+			if (auto* ResultUI = Cast<UEndGameWidget>(Target))
+			{
+				if (UResultWidgetController* WC = Cast<UResultWidgetController>(GetController(EUIScreen::Result)))
+				{
+					ResultUI->SetWidgetController(WC);
+					WC->Bind();
+					WC->PushDataToWidget();
+				}
+			}
 			break;
 		}
 	case EUIScreen::Pause:

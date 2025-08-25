@@ -14,7 +14,7 @@ enum class EMedal : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FMedalThresholds
+struct MOVINGOUT_API FMedalThresholds
 {
 	GENERATED_BODY()
 
@@ -70,4 +70,7 @@ struct FGameResultData
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 ItemTotal = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	FMedalThresholds Thresholds;
 };
