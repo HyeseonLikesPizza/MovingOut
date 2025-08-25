@@ -193,11 +193,12 @@ void UUIManagerSubsystem::HandleRequestStageInfo()
 
 void UUIManagerSubsystem::HandleMatchStopped()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleMatchStopped Called"));
 	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
 	{
 		InitialScreen = EUIScreen::Result;
 		ControllerCache.Empty();
-		UGameplayStatics::OpenLevel(PC, FName(TEXT("ResultMap")));
+		UGameplayStatics::OpenLevel(PC, FName(TEXT("ResultLeve")));
 	}
 }
 
