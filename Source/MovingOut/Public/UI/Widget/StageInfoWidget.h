@@ -20,10 +20,10 @@ public:
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 
-	UPROPERTY(meta=(BindWidgetAnim))
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	UWidgetAnimation* S_Begin;
 
-	UPROPERTY(meta=(BindWidgetAnim))
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	UWidgetAnimation* S_End;
 
 	
