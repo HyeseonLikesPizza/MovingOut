@@ -34,6 +34,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* CarMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USplineComponent* Spline;
+
 private:
 	float DistanceAlongSpline = 0.0f;
 	FVector LastKnownSplineLocation;

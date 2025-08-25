@@ -115,7 +115,7 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
         case EEnemyState::ES_Patrolling:
             MovementComponent->MaxWalkSpeed = PatrolSpeed;
             // 10초마다 물건을 잡으려 시도하는 타이머를 설정해둠
-            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 10.0f, true);
+            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 8.0f, true);
             FindAndMoveToNewPatrolDestination();
             break;
         case EEnemyState::ES_Chasing:
@@ -380,7 +380,7 @@ void AEnemyMovingOutCharacter::PerformThrow()
 
     UPrimitiveComponent* ObjectMesh = Cast<UPrimitiveComponent>(GrabbedObject->GetRootComponent());
     if (ObjectMesh)
-    {
+    {   
         // 부착 해제
         GrabbedObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
         // 물리 시뮬레이션 다시 활성화
