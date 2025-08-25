@@ -19,6 +19,14 @@ public:
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
+
+	UPROPERTY(meta=(BindWidgetAnim))
+	UWidgetAnimation* S_Begin;
+
+	UPROPERTY(meta=(BindWidgetAnim))
+	UWidgetAnimation* S_End;
+
+	
 protected:
 
 	virtual void NativeConstruct() override;

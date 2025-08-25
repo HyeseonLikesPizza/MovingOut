@@ -6,6 +6,7 @@ void UStageInfoWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	SetIsFocusable(true);
+	PlayAnimation(S_Begin);
 }
 
 
@@ -15,8 +16,15 @@ FReply UStageInfoWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
 
 	if (Key == EKeys::SpaceBar)
 	{
-		OnRequestGameStart.Broadcast();
-		return FReply::Handled();
+		PlayAnimation(S_End);
+		
+		FTimerHandle Timer;
+		GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
+		{
+			OnRequestGameStart.Broadcast();
+			return FReply::Handled();	
+		}, 0.2f, false);
+		
 	}
 
 	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
