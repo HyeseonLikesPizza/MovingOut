@@ -33,6 +33,13 @@ void ACarSpawnManager::BeginPlay()
 	}), WaitTime, true);
 }
 
+void ACarSpawnManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearTimer(SpawnHandle);
+}
+
 // Called every frame
 void ACarSpawnManager::Tick(float DeltaTime)
 {
