@@ -94,6 +94,8 @@ public:
 	// 진입/전환 API
 	UFUNCTION(BlueprintCallable)
 	void ShowScreen(EUIScreen Screen);
+
+	void ShowLoadingScreen();
 	
 	UFUNCTION(BlueprintCallable)
 	UUserWidget* GetScreenWidget(EUIScreen Screen) const;
