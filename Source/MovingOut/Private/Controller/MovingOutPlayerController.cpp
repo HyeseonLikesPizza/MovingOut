@@ -4,6 +4,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
 #include "Character/PlayerMovingOutCharacter.h"
+#include "Character/TruckPawn.h"
 #include "Component/InteractiveComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Subsystem/UIManagerSubsystem.h"
@@ -29,7 +30,9 @@ void AMovingOutPlayerController::BeginPlay()
 		}
 	}
 	// 플레이어 캐릭터 설정
+	
 	PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn());
+
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
