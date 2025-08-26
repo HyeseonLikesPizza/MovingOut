@@ -30,14 +30,15 @@ public:
 
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	
 public:
 	// Change Material
 	void ChangeMaterial(UMaterial* NewMaterial);
 	// To default material
 	void SetDefaultMaterial();
 
-	// Reference
-	//class UInteractiveComponent* CharacterComponentRef;
-	
+public:
+	class APlayerMovingOutCharacter* CharacterRef;
+
+	bool bPlayerInBound = false;
 };
