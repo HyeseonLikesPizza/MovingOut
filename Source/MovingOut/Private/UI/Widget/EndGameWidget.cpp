@@ -61,7 +61,7 @@ void UEndGameWidget::SetItemsDeliveredTotal(int32 ItemsDelivered, int32 ItemsTot
 	if (Text_ItemsTotal)
 	{
 		FText Total = FText::FromString(FString::Printf(TEXT("%d"), ItemsTotal));
-		Text_ItemsDelivered->SetText(Total);
+		Text_ItemsTotal->SetText(Total);
 	}
 }
 

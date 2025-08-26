@@ -30,6 +30,7 @@ void AMovingOutPlayerController::BeginPlay()
 	}
 	// 플레이어 캐릭터 설정
 	PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn());
+	
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
