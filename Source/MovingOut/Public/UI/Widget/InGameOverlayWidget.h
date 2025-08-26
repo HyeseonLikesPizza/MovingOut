@@ -37,7 +37,13 @@ protected:
 	UTextBlock* ObjectiveText = nullptr;
 
 	UPROPERTY(meta=(BindWidgetOptional))
-	UProgressBar* TimeProgressBar = nullptr;
+	UProgressBar* TimeProgressBarGold = nullptr;
+
+	UPROPERTY(meta=(BindWidgetOptional))
+	UProgressBar* TimeProgressBarSilver = nullptr;
+
+	UPROPERTY(meta=(BindWidgetOptional))
+	UProgressBar* TimeProgressBarBronze = nullptr;
 
 	UPROPERTY()
 	UOverlayWidgetController* WC = nullptr;
@@ -52,7 +58,7 @@ protected:
 	void HandleMedal(EMedal Medal);
 
 	UFUNCTION()
-	void UpdateTimeProgressBar(float ElapsedTime, float Total);
+	void UpdateTimeProgressBar(float ratio, EMedal Medal);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InGame|Image")
 	UTexture2D* BronzeImg;

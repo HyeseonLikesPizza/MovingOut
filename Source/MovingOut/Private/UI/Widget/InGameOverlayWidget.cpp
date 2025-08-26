@@ -75,9 +75,22 @@ void UInGameOverlayWidget::HandleMedal(EMedal Medal)
 	}
 }
 
-void UInGameOverlayWidget::UpdateTimeProgressBar(float ElapsedTime, float Total)
+void UInGameOverlayWidget::UpdateTimeProgressBar(float ratio, EMedal Medal)
 {
-	if (!TimeProgressBar || Total <= 0) return;
-	const float Ratio = FMath::Clamp((float)ElapsedTime / (float)Total, 0.f, 1.f);
-	TimeProgressBar->SetPercent(Ratio);
+	//if (!TimeProgressBar || Total <= 0) return;
+	//const float Ratio = FMath::Clamp((float)ElapsedTime / (float)Total, 0.f, 1.f);
+	//TimeProgressBar->SetPercent(Ratio);
+
+	switch (Medal)
+	{
+		case EMedal::Gold:
+			TimeProgressBarGold->SetPercent(ratio);
+			break;
+		case EMedal::Silver:
+			TimeProgressBarSilver->SetPercent(ratio);
+			break;
+		case EMedal::Bronze:
+			TimeProgressBarBronze->SetPercent(ratio);
+			break;
+	}
 }

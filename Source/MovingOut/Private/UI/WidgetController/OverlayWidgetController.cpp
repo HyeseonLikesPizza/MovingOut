@@ -52,17 +52,31 @@ void UOverlayWidgetController::TickUI()
 	const float Now = GS ? GS->GetServerWorldTimeSeconds() : -1.f;
 	OnTimerTextChanged.Broadcast(FormatElapsed(Elapsed));
 
-
-	// 프로그레스바 업데이트
-	const float FailOverSec = GS->MedalThresholds.FailOverSeconds;
-	OnTimeProgressChanged.Broadcast(Elapsed, FailOverSec);
-
 	// 이미지 업데이트 (EMedal 전달)
- 	EMedal Medal = ComputeStage(Elapsed);
+	EMedal Medal = ComputeStage(Elapsed);
 	if (LastMedal != Medal)
 	{
 		OnMedalChanged.Broadcast(Medal);
 		LastMedal = Medal;
+	}
+
+	// 프로그레스바 업데이트
+	const float FailOverSec = GS->MedalThresholds.FailOverSeconds;
+	//OnTimeProgressChanged.Broadcast(Elapsed, FailOverSec);
+	const float GoldSec = GS->MedalThresholds.GoldWithinSeconds;
+	const float SilverSec = GS->MedalThresholds.SilverWithinSeconds;
+	const float BronzeSec = GS->MedalThresholds.BronzeWithinSeconds;
+	switch (Medal)
+	{
+	case EMedal::Gold:
+		OnTimeProgressChanged.Broadcast(Elapsed/GoldSec, EMedal::Gold);
+		break;
+	case EMedal::Silver:
+		OnTimeProgressChanged.Broadcast((Elapsed-GoldSec)/GoldSec, EMedal::Silver);
+		break;
+	case EMedal::Bronze:
+		OnTimeProgressChanged.Broadcast((Elapsed-SilverSec)/GoldSec, EMedal::Bronze);
+		break;
 	}
 
 	// 2) 메달/종료 상태 변화 감지해 한 번만 푸시

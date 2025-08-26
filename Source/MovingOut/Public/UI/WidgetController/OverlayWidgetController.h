@@ -10,7 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimerTextChanged, const FText&, NewText);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnObjectiveChanged, int32, remaining, int32, Total);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMedalChanged, EMedal, Medal);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTimeProgressChanged, float, ElapsedSecond, float, FailOverSecond);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTimeProgressChanged, float, ratio, EMedal, Medal);
 
 UCLASS()
 class MOVINGOUT_API UOverlayWidgetController : public UBaseWidgetController
