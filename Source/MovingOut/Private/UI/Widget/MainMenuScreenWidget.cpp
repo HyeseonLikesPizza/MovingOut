@@ -42,8 +42,12 @@ void UMainMenuScreenWidget::NativeDestruct()
 
 void UMainMenuScreenWidget::HandleNewGameClicked()
 {
-	PlayAnimation(M_End);
-	PlayAnimation(M_Unhov_NewGame);
+	if (!bKeyPressed)
+	{
+		bKeyPressed = true;
+		PlayAnimation(M_Unhov_NewGame);
+		PlayAnimation(M_End);
+	}
 	
 	FTimerHandle Th;
 	GetWorld()->GetTimerManager().SetTimer(

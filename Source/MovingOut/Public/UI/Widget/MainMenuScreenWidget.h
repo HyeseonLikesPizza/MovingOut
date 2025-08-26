@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/Widget/MovingOutWidget.h"
 #include "MainMenuScreenWidget.generated.h"
 
 class UButton;
@@ -10,7 +10,7 @@ class UButton;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestIntro);
 
 UCLASS()
-class MOVINGOUT_API UMainMenuScreenWidget : public UUserWidget
+class MOVINGOUT_API UMainMenuScreenWidget : public UMovingOutWidget
 {
 	GENERATED_BODY()
 

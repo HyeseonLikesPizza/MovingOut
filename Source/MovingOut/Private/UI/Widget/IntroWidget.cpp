@@ -13,11 +13,16 @@ FReply UIntroWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FKeyEven
 {
 	Super::NativeOnKeyDown(MyGeometry, InKeyEvent);
 
-	UE_LOG(LogTemp, Warning, TEXT("Intro Native On Key Down"));
-
 	const FKey Key = InKeyEvent.GetKey();
+
+	if (!bKeyPressed)
+	{
+		bKeyPressed = true;
+		OnRequestSelectLevel.Broadcast();
+		return FReply::Handled();
+	}
 	
-	OnRequestSelectLevel.Broadcast();
+	
 	
 	return Super::NativeOnKeyDown(MyGeometry, InKeyEvent);
 }

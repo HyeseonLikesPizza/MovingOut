@@ -14,9 +14,10 @@ FReply UStageInfoWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
 {
 	const FKey Key = InKeyEvent.GetKey();
 
-	if (Key == EKeys::SpaceBar)
+	if (Key == EKeys::SpaceBar && !bKeyPressed)
 	{
 		PlayAnimation(S_End);
+		bKeyPressed = true;
 		
 		FTimerHandle Timer;
 		GetWorld()->GetTimerManager().SetTimer(Timer, [this]()

@@ -22,5 +22,7 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void WidgetControllerSet();
+
+	bool bKeyPressed = false;
 	
 };
