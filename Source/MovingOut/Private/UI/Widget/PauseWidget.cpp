@@ -73,12 +73,5 @@ void UPauseWidget::HandleEndGameClicked()
 
 void UPauseWidget::HandleResumeClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Resume Button Clicked"));
-
-	FTimerHandle Timer;
-	GetWorld()->GetTimerManager().SetTimer(Timer, [this, &Timer]()
-	{
-		OnRequestResumeGame.Broadcast();
-	},1.f, false);
-	
+	OnRequestResumeGame.Broadcast();
 }
