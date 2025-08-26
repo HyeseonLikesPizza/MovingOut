@@ -1,21 +1,20 @@
 
-#include "UI/Widget/EndGameWidget.h"
-
+#include "UI/Widget/EndGameWinWidget.h"
 #include "Components/Image.h"
-#include "UI/WidgetController/ResultWidgetController.h"
 #include "Components/TextBlock.h"
+#include "Type/MedalTypes.h"
+#include "UI/WidgetController/ResultWidgetController.h"
 
-void UEndGameWidget::SetWidgetController(UResultWidgetController* InWC)
+void UEndGameWinWidget::SetWidgetController(UResultWidgetController* InWC)
 {
 	if (!InWC) return;
 
 	WC = InWC;
 	
-	if (!WC->OnResultFail.IsBound()) WC->OnResultFail.AddDynamic(this, &UEndGameWidget::HandleResultData);
-	
+	if (!WC->OnResultFail.IsBound()) WC->OnResultWin.AddDynamic(this, &UEndGameWinWidget::HandleResultData);
 }
 
-void UEndGameWidget::NativeConstruct()
+void UEndGameWinWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
@@ -23,41 +22,36 @@ void UEndGameWidget::NativeConstruct()
 	PlayAnimation(G_Begin);
 }
 
-void UEndGameWidget::NativeDestruct()
+void UEndGameWinWidget::NativeDestruct()
 {
 	if (WC)
-	{
-		WC->OnResultFail.RemoveDynamic(this, &UEndGameWidget::HandleResultData);
-	}
-	
+    {
+    	WC->OnResultWin.RemoveDynamic(this, &UEndGameWinWidget::HandleResultData);
+    }
+    
 	Super::NativeDestruct();
 }
 
-void UEndGameWidget::HandleResultData(FText ClearTimeText, int32 ItemsDelivered, int32 ItemsTotal,
-	const TArray<FText>& MedalThresholds, const TArray<FAdditionalGoalData>& AdditionalGoal)
+void UEndGameWinWidget::HandleResultData(FText ClearTimeText,  const TArray<FText>& MedalThresholds, const TArray<FAdditionalGoalData>& AdditionalGoal)
 {
-	SetItemsDeliveredTotal(ItemsDelivered, ItemsTotal);
+	SetClearTimeText(ClearTimeText);
 	SetMedalThresholds(MedalThresholds);
 	SetAdditionalGoals(AdditionalGoal);
 }
 
-
-void UEndGameWidget::SetItemsDeliveredTotal(int32 ItemsDelivered, int32 ItemsTotal)
+void UEndGameWinWidget::SetClearTimeText(FText ClearTimeText)
 {
-	if (Text_ItemsDelivered)
+	if (Text_ClearTime)
 	{
-		FText Delivered = FText::FromString(FString::Printf(TEXT("%d"), ItemsDelivered));
-		Text_ItemsDelivered->SetText(Delivered);
+		Text_ClearTime->SetText(ClearTimeText);
 	}
-
-	if (Text_ItemsTotal)
+	if (Text_BestClearTime)
 	{
-		FText Total = FText::FromString(FString::Printf(TEXT("%d"), ItemsTotal));
-		Text_ItemsTotal->SetText(Total);
+		Text_BestClearTime->SetText(ClearTimeText);
 	}
 }
 
-void UEndGameWidget::SetMedalThresholds(const TArray<FText>& MedalThresholds)
+void UEndGameWinWidget::SetMedalThresholds(const TArray<FText>& MedalThresholds)
 {
 	if (Text_GoldTimeThreshold)
 	{
@@ -75,7 +69,7 @@ void UEndGameWidget::SetMedalThresholds(const TArray<FText>& MedalThresholds)
 	}
 }
 
-void UEndGameWidget::SetAdditionalGoals(const TArray<FAdditionalGoalData>& InGoals)
+void UEndGameWinWidget::SetAdditionalGoals(const TArray<FAdditionalGoalData>& InGoals)
 {
 	if (Text_Goal1)
 	{

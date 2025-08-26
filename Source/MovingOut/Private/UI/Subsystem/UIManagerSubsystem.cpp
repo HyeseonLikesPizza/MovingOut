@@ -13,6 +13,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Widget/EndGameWidget.h"
+#include "UI/Widget/EndGameWinWidget.h"
 #include "UI/Widget/InGameOverlayWidget.h"
 #include "UI/Widget/IntroWidget.h"
 #include "UI/Widget/MainMenuScreenWidget.h"
@@ -20,6 +21,7 @@
 #include "UI/Widget/TitleScreenWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "UI/Widget/PauseWidget.h"
+#include "UI/Widget/ReadyWidget.h"
 #include "UI/Widget/SelectStageWidget.h"
 #include "UI/Widget/StageInfoWidget.h"
 #include "UI/WidgetController/ResultWidgetController.h"
@@ -39,7 +41,8 @@ UUIManagerSubsystem::UUIManagerSubsystem()
 	// Controller Class Map 추가
 
 	ControllerClassMap.Add(EUIScreen::InGame, UOverlayWidgetController::StaticClass());
-	ControllerClassMap.Add(EUIScreen::Result, UResultWidgetController::StaticClass());
+	ControllerClassMap.Add(EUIScreen::ResultLose, UResultWidgetController::StaticClass());
+	ControllerClassMap.Add(EUIScreen::ResultWin, UResultWidgetController::StaticClass());
 
 	// InitialScreen 초기화
 	InitialScreen = EUIScreen::Title;
@@ -108,7 +111,10 @@ void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget*
 	case EUIScreen::Pause:
 		SetInputModeUIOnly(Target);
 		break;
-	case EUIScreen::Result:
+	case EUIScreen::ResultLose:
+		SetInputModeUIOnly(Target);
+		break;
+	case EUIScreen::ResultWin:
 		SetInputModeUIOnly(Target);
 		break;
 	}
@@ -126,6 +132,7 @@ void UUIManagerSubsystem::CaptureResultFromGameState(AMovingOutGameState* GS)
 	LastResult.ItemDelivered = GS->GetItemsDelivered();
 	LastResult.ItemTotal = GS->GetPlacedProps();
 	LastResult.Thresholds = GS->MedalThresholds;
+	LastResult.AdditionalGoal = GS->AdditionalGoals;
 }
 
 void UUIManagerSubsystem::WireTitleScreen(UTitleScreenWidget* Widget)
@@ -146,7 +153,7 @@ void UUIManagerSubsystem::WirePauseMenu(UPauseWidget* Widget)
 	Widget->OnRequestResumeGame.AddDynamic(this, &UUIManagerSubsystem::HandleResumeGame);
 
 	Widget->OnRequestNewGame.RemoveAll(this);
-	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+	Widget->OnRequestNewGame.AddDynamic(this, &UUIManagerSubsystem::HandleRequestGameReady);
 }
 
 void UUIManagerSubsystem::WireIntro(UIntroWidget* Widget)
@@ -164,7 +171,13 @@ void UUIManagerSubsystem::WireSelectStage(USelectStageWidget* Widget)
 void UUIManagerSubsystem::WireStageInfo(UStageInfoWidget* Widget)
 {
 	Widget->OnRequestGameStart.RemoveAll(this);
-	Widget->OnRequestGameStart.AddDynamic(this, &UUIManagerSubsystem::HandleRequestNewGame);
+	Widget->OnRequestGameStart.AddDynamic(this, &UUIManagerSubsystem::HandleRequestGameReady);
+}
+
+void UUIManagerSubsystem::WireReadyWidget(UReadyWidget* Widget)
+{
+	Widget->OnGameStart.Unbind();
+	Widget->OnGameStart.BindUObject(this, &UUIManagerSubsystem::HandleRequestGameStart);
 }
 
 void UUIManagerSubsystem::HandleStartRequested()
@@ -172,12 +185,12 @@ void UUIManagerSubsystem::HandleStartRequested()
 	ShowScreen(EUIScreen::MainMenu);
 }
 
-void UUIManagerSubsystem::HandleRequestNewGame()
+void UUIManagerSubsystem::HandleRequestGameReady()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Requested New Game"));
+	UE_LOG(LogTemp, Warning, TEXT("Requested Game Ready"));
 	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
 	{
-		InitialScreen = EUIScreen::InGame;
+		InitialScreen = EUIScreen::Ready;
 		ControllerCache.Empty();
 		UGameplayStatics::OpenLevel(PC, FName(TEXT("Stage1")));
 	}
@@ -219,7 +232,12 @@ void UUIManagerSubsystem::HandleMatchStopped()
 	// 레벨 전환
 	if (auto* PC = GetLocalPlayer()->GetPlayerController(GetWorld()))
 	{
-		InitialScreen = EUIScreen::Result;
+		InitialScreen = EUIScreen::ResultLose;
+		if (LastResult.bVictory)
+		{
+			InitialScreen = EUIScreen::ResultWin;
+		}
+		
 		ControllerCache.Empty();
 		UGameplayStatics::OpenLevel(PC, FName(TEXT("ResultLeve")));
 	}
@@ -228,6 +246,11 @@ void UUIManagerSubsystem::HandleMatchStopped()
 void UUIManagerSubsystem::HandleResumeGame()
 {
 	ResumeFromPause();
+}
+
+void UUIManagerSubsystem::HandleRequestGameStart()
+{
+	ShowScreen(EUIScreen::InGame);
 }
 
 void UUIManagerSubsystem::BindScreenEvents(EUIScreen Screen, UUserWidget* Target)
@@ -274,6 +297,14 @@ void UUIManagerSubsystem::BindScreenEvents(EUIScreen Screen, UUserWidget* Target
         		}
         		break;
         	}
+	case EUIScreen::Ready:
+		{
+			if (UReadyWidget* ReadyWidget = Cast<UReadyWidget>(Target))
+			{
+				WireReadyWidget(ReadyWidget);
+			}
+			break;
+		}
 	case EUIScreen::InGame:
 		{
 			BindGameStateSignals();
@@ -324,11 +355,24 @@ void UUIManagerSubsystem::SetupScreenController(EUIScreen Screen, UUserWidget* T
 			}
 			break;
 		}
-	case EUIScreen::Result:
+	case EUIScreen::ResultLose:
 		{
 			if (auto* ResultUI = Cast<UEndGameWidget>(Target))
 			{
-				if (UResultWidgetController* WC = Cast<UResultWidgetController>(GetController(EUIScreen::Result)))
+				if (UResultWidgetController* WC = Cast<UResultWidgetController>(GetController(EUIScreen::ResultLose)))
+				{
+					ResultUI->SetWidgetController(WC);
+					WC->Bind();
+					WC->PushDataToWidget();
+				}
+			}
+			break;
+		}
+	case EUIScreen::ResultWin:
+		{
+			if (auto* ResultUI = Cast<UEndGameWinWidget>(Target))
+			{
+				if (UResultWidgetController* WC = Cast<UResultWidgetController>(GetController(EUIScreen::ResultWin)))
 				{
 					ResultUI->SetWidgetController(WC);
 					WC->Bind();
@@ -545,9 +589,19 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		PauseMenuClass = UISettings->PauseMenuWidgetClass.LoadSynchronous();
 	}
 
-	if (!ResultScreenClass && UISettings && !UISettings->ResultWidgetClass.IsNull())
+	if (!ResultLoseScreenClass && UISettings && !UISettings->ResultLoseWidgetClass.IsNull())
 	{
-		ResultScreenClass = UISettings->ResultWidgetClass.LoadSynchronous();
+		ResultLoseScreenClass = UISettings->ResultLoseWidgetClass.LoadSynchronous();
+	}
+
+	if (!ResultWinScreenClass && UISettings && !UISettings->ResultWinWidgetClass.IsNull())
+	{
+		ResultWinScreenClass = UISettings->ResultWinWidgetClass.LoadSynchronous();
+	}
+
+	if (!ReadyWidgetClass && UISettings && !UISettings->ReadyWidgetClass.IsNull())
+	{
+		ReadyWidgetClass = UISettings->ReadyWidgetClass.LoadSynchronous();
 	}
 }
 
@@ -600,12 +654,16 @@ TSubclassOf<UUserWidget> UUIManagerSubsystem::ResolveClass(EUIScreen Screen) con
 		return SelectStageWidgetClass;
 	case EUIScreen::StageInfo:
 		return StageInfoWidgetClass;
+	case EUIScreen::Ready:
+		return ReadyWidgetClass;
 	case EUIScreen::InGame:
 		return OverlayHUDClass;
 	case EUIScreen::Pause:
 		return PauseMenuClass;
-	case EUIScreen::Result:
-		return ResultScreenClass;
+	case EUIScreen::ResultLose:
+		return ResultLoseScreenClass;
+	case EUIScreen::ResultWin:
+		return ResultWinScreenClass;
 	}
 	return nullptr;
 }

@@ -7,7 +7,8 @@
 #include "ResultWidgetController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnResultData, bool, bVictory, FText, ClearTime, int32, ItemsDelivered, int32, ItemsTotal, FMedalThresholds, MedalThresholds);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnResultFail, FText, ClearTime, int32, ItemsDelivered, int32, ItemsTotal, const TArray<FText>&, MedalThresholds, const TArray<FAdditionalGoalData>&, AdditionalGoals);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnResultWin, FText, ClearTime, const TArray<FText>&, FMedalThresholds, const TArray<FAdditionalGoalData>&, AdditionalGoals);
 
 UCLASS()
 class MOVINGOUT_API UResultWidgetController : public UBaseWidgetController
@@ -20,7 +21,13 @@ public:
 	void PushDataToWidget();
 	
 	UPROPERTY(BlueprintAssignable)
-	FOnResultData Pushed;
+	FOnResultFail OnResultFail;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnResultWin OnResultWin;
+
+	TArray<FText> FormatMedalThresholdElapsed(FMedalThresholds thresholds);
+	FText FormatSeconds(float InSeconds);
 
 private:
 	FGameResultData Cached;

@@ -34,5 +34,11 @@ public:
 	TSoftClassPtr<UUserWidget> PauseMenuWidgetClass;
 
 	UPROPERTY(EditAnywhere)
-	TSoftClassPtr<UUserWidget> ResultWidgetClass;
+	TSoftClassPtr<UUserWidget> ResultLoseWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<UUserWidget> ResultWinWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSoftClassPtr<UUserWidget> ReadyWidgetClass;
 };

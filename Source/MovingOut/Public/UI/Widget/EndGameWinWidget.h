@@ -3,8 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Type/MedalTypes.h"
-#include "EndGameWidget.generated.h"
+#include "EndGameWinWidget.generated.h"
 
 class UResultWidgetController;
 class UTextBlock;
@@ -12,7 +11,7 @@ struct FMedalThresholds;
 class UImage;
 
 UCLASS()
-class MOVINGOUT_API UEndGameWidget : public UUserWidget
+class MOVINGOUT_API UEndGameWinWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -30,16 +29,11 @@ protected:
 	UWidgetAnimation* G_Begin;
 
 	UPROPERTY(meta=(BindWidget), Transient)
-	UTextBlock* Text_ItemsDelivered;
+	UTextBlock* Text_ClearTime;
 
 	UPROPERTY(meta=(BindWidget), Transient)
-	UTextBlock* Text_ItemsTotal;
+	UTextBlock* Text_BestClearTime;
 
-	/*
-	UPROPERTY(meta=(BindWidget), Transient)
-	UImage* Image_Victory;
-	*/
-	
 	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_GoldTimeThreshold;
 
@@ -49,6 +43,7 @@ protected:
 	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_BronzeTimeThreshold;
 
+	
 	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_Goal1;
 
@@ -72,14 +67,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Result|Icon")
 	UTexture2D* FailIcon;
-	
+
 
 private:
 
 	UFUNCTION()
-	void HandleResultData(FText ClearTimeText, int32 ItemsDelivered, int32 ItemsTotal, const TArray<FText>& MedalThresholds, const TArray<FAdditionalGoalData>& AdditionalGoal);
-	
-	void SetItemsDeliveredTotal(int32 ItemsDelivered, int32 ItemsTotal);
+	void HandleResultData(FText ClearTimeText,  const TArray<FText>& MedalThresholds, const TArray<FAdditionalGoalData>& AdditionalGoal);
+	void SetClearTimeText(FText ClearTimeText);
 	void SetMedalThresholds(const TArray<FText>& MedalThresholds);
 	void SetAdditionalGoals(const TArray<FAdditionalGoalData>& InGoals);
 
