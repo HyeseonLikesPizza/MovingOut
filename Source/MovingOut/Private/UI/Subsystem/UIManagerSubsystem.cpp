@@ -603,6 +603,7 @@ void UUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	{
 		ReadyWidgetClass = UISettings->ReadyWidgetClass.LoadSynchronous();
 	}
+	
 }
 
 void UUIManagerSubsystem::Deinitialize()
