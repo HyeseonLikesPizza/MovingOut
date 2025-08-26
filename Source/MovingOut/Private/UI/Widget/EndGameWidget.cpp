@@ -34,10 +34,11 @@ void UEndGameWidget::NativeDestruct()
 void UEndGameWidget::HandleResultData(bool bVictory, FText ClearTimeText, int32 ItemsDelivered, int32 ItemsTotal,
 	FMedalThresholds MedalThresholds)
 {
-	SetClearTimeText(ClearTimeText);
+	//SetClearTimeText(ClearTimeText);
 	SetItemsDeliveredTotal(ItemsDelivered, ItemsTotal);
 }
 
+/*
 void UEndGameWidget::SetClearTimeText(FText ClearTimeText)
 {
 	if (Text_ClearTime)
@@ -45,6 +46,7 @@ void UEndGameWidget::SetClearTimeText(FText ClearTimeText)
 		Text_ClearTime->SetText(ClearTimeText);
 	}
 }
+*/
 
 void UEndGameWidget::SetVictoryImage(bool bVictory)
 {

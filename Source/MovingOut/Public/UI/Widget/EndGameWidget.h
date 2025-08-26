@@ -29,9 +29,6 @@ protected:
 	UWidgetAnimation* G_Begin;
 
 	UPROPERTY(meta=(BindWidget), Transient)
-	UTextBlock* Text_ClearTime;
-
-	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_ItemsDelivered;
 
 	UPROPERTY(meta=(BindWidget), Transient)
@@ -57,7 +54,7 @@ private:
 	UFUNCTION()
 	void HandleResultData(bool bVictory, FText ClearTimeText, int32 ItemsDelivered, int32 ItemsTotal, FMedalThresholds MedalThresholds);
 
-	void SetClearTimeText(FText ClearTimeText);
+	//void SetClearTimeText(FText ClearTimeText);
 	void SetVictoryImage(bool bVictory);
 	void SetItemsDeliveredTotal(int32 ItemsDelivered, int32 ItemsTotal);
 	void SetMedalThresholds(FMedalThresholds MedalThresholds);

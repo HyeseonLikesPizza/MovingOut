@@ -24,7 +24,7 @@ FReply UStageInfoWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
 		{
 			OnRequestGameStart.Broadcast();
 			return FReply::Handled();	
-		}, 0.2f, false);
+		}, 1.3f, false);
 		
 	}
 
