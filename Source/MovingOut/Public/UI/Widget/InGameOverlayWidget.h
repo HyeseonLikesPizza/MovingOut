@@ -9,6 +9,7 @@
 class UOverlayWidgetController;
 class UTextBlock;
 class UProgressBar;
+class UImage;
 
 UCLASS()
 class MOVINGOUT_API UInGameOverlayWidget : public UUserWidget
@@ -30,6 +31,9 @@ protected:
 	UTextBlock* TimerText = nullptr;
 
 	UPROPERTY(meta=(BindWidget))
+	UImage* TimerImage = nullptr;
+
+	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ObjectiveText = nullptr;
 
 	UPROPERTY(meta=(BindWidgetOptional))
@@ -37,8 +41,6 @@ protected:
 
 	UPROPERTY()
 	UOverlayWidgetController* WC = nullptr;
-
-	
 
 	UFUNCTION()
 	void HandleTimerText(const FText& NewText);
@@ -51,5 +53,14 @@ protected:
 
 	UFUNCTION()
 	void UpdateTimeProgressBar(float ElapsedTime, float Total);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InGame|Image")
+	UTexture2D* BronzeImg;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InGame|Image")
+	UTexture2D* SilverImg;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InGame|Image")
+	UTexture2D* GoldImg;
 	
 };

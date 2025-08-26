@@ -69,8 +69,8 @@ void UOverlayWidgetController::TickUI()
 	if (GS->bPlayStopped != bLastPlayStopped || GS->ResultMedal != LastMedal)
 	{
 		bLastPlayStopped = GS->bPlayStopped;
-		LastMedal        = GS->ResultMedal;
-		OnMedalChanged.Broadcast(LastMedal);
+		//LastMedal        = GS->ResultMedal;
+		//OnMedalChanged.Broadcast(LastMedal);
 	}
 }
 

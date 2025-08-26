@@ -1,5 +1,7 @@
 
 #include "UI/Widget/InGameOverlayWidget.h"
+
+#include "Components/Image.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
@@ -54,7 +56,23 @@ void UInGameOverlayWidget::HandleObjective(int32 InDelivered, int32 Total)
 
 void UInGameOverlayWidget::HandleMedal(EMedal Medal)
 {
-	CurrentState = Medal;
+	if (!TimerImage) return;
+	
+	switch (Medal)
+	{
+	case EMedal::Gold:
+		TimerImage->SetBrushFromTexture(GoldImg);
+		break;
+	case EMedal::Silver:
+		TimerImage->SetBrushFromTexture(SilverImg);
+		break;
+	case EMedal::Bronze:
+		TimerImage->SetBrushFromTexture(BronzeImg);
+		break;
+	default:
+		TimerImage->SetBrushFromTexture(GoldImg);
+		break;
+	}
 }
 
 void UInGameOverlayWidget::UpdateTimeProgressBar(float ElapsedTime, float Total)
