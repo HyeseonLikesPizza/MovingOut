@@ -18,6 +18,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/UI/Game_end/Asset/BP_Earth.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/UI/Game_end/Asset/BP_Earth.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/ResultLeve.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/ResultLeve.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_GameWin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/UI/WBP_GameWin.uasset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -285,6 +288,7 @@
       <workItem from="1756166327879" duration="740000" />
       <workItem from="1756184457039" duration="11716000" />
       <workItem from="1756196977693" duration="1018000" />
+      <workItem from="1756267713517" duration="2375000" />
     </task>
     <servers />
   </component>
