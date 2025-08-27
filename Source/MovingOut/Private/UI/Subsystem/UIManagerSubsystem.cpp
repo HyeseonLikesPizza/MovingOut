@@ -102,6 +102,9 @@ void UUIManagerSubsystem::ApplyInputModeForScreen(EUIScreen Screen, UUserWidget*
 	case EUIScreen::Intro:
 		SetInputModeUIOnly(Target);
 		break;
+	case EUIScreen::SelectStage:
+		SetInputModeGameAndUI(Target);
+		break;
 	case EUIScreen::StageInfo:
 		SetInputModeUIOnly(Target);
 		break;
@@ -494,7 +497,7 @@ void UUIManagerSubsystem::HandleEscPressed()
 
 void UUIManagerSubsystem::ApplyInitialUI()
 {
-	if (AMovingOutGameMode* GM = Cast<AMovingOutGameMode>(UGameplayStatics::GetGameMode(GetPC())))
+	if (GetPC())
 	{
 		ShowScreen(InitialScreen);
 	}
