@@ -48,16 +48,18 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bVictory = false;
-	
+
+	// Getter, Setter 
 	void SetItemsDelivered(int32 InDelivered);
 	int32 GetItemsDelivered() const;
+	
 	void SetPlacedProps(int32 InPlacedProps);
 	int32 GetPlacedProps() const;
+	
 	void InitializePlacedPropsCnt();
 	
 	UFUNCTION(BlueprintPure)
 	int32 GetItemsRemaining() const { return FMath::Max(0, PlacedPropsCnt - ItemsDelivered); }
-
 	
 	// Delegate
 
@@ -96,6 +98,9 @@ public:
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 
+	UPROPERTY(EditAnywhere)
+	TArray<FAdditionalGoalData> AdditionalGoals;
+
 private:
 	
 	UPROPERTY(Replicated)
@@ -103,6 +108,6 @@ private:
 
 	UPROPERTY(Replicated)
 	int32 PlacedPropsCnt = -1;
-
-
+	
+	
 };

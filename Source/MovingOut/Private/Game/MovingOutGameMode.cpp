@@ -1,6 +1,7 @@
 
 #include "Game/MovingOutGameMode.h"
 #include "Controller/MovingOutPlayerController.h"
+#include "Data/AdditionalGoalNameData.h"
 #include "Data/URankTimeConfig.h"
 #include "Game/MovingOutGameState.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +18,13 @@ AMovingOutGameMode::AMovingOutGameMode()
 	{
 		MedalThresholdDA = MedalSettingsBP.Object;
 	}
+
+	
+	static ConstructorHelpers::FObjectFinder<UAdditionalGoalNameData> AdditionalGoalSettingsBP(TEXT("/Game/Blueprints/Data/DA_AdditionalGoalName.DA_AdditionalGoalName"));
+	if (ensureMsgf(AdditionalGoalSettingsBP.Succeeded(), TEXT("DA_AdditionalGoalName not found. Check path.")))
+	{
+		AdditionalGoalNameDA = AdditionalGoalSettingsBP.Object;
+	}
 	
 }
 
@@ -29,6 +37,7 @@ void AMovingOutGameMode::BeginPlay()
 		if (MedalThresholdDA)
 		{
 			GS->MedalThresholds = MedalThresholdDA.Get()->Thresholds; // 값 복사
+			GS->AdditionalGoals = AdditionalGoalNameDA.Get()->AdditionalGoals;
 			//GS->ForceNetUpdate(); // 필요 시
 		}
 	}

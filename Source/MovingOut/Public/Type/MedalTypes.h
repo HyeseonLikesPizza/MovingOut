@@ -14,6 +14,18 @@ enum class EMedal : uint8
 };
 
 USTRUCT(BlueprintType)
+struct FAdditionalGoalData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName GoalName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bCheck;
+};
+
+USTRUCT(BlueprintType)
 struct MOVINGOUT_API FMedalThresholds
 {
 	GENERATED_BODY()
@@ -73,4 +85,8 @@ struct FGameResultData
 
 	UPROPERTY(BlueprintReadOnly)
 	FMedalThresholds Thresholds;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FAdditionalGoalData> AdditionalGoal;
 };
+

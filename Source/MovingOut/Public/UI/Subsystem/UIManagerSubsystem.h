@@ -13,6 +13,7 @@ class UIntroWidget;
 class USelectStageWidget;
 class UStageInfoWidget;
 class AMovingOutGameState;
+class UReadyWidget;
 
 UENUM(BlueprintType)
 enum class EUIScreen : uint8
@@ -24,9 +25,11 @@ enum class EUIScreen : uint8
 	Intro,
 	SelectStage,
 	StageInfo,
+	Ready,
 	InGame,
 	Pause,
-	Result
+	ResultLose,
+	ResultWin
 };
 
 UCLASS()
@@ -67,12 +70,13 @@ public:
 	void WireIntro(UIntroWidget* Widget);
 	void WireSelectStage(USelectStageWidget* Widget);
 	void WireStageInfo(UStageInfoWidget* Widget);
+	void WireReadyWidget(UReadyWidget* Widget);
 
 	UFUNCTION()
 	void HandleStartRequested(); // Title -> MainMenu
 
 	UFUNCTION()
-	void HandleRequestNewGame(); // (StageInfo -> Stage1) or (Pause[New Game] -> Stage1) 
+	void HandleRequestGameReady(); // (StageInfo -> Stage1 Ready) or (Pause[New Game] -> Stage1) 
 
 	UFUNCTION()
 	void HandleRequestIntro(); // MainMenu -> Intro
@@ -82,6 +86,9 @@ public:
 
 	UFUNCTION()
 	void HandleRequestStageInfo(); // [임시] SelectStage 10초 뒤 -> StageInfo 위젯 팝업
+
+	UFUNCTION()
+	void HandleRequestGameStart();
 
 	UFUNCTION()
 	void HandleMatchStopped(); // InGame 게임 종료 시 -> Result Widget
@@ -94,8 +101,6 @@ public:
 	// 진입/전환 API
 	UFUNCTION(BlueprintCallable)
 	void ShowScreen(EUIScreen Screen);
-
-	void ShowLoadingScreen();
 	
 	UFUNCTION(BlueprintCallable)
 	UUserWidget* GetScreenWidget(EUIScreen Screen) const;
@@ -164,6 +169,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> StageInfoWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> ReadyWidgetClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> OverlayHUDClass;
@@ -172,7 +180,10 @@ private:
 	TSubclassOf<UUserWidget> PauseMenuClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
-	TSubclassOf<UUserWidget> ResultScreenClass;
+	TSubclassOf<UUserWidget> ResultLoseScreenClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> ResultWinScreenClass;
 
 	// 캐시(런타임 인스턴스)
 	UPROPERTY(Transient)

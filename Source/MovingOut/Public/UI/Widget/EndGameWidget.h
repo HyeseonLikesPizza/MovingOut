@@ -9,6 +9,7 @@
 class UResultWidgetController;
 class UTextBlock;
 struct FMedalThresholds;
+class UImage;
 
 UCLASS()
 class MOVINGOUT_API UEndGameWidget : public UUserWidget
@@ -29,9 +30,6 @@ protected:
 	UWidgetAnimation* G_Begin;
 
 	UPROPERTY(meta=(BindWidget), Transient)
-	UTextBlock* Text_ClearTime;
-
-	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_ItemsDelivered;
 
 	UPROPERTY(meta=(BindWidget), Transient)
@@ -40,8 +38,8 @@ protected:
 	/*
 	UPROPERTY(meta=(BindWidget), Transient)
 	UImage* Image_Victory;
+	*/
 	
-
 	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_GoldTimeThreshold;
 
@@ -50,17 +48,40 @@ protected:
 
 	UPROPERTY(meta=(BindWidget), Transient)
 	UTextBlock* Text_BronzeTimeThreshold;
-	*/
+
+	UPROPERTY(meta=(BindWidget), Transient)
+	UTextBlock* Text_Goal1;
+
+	UPROPERTY(meta=(BindWidget), Transient)
+	UTextBlock* Text_Goal2;
+
+	UPROPERTY(meta=(BindWidget), Transient)
+	UTextBlock* Text_Goal3;
+
+	UPROPERTY(meta=(BindWidget), Transient)
+	UImage* Img_Goal1;
+
+	UPROPERTY(meta=(BindWidget), Transient)
+	UImage* Img_Goal2;
+
+	UPROPERTY(meta=(BindWidget), Transient)
+	UImage* Img_Goal3;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Result|Icon")
+	UTexture2D* SuccessIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Result|Icon")
+	UTexture2D* FailIcon;
+	
 
 private:
 
 	UFUNCTION()
-	void HandleResultData(bool bVictory, FText ClearTimeText, int32 ItemsDelivered, int32 ItemsTotal, FMedalThresholds MedalThresholds);
-
-	void SetClearTimeText(FText ClearTimeText);
-	void SetVictoryImage(bool bVictory);
+	void HandleResultData(FText ClearTimeText, int32 ItemsDelivered, int32 ItemsTotal, const TArray<FText>& MedalThresholds, const TArray<FAdditionalGoalData>& AdditionalGoal);
+	
 	void SetItemsDeliveredTotal(int32 ItemsDelivered, int32 ItemsTotal);
-	void SetMedalThresholds(FMedalThresholds MedalThresholds);
+	void SetMedalThresholds(const TArray<FText>& MedalThresholds);
+	void SetAdditionalGoals(const TArray<FAdditionalGoalData>& InGoals);
 
 	UPROPERTY()
 	UResultWidgetController* WC;

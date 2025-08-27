@@ -1,5 +1,7 @@
 
 #include "UI/Widget/InGameOverlayWidget.h"
+
+#include "Components/Image.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
@@ -54,12 +56,48 @@ void UInGameOverlayWidget::HandleObjective(int32 InDelivered, int32 Total)
 
 void UInGameOverlayWidget::HandleMedal(EMedal Medal)
 {
-	CurrentState = Medal;
+	if (!TimerImage) return;
+	
+	switch (Medal)
+	{
+	case EMedal::Gold:
+		TimerImage->SetBrushFromTexture(GoldImg);
+		TimeProgressBarGold->SetFillColorAndOpacity(Color);
+		break;
+	case EMedal::Silver:
+		TimerImage->SetBrushFromTexture(SilverImg);
+		TimeProgressBarGold->SetFillColorAndOpacity(FColor::Silver);
+		TimeProgressBarSilver->SetFillColorAndOpacity(FColor::Silver);
+		break;
+	case EMedal::Bronze:
+		TimerImage->SetBrushFromTexture(BronzeImg);
+		FLinearColor BronzeColor(0.67f, 0.47f, 0.3f);
+		TimeProgressBarGold->SetFillColorAndOpacity(BronzeColor);
+		TimeProgressBarSilver->SetFillColorAndOpacity(BronzeColor);
+		TimeProgressBarBronze->SetFillColorAndOpacity(BronzeColor);
+		break;
+	default:
+		TimerImage->SetBrushFromTexture(GoldImg);
+		break;
+	}
 }
 
-void UInGameOverlayWidget::UpdateTimeProgressBar(float ElapsedTime, float Total)
+void UInGameOverlayWidget::UpdateTimeProgressBar(float ratio, EMedal Medal)
 {
-	if (!TimeProgressBar || Total <= 0) return;
-	const float Ratio = FMath::Clamp((float)ElapsedTime / (float)Total, 0.f, 1.f);
-	TimeProgressBar->SetPercent(Ratio);
+	//if (!TimeProgressBar || Total <= 0) return;
+	//const float Ratio = FMath::Clamp((float)ElapsedTime / (float)Total, 0.f, 1.f);
+	//TimeProgressBar->SetPercent(Ratio);
+
+	switch (Medal)
+	{
+		case EMedal::Gold:
+			TimeProgressBarGold->SetPercent(ratio);
+			break;
+		case EMedal::Silver:
+			TimeProgressBarSilver->SetPercent(ratio);
+			break;
+		case EMedal::Bronze:
+			TimeProgressBarBronze->SetPercent(ratio);
+			break;
+	}
 }

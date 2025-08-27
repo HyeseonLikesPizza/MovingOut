@@ -6,6 +6,7 @@
 #include "UI/Subsystem/UIManagerSubsystem.h"
 #include "MovingOutGameMode.generated.h"
 
+class UAdditionalGoalNameData;
 class AMovingOutGameState;
 class UURankTimeConfig;
 
@@ -34,6 +35,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Medal")
 	TObjectPtr<UURankTimeConfig> MedalThresholdDA;
+
+	UPROPERTY()
+	TObjectPtr<UAdditionalGoalNameData> AdditionalGoalNameDA;
 	
 
 	// 흐름 제어
