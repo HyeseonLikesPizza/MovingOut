@@ -62,12 +62,19 @@ void UInGameOverlayWidget::HandleMedal(EMedal Medal)
 	{
 	case EMedal::Gold:
 		TimerImage->SetBrushFromTexture(GoldImg);
+		TimeProgressBarGold->SetFillColorAndOpacity(Color);
 		break;
 	case EMedal::Silver:
 		TimerImage->SetBrushFromTexture(SilverImg);
+		TimeProgressBarGold->SetFillColorAndOpacity(FColor::Silver);
+		TimeProgressBarSilver->SetFillColorAndOpacity(FColor::Silver);
 		break;
 	case EMedal::Bronze:
 		TimerImage->SetBrushFromTexture(BronzeImg);
+		FLinearColor BronzeColor(0.67f, 0.47f, 0.3f);
+		TimeProgressBarGold->SetFillColorAndOpacity(BronzeColor);
+		TimeProgressBarSilver->SetFillColorAndOpacity(BronzeColor);
+		TimeProgressBarBronze->SetFillColorAndOpacity(BronzeColor);
 		break;
 	default:
 		TimerImage->SetBrushFromTexture(GoldImg);

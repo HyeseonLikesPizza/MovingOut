@@ -48,6 +48,9 @@ protected:
 	UPROPERTY()
 	UOverlayWidgetController* WC = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	FLinearColor Color;
+
 	UFUNCTION()
 	void HandleTimerText(const FText& NewText);
 

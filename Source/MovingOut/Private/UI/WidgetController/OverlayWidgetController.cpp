@@ -62,20 +62,20 @@ void UOverlayWidgetController::TickUI()
 
 	// 프로그레스바 업데이트
 	const float FailOverSec = GS->MedalThresholds.FailOverSeconds;
-	//OnTimeProgressChanged.Broadcast(Elapsed, FailOverSec);
 	const float GoldSec = GS->MedalThresholds.GoldWithinSeconds;
 	const float SilverSec = GS->MedalThresholds.SilverWithinSeconds;
 	const float BronzeSec = GS->MedalThresholds.BronzeWithinSeconds;
+	
 	switch (Medal)
 	{
 	case EMedal::Gold:
 		OnTimeProgressChanged.Broadcast(Elapsed/GoldSec, EMedal::Gold);
 		break;
 	case EMedal::Silver:
-		OnTimeProgressChanged.Broadcast((Elapsed-GoldSec)/GoldSec, EMedal::Silver);
+		OnTimeProgressChanged.Broadcast((Elapsed-GoldSec)/(SilverSec-GoldSec), EMedal::Silver);
 		break;
 	case EMedal::Bronze:
-		OnTimeProgressChanged.Broadcast((Elapsed-SilverSec)/GoldSec, EMedal::Bronze);
+		OnTimeProgressChanged.Broadcast((Elapsed-SilverSec)/(BronzeSec-SilverSec), EMedal::Bronze);
 		break;
 	}
 
