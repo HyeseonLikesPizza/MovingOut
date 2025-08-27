@@ -1,17 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BasePlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "TruckPlayerController.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class MOVINGOUT_API ATruckPlayerController : public APlayerController
+class MOVINGOUT_API ATruckPlayerController : public ABasePlayerController
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void BeginPlay() override;
 };

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BasePlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "MovingOutPlayerController.generated.h"
 
@@ -14,7 +15,7 @@ class APlayerMovingOutCharacter;
 
 
 UCLASS()
-class MOVINGOUT_API AMovingOutPlayerController : public APlayerController
+class MOVINGOUT_API AMovingOutPlayerController : public ABasePlayerController
 {
 	GENERATED_BODY()
 

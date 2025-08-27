@@ -20,6 +20,7 @@ void AMovingOutPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	/*
 	if (!IsLocalController()) return;
 	if (ULocalPlayer* LP = GetLocalPlayer())
 	{
@@ -29,6 +30,7 @@ void AMovingOutPlayerController::BeginPlay()
 			//UI->ShowScreen(EUIScreen::Title);
 		}
 	}
+	*/
 	// 플레이어 캐릭터 설정
 	
 	PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn());
