@@ -5,6 +5,8 @@
 
 #include "Character/TruckPawn.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AHouseToEnter::AHouseToEnter()
@@ -46,6 +48,10 @@ void AHouseToEnter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	if (Truck)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Apply widget here >_<"));
+
+		Truck->MoveSpeed = 0.f;  
+		
+		OnRequestStageInfo.Broadcast();
 	}
 	
 }

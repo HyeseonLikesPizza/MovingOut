@@ -7,11 +7,13 @@ void USelectStageWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	SetIsFocusable(true);
+	PlayAnimation(C_Begin);
 
 	UE_LOG(LogTemp, Warning, TEXT("Select Stage Widget Created"));
 
 	APlayerController* PC = GetOwningPlayer();
-	
+
+	/*
 	FTimerHandle Timer;
 	GetWorld()->GetTimerManager().SetTimer(Timer, [this, PC]()
 	{
@@ -26,6 +28,7 @@ void USelectStageWidget::NativeConstruct()
 		SetKeyboardFocus();
 		SetUserFocus(PC);
 		
-		OnRequestStageInfo.Broadcast();
+		
 	}, 10.f, false);
+	*/
 }

@@ -9,9 +9,11 @@
 #include "Data/UISettingAsset.h"
 #include "Game/MovingOutGameState.h"
 #include "Game/MovingOutGameMode.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "UI/WidgetController/BaseWidgetController.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Props/HouseToEnter.h"
 #include "UI/Widget/EndGameWidget.h"
 #include "UI/Widget/EndGameWinWidget.h"
 #include "UI/Widget/InGameOverlayWidget.h"
@@ -167,8 +169,24 @@ void UUIManagerSubsystem::WireIntro(UIntroWidget* Widget)
 
 void UUIManagerSubsystem::WireSelectStage(USelectStageWidget* Widget)
 {
-	Widget->OnRequestStageInfo.RemoveAll(this);
-	Widget->OnRequestStageInfo.AddDynamic(this, &UUIManagerSubsystem::HandleRequestStageInfo);
+	TSubclassOf<AHouseToEnter> ClassToFind = AHouseToEnter::StaticClass();
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ClassToFind, FoundActors);
+	if (FoundActors[0])
+	{
+		if (AHouseToEnter* collisionBox = Cast<AHouseToEnter>(FoundActors[0]))
+		{
+			if (APlayerController* PC = GetPC())
+			{
+				//PC->SetIgnoreMoveInput(true);
+				//PC->SetIgnoreLookInput(true);
+				//PC->DisableInput(PC);
+				
+			}
+			collisionBox->OnRequestStageInfo.AddDynamic(this, &UUIManagerSubsystem::HandleRequestStageInfo);	
+		}
+	}
+	
 }
 
 void UUIManagerSubsystem::WireStageInfo(UStageInfoWidget* Widget)

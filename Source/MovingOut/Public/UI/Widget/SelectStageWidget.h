@@ -5,8 +5,6 @@
 #include "UI/Widget/MovingOutWidget.h"
 #include "SelectStageWidget.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestStageInfo);
-
 UCLASS()
 class MOVINGOUT_API USelectStageWidget : public UMovingOutWidget
 {
@@ -14,8 +12,10 @@ class MOVINGOUT_API USelectStageWidget : public UMovingOutWidget
 
 public:
 
-	UPROPERTY(BlueprintAssignable)
-	FOnRequestStageInfo OnRequestStageInfo;
+	
+
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	UWidgetAnimation* C_Begin;
 
 protected:
 	virtual void NativeConstruct() override;
