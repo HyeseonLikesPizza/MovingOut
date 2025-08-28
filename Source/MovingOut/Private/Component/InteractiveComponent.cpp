@@ -80,28 +80,32 @@ void UInteractiveComponent::TryGrab()
 
 	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params))
 	{
-
-		if (UPrimitiveComponent* HitComp = HitResult.GetComponent())
+		if (CurrentGrabbedComp = HitResult.GetComponent())
 		{
-			if (HitComp->GetCollisionObjectType() == Props)
+			if (CurrentGrabbedComp->GetCollisionObjectType() == Props)
 			{
 				APropsBase* prop = Cast<APropsBase>(HitResult.GetActor());
 
 				if (prop->bIsHeavy)
 				{
-					FVector RightHandSocketLocation = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
-					Character->PhysicsHandle->GrabComponentAtLocation(HitComp, NAME_None, HitResult.ImpactPoint);
-					//HitComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+					// 오른손 부착
+					//FVector RightHandSocketLocation = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
+					Character->PhysicsHandle->GrabComponentAtLocation(CurrentGrabbedComp, NAME_None, HitResult.ImpactPoint);
+
+					LeftHandIKTarget->AttachToComponent(CurrentGrabbedComp, FAttachmentTransformRules::SnapToTargetIncludingScale, Character->GetLeftHandBoneName());
+
+					// 왼손 부착
+					
 				}
 				else
 				{
-					HitComp->SetSimulatePhysics(false);
-					HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+					CurrentGrabbedComp->SetSimulatePhysics(false);
+					CurrentGrabbedComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 					FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 					Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResult.GetActor(), true);
 				
-					HitComp->IgnoreActorWhenMoving(Character, true);
-					HitComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+					CurrentGrabbedComp->IgnoreActorWhenMoving(Character, true);
+					CurrentGrabbedComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 					PickFaceEdgesAndSetIK();
 					//IsGrabbingSomething();
@@ -115,18 +119,19 @@ void UInteractiveComponent::TryGrab()
 void UInteractiveComponent::GrabRelease()
 {
 	Character->SetIsGrabbing(false);
-	if (HitResult.GetActor())
+	if (CurrentGrabbedComp)
 	{
 		Character->PhysicsHandle->ReleaseComponent();
 		
-		Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResult.GetActor(), false);
-		HitResult.GetComponent()->IgnoreActorWhenMoving(Character, false);
-		HitResult.GetComponent()->SetSimulatePhysics(true);
-		HitResult.GetComponent()->SetEnableGravity(true);
-		HitResult.GetComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
-		HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResult.GetActor(), false);
+		CurrentGrabbedComp->IgnoreActorWhenMoving(Character, false);
+		CurrentGrabbedComp->SetSimulatePhysics(true);
+		CurrentGrabbedComp->SetEnableGravity(true);
+		CurrentGrabbedComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		CurrentGrabbedComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 		FDetachmentTransformRules rules(EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, EDetachmentRule::KeepWorld, false);
-		HitResult.GetComponent()->DetachFromComponent(rules);
+		CurrentGrabbedComp->DetachFromComponent(rules);
+		CurrentGrabbedComp = nullptr;
 		HitResult.Reset();
 	}
 
@@ -179,15 +184,15 @@ void UInteractiveComponent::ThrowRelease()
 	Character->LightCone->SetVisibility(false);
 	Character->CrosshairDecal->SetVisibility(false, true);
 	
-	if (HitResult.GetComponent())
+	if (CurrentGrabbedComp)
 	{
-		HitResult.GetComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		HitResult.GetComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		HitResult.GetComponent()->SetEnableGravity(true);
-		HitResult.GetComponent()->SetSimulatePhysics(true);
+		CurrentGrabbedComp->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentGrabbedComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		CurrentGrabbedComp->SetEnableGravity(true);
+		CurrentGrabbedComp->SetSimulatePhysics(true);
 
 		// 시작점과 목표점
-		const FVector Start = HitResult.GetComponent()->GetComponentLocation();
+		const FVector Start = CurrentGrabbedComp->GetComponentLocation();
 		const FVector Target = Character->CrosshairDecal->GetComponentLocation();
 		const FVector ToTarget = Target - Start;
 
@@ -212,7 +217,7 @@ void UInteractiveComponent::ThrowRelease()
 			// 안전한 폴백: 비행시간 T 기반 방식(이전 메시지)으로 V0 계산
 			const double T = FMath::Clamp(DesiredFlightTimeSeconds, 0.25, 3.0);
 			const FVector V0 = (ToTarget / T) - 0.5 * FVector(0,0,-g) * T;
-			HitResult.GetComponent()->SetPhysicsLinearVelocity(V0, true);
+			CurrentGrabbedComp->SetPhysicsLinearVelocity(V0, true);
 			return;
 		}
 
@@ -224,7 +229,7 @@ void UInteractiveComponent::ThrowRelease()
 		const FRotator LaunchRot(PitchDeg, YawDeg, 0.0);
 
 		const FVector LaunchVel = LaunchRot.Vector() * v;   // cm/s
-		HitResult.GetComponent()->SetPhysicsLinearVelocity(LaunchVel, true);
+		CurrentGrabbedComp->SetPhysicsLinearVelocity(LaunchVel, true);
 		
 	}
 	
@@ -252,7 +257,7 @@ void UInteractiveComponent::CancelThrowAming()
 bool UInteractiveComponent::PickFaceEdgesAndSetIK()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AttachToPropCornor Called"));
-	if (!HitResult.GetComponent() || !Character) return false;
+	if (!CurrentGrabbedComp || !Character) return false;
     UPrimitiveComponent* Comp = HitResult.GetComponent();
     if (!Comp) return false;
 
@@ -343,7 +348,7 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	}
 	*/
 	
-	if (IsGrabbingSomething())
+	if (CurrentGrabbedComp)
 	{
 		FTransform R_HandSocketTransform = Character->GetMesh()->GetSocketTransform(Character->GetRightHandBoneName());
 		Character->PhysicsHandle->SetTargetLocationAndRotation(R_HandSocketTransform.GetLocation(), R_HandSocketTransform.GetRotation().Rotator());
@@ -354,7 +359,7 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 void UInteractiveComponent::TickCarry_Light(float DeltaTime, const FCarrySettings& S)
 {
-	if (!HitResult.GetComponent() || !Character->GetIsGrabbing()) return;
+	if (!CurrentGrabbedComp || !Character->GetIsGrabbing()) return;
 
 	UPrimitiveComponent* Comp = HitResult.GetComponent();
 	const FTransform CompTM = Comp->GetComponentTransform();
@@ -418,7 +423,7 @@ void UInteractiveComponent::TickCarry_Heavy(float DeltaTime, const FCarrySetting
 
 void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTwime, float posSpeed, float rotSpeed)
 {
-	if (!HitResult.GetComponent()) return;
+	if (!CurrentGrabbedComp) return;
 	UPrimitiveComponent* HeldComp = HitResult.GetComponent();
 	
 	// ③ 손 IK 목표(월드 → AnimBP에서 컴포넌트로 변환)
@@ -431,7 +436,7 @@ void UInteractiveComponent::TickCarry_MoveCoupled(float DeltaTwime, float posSpe
 
 void UInteractiveComponent::SetGripMidPoint(FName RSock, FName LSock)
 {
-	if (!HitResult.GetComponent() || !Character) return;
+	if (!CurrentGrabbedComp || !Character) return;
 
 	UPrimitiveComponent* HeldComp = HitResult.GetComponent();
 	RightSocketName = RSock;

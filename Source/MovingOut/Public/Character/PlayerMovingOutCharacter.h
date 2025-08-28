@@ -28,6 +28,9 @@ public:
 	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USceneComponent* LeftHandIKTarget;
+
 	
 protected:
 	

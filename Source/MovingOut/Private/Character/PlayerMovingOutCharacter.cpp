@@ -23,6 +23,9 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 	LightCone->SetupAttachment(RootComponent);
 	LightCone->SetVisibility(false);
 
+	LeftHandIKTarget = CreateDefaultSubobject<USceneComponent>(TEXT("LeftHandIKTarget"));
+	LeftHandIKTarget->SetupAttachment(GetRootComponent());
+
 }
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)

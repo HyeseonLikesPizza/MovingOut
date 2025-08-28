@@ -79,4 +79,28 @@ private:
 
 	FName LeftSocketName;
 	FName RightSocketName;
+
+
+public:
+	// IK
+
+	UPROPERTY()
+	UPrimitiveComponent* CurrentGrabbedComp = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USceneComponent* LeftHandIKTarget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "IK")
+	float IKBlendInSpeed = 10.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "IK")
+	float IKBlendOutSpeed = 10.f;
+
+	// AnimBP로 넘길 값들
+	UPROPERTY(BlueprintReadOnly, Category="IK")
+	FTransform LeftHandTarget_CS;   // 컴포넌트 공간
+	UPROPERTY(BlueprintReadOnly, Category="IK")
+	float LeftHandIKAlpha = 0.f;    // 0~1
+
+	
 };
