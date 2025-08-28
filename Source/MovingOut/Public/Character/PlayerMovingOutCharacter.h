@@ -20,18 +20,17 @@ public:
 	APlayerMovingOutCharacter();
 
 	virtual void Tick(float DeltaSeconds) override;
-	
-	
 	void HandleMove(const FInputActionValue& Value);
 
 	UPROPERTY()
 	UInteractiveComponent* InteractiveComponent;
 
-	
-
-private:
 	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle;
+
+	
+protected:
+	
 
 
 };

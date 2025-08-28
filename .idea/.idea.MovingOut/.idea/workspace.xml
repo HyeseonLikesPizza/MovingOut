@@ -15,14 +15,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameMode/BP_MovingOutGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameMode/BP_MovingOutGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/BP_EndingTruck.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/BP_EndingTruck.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Props/EndingTruck.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Props/EndingTruck.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Props/EndingTruck.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Props/EndingTruck.h" afterDir="false" />
-    </list>
+    <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,6 +28,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Plugins/EnhancedInput/Intermediate/Build/Win64/UnrealEditor/Inc/EnhancedInput/UHT/InputActionValue.generated.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/Engine/LocalPlayer.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Classes/GameFramework/PlayerController.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../Program Files/Epic Games/UE_5.5/Engine/Source/Runtime/Engine/Private/GameSession.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -91,7 +85,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "EH",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "E:/UnrealProject/MovingOut/Source/MovingOut",
     "node.js.detected.package.eslint": "true",
@@ -99,7 +93,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "preferences.editor",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -294,8 +288,7 @@
       <workItem from="1756288893821" duration="17000" />
       <workItem from="1756339227469" duration="198000" />
       <workItem from="1756340377948" duration="4219000" />
-      <workItem from="1756348058997" duration="1295000" />
-      <workItem from="1756360332644" duration="5537000" />
+      <workItem from="1756348058997" duration="3004000" />
     </task>
     <servers />
   </component>
@@ -344,5 +337,9 @@
         <watch expression="Screen" />
       </configuration>
     </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
