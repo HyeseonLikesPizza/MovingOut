@@ -27,7 +27,7 @@ AEndingTruck::AEndingTruck()
 	PropsGoalZone = CreateDefaultSubobject<UChildActorComponent>(TEXT("PropsGoalZone"));
 	PropsGoalZone->SetupAttachment(GetRootComponent());
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshTemp(TEXT("/Script/Engine.StaticMesh'/Game/Assets/Truck/SM_SM_Truck_half.SM_SM_Truck_half'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshTemp(TEXT("/Script/Engine.StaticMesh'/Game/Assets/Truck/SM_Truck_halfV2.SM_Truck_halfV2'"));
 	if (MeshTemp.Succeeded())
 	{
 		Mesh->SetStaticMesh(MeshTemp.Object);
@@ -61,6 +61,8 @@ void AEndingTruck::Tick(float DeltaTime)
 		if (CurrentTime >= EndTime)
 		{
 			// 3. 딜리게이트 쏘기
+			// 결과 위젯!
+			OnTruckDeparted.Broadcast();
 		}
 		else
 		{

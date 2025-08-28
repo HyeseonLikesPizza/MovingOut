@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "EndingTruck.generated.h"
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTruckDeparted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTruckDeparted);
 
 UCLASS()
 /*
@@ -68,5 +68,6 @@ public:
 	void IsReadyToLeave();
 
 	// Delegate
-	
+	UPROPERTY(BlueprintAssignable)
+	FOnTruckDeparted OnTruckDeparted;
 };
