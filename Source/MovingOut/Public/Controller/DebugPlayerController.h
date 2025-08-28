@@ -2,26 +2,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BasePlayerController.h"
 #include "GameFramework/PlayerController.h"
-#include "MovingOutPlayerController.generated.h"
+#include "DebugPlayerController.generated.h"
 
+struct FInputActionValue;
+class APlayerMovingOutCharacter;
 class UInputMappingContext;
 class UInputAction;
-struct FInputActionValue;
-class UTitleScreenWidget;
-class APlayerMovingOutCharacter;
-
-
 
 UCLASS()
-class MOVINGOUT_API AMovingOutPlayerController : public ABasePlayerController
+class MOVINGOUT_API ADebugPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	AMovingOutPlayerController();
-	
 	virtual void BeginPlay() override;
 
 	void PlayerMove(const FInputActionValue& Value);
@@ -32,10 +26,6 @@ public:
 	void ThrowAim();
 	void ThrowRelease();
 
-protected:
-	virtual void SetupInputComponent() override;
-	virtual void OnPossess(APawn* InPawn) override;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputMappingContext* MappingContext;
 	
@@ -51,19 +41,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
 	UInputAction* ThrowAction;
 
-
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
-	UInputAction* PauseAction;
-	/*
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess="true"))
-	UInputAction* ResumeAction;
-	*/
-	
 	
 
+protected:
+	virtual void SetupInputComponent() override;
+	virtual void OnPossess(APawn* InPawn) override;
 	APlayerMovingOutCharacter* PlayerCharacter;
-	void HandleESCPressed();
-	
-	
 };
