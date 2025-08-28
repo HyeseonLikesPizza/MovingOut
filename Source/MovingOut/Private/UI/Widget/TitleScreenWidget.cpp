@@ -21,8 +21,15 @@ FReply UTitleScreenWidget::NativeOnKeyDown(const FGeometry& MyGeometry, const FK
 	if (Key == EKeys::SpaceBar && !bKeyPressed)
 	{
 		bKeyPressed = true;
+		PlayAnimation(T_End);
+
+		FTimerHandle Timer;
+		GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
+		{
+			OnStartRequested.Broadcast();
+		},2.f, false);
 		
-		OnStartRequested.Broadcast();
+		
 		return FReply::Handled();	
 	}
 	
