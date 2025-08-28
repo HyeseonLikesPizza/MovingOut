@@ -7,6 +7,7 @@
 
 class AMovingOutCharacter;
 class UPlayerAnimInstance;
+class APlayerMovingOutCharacter;
 
 struct FCarrySettings {
 	float CarryDist = 30.f; // 플레이어 앞 거리(캡슐 기준)
@@ -63,7 +64,7 @@ protected:
 
 private:
 	UPROPERTY()
-	AMovingOutCharacter* Character;
+	APlayerMovingOutCharacter* Character;
 	FHitResult HitResult;
 	FVector AimPoint;
 	bool IsAming;

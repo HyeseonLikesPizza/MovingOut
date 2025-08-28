@@ -7,6 +7,7 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "MovingOut/MovingOut.h"
 #include "Component/InteractiveComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
@@ -41,12 +42,14 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	if (!InteractiveComponent->GetIsAming())
+	if (!InteractiveComponent->GetIsAming() && !InteractiveComponent->IsGrabbingSomething()) // 평소 입력
 	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		
 		AddMovementInput(ForwardDirection, MovementVector.X);
 		AddMovementInput(RightDirection, MovementVector.Y);
 	}
-	else
+	else if (InteractiveComponent->GetIsAming())
 	{
 		// 1. 입력 방향 벡터의 크기가 0이 아닐 때만 (즉, 키를 누르고 있을 때만) 회전 처리
 		if (!MovementVector.IsNearlyZero())
@@ -68,6 +71,24 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 			GetController()->SetControlRotation(NewRotation); // 컨트롤러의 회전을 변경
 			SetActorRotation(NewRotation); // 액터(캐릭터)의 회전을 변경
 			
+		}
+	}
+	else if (InteractiveComponent->IsGrabbingSomething())
+	{
+		if (!MovementVector.IsNearlyZero())
+		{
+			FVector MoveDir = (ForwardDirection * MovementVector.X + RightDirection * MovementVector.Y).GetSafeNormal();
+			SetActorLocation(GetActorLocation()+MoveDir*GetWorld()->GetDeltaSeconds()*300.f);
+			MoveDir *= -1;
+
+			const FRotator Target = MoveDir.Rotation();
+
+			const float TurnSpeed = 8.f;
+			const float DT = GetWorld()->GetDeltaSeconds();
+			const FRotator NewRot = FMath::RInterpTo(GetActorRotation(), Target, DT, TurnSpeed);
+			SetActorRotation(NewRot);
+			
+			//SetActorRotation(MoveDir.Rotation());
 		}
 	}
 	

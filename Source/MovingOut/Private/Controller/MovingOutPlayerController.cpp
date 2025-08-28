@@ -57,7 +57,6 @@ void AMovingOutPlayerController::OnPossess(APawn* InPawn)
 
 void AMovingOutPlayerController::PlayerMove(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Player Move"));
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->HandleMove(Value);
