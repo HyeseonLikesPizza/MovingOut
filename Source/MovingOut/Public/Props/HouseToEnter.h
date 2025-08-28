@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "HouseToEnter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestStageInfo);
+
 UCLASS()
 class MOVINGOUT_API AHouseToEnter : public AActor
 {
@@ -14,6 +16,9 @@ class MOVINGOUT_API AHouseToEnter : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AHouseToEnter();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnRequestStageInfo OnRequestStageInfo;
 
 protected:
 	// Called when the game starts or when spawned

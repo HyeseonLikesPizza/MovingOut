@@ -8,6 +8,7 @@
 #include "MovingOut/MovingOut.h"
 #include "Animation/PlayerAnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "Props/PropsBase.h"
 
 UInteractiveComponent::UInteractiveComponent()
 {
@@ -76,25 +77,33 @@ void UInteractiveComponent::TryGrab()
 	DrawDebugLineTrace(GetWorld(), Start, End);
 	Character->SetIsGrabbing(true);
 
-	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(200.f), Params))
+	if (GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params))
 	{
 
 		if (UPrimitiveComponent* HitComp = HitResult.GetComponent())
 		{
 			if (HitComp->GetCollisionObjectType() == Props)
 			{
-				HitComp->SetSimulatePhysics(false);
-				HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-				FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-				Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResult.GetActor(), true);
+				APropsBase* prop = Cast<APropsBase>(HitResult.GetActor());
+
+				if (prop->bIsHeavy)
+				{
+					
+				}
+				else
+				{
+					HitComp->SetSimulatePhysics(false);
+					HitComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+					FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+					Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResult.GetActor(), true);
 				
-				HitComp->IgnoreActorWhenMoving(Character, true);
-				HitComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+					HitComp->IgnoreActorWhenMoving(Character, true);
+					HitComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
-				PickFaceEdgesAndSetIK();
+					PickFaceEdgesAndSetIK();
 
-				IsGrabbingSomething();
-			
+					IsGrabbingSomething();
+				}
 			}
 			
 		}

@@ -19,21 +19,7 @@ AMovingOutPlayerController::AMovingOutPlayerController()
 void AMovingOutPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	/*
-	if (!IsLocalController()) return;
-	if (ULocalPlayer* LP = GetLocalPlayer())
-	{
-		if (UUIManagerSubsystem* UI = LP->GetSubsystem<UUIManagerSubsystem>())
-		{
-			UI->ApplyInitialUI();
-			//UI->ShowScreen(EUIScreen::Title);
-		}
-	}
-	*/
-	// 플레이어 캐릭터 설정
 	
-	PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn());
 }
 
 void AMovingOutPlayerController::SetupInputComponent()
@@ -61,8 +47,17 @@ void AMovingOutPlayerController::SetupInputComponent()
 
 }
 
+void AMovingOutPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	// 플레이어 캐릭터 설정
+	PlayerCharacter = Cast<APlayerMovingOutCharacter>(GetPawn());
+}
+
 void AMovingOutPlayerController::PlayerMove(const FInputActionValue& Value)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Player Move"));
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->HandleMove(Value);
