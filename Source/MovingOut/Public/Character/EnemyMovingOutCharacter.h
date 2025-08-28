@@ -14,7 +14,8 @@ enum class EEnemyState : uint8
     ES_Patrolling UMETA(DisplayName = "Patrolling"),
     ES_Chasing UMETA(DisplayName = "Chasing"),
     ES_Grabbing UMETA(DisplayName = "Grabbing"),
-    ES_HitReaction UMETA(DisplayName = "HitReaction")
+    ES_HitReaction UMETA(DisplayName = "HitReaction"),
+    ES_Attacking UMETA(DisplayName= "Attack")
 };
 
 
@@ -58,6 +59,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
     float ThrowForce;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
+    float AttackDistance;
+
     // 타겟 및 내부 변수
     UPROPERTY()
     TObjectPtr<class APlayerMovingOutCharacter> PlayerTarget;
@@ -78,13 +82,14 @@ protected:
     // 상태 관리 
     void SetEnemyState(EEnemyState NewState);
 
-    // 상태별 핸들러 함수 
+    // 상태별 핸들러 함수
+ 
     void HandleIdle();
     void HandlePatrolling(float DeltaTime);
     void HandleChasing(float DeltaTime);
     void HandleGrabbing(float DeltaTime);
     void HandleHitReaction(float DeltaTime);
-
+  
     // 이벤트 바인딩
     UFUNCTION()
     void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -39,6 +39,7 @@ AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
     ThrowForce = 1500.f;
     TargetObject = nullptr;
     GrabbedObject = nullptr;
+    AttackDistance = 250.f;
 }
 
 // 게임 시작 시 호출
@@ -62,6 +63,7 @@ void AEnemyMovingOutCharacter::StartPatrolling()
 {
     SetEnemyState(EEnemyState::ES_Patrolling);
 }
+
 
 // 매 프레임마다 호출
 void AEnemyMovingOutCharacter::Tick(float DeltaTime)
@@ -115,7 +117,7 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
         case EEnemyState::ES_Patrolling:
             MovementComponent->MaxWalkSpeed = PatrolSpeed;
             // 10초마다 물건을 잡으려 시도하는 타이머를 설정해둠
-            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 4.0f, true);
+            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 10.0f, true);
             FindAndMoveToNewPatrolDestination();
             break;
         case EEnemyState::ES_Chasing:
@@ -212,6 +214,8 @@ void AEnemyMovingOutCharacter::HandleHitReaction(float DeltaTime)
     FRotator InterpolatedRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 10.0f);
     SetActorRotation(InterpolatedRotation);
 }
+
+
 
 
 // 플레이어가 감지됐을 때 호출
@@ -364,9 +368,10 @@ void AEnemyMovingOutCharacter::AttemptToGrabObject()
             }
         }
     }
-    if (!bFound)
+    if (bFound==false)
     {
         FindAndMoveToNewPatrolDestination();
+        SetEnemyState(EEnemyState::ES_Patrolling);
     }
 }
 
@@ -393,3 +398,4 @@ void AEnemyMovingOutCharacter::PerformThrow()
     // 다시 순찰 상태로 돌아감
     SetEnemyState(EEnemyState::ES_Patrolling);
 }
+

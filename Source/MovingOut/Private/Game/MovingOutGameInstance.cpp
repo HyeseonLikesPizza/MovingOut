@@ -43,6 +43,7 @@ void UMovingOutGameInstance::BeginLoadingScreen(const FString& MapName)
 	Attr.MoviePaths = { TEXT("Loading")};
 	
 	
+	
 	// UMG -> Slate 위젯으로 변환해 연결
 	//Attr.WidgetLoadingScreen = W->TakeWidget();
 
