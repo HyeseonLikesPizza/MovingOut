@@ -13,6 +13,7 @@
 #include "UI/WidgetController/BaseWidgetController.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Props/EndingTruck.h"
 #include "Props/HouseToEnter.h"
 #include "UI/Widget/EndGameWidget.h"
 #include "UI/Widget/EndGameWinWidget.h"
@@ -527,7 +528,14 @@ void UUIManagerSubsystem::BindGameStateSignals()
 	{
 		if (auto* GS = World->GetGameState<AMovingOutGameState>())
 		{
-			GS->OnMatchStopped.AddUniqueDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
+			// 은희 EndingTruck 가져와서 델리게이트 바인딩하기
+			TArray<AActor*> Actors;
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEndingTruck::StaticClass(), Actors);
+			if (AEndingTruck* EndingTruck = Cast<AEndingTruck>(Actors[0]))
+			{
+				EndingTruck->OnTruckDeparted.AddDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
+			}
+			//GS->OnMatchStopped.AddUniqueDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
 		}
 	}
 }
