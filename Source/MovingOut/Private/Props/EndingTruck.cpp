@@ -50,7 +50,7 @@ void AEndingTruck::BeginPlay()
 	Super::BeginPlay();
 	
 	// Get Stage1 time limit has end delegete from MovingOutGameState
-	// 시간제한으로 게임 종료 알림
+	// 제한시간 종료 알림
 	AMovingOutGameState* GameState = Cast<AMovingOutGameState>(GetWorld()->GetGameState());
 	if (GameState)
 	{
