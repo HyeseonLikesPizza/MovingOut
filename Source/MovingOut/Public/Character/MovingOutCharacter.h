@@ -12,6 +12,9 @@ class AMovingOutCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	bool bSlapped = false;
+	
 	AMovingOutCharacter();
 	
 	virtual void Tick(float DeltaSeconds) override;

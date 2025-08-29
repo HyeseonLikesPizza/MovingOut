@@ -34,8 +34,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bLeftHandIK = false;
 
-	UPROPERTY()
-	bool bSlapped = false;
+	
 
 	
 protected:
