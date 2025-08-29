@@ -6,7 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "PropsGoalZone.generated.h"
 
-/* PropsBase가 놓이는 목표지점 */
+/**
+ * 플레이어가 물건을 갖다 놓는 목표지점
+ * CountProps는 노란색으로 변함
+ */
 UCLASS()
 class MOVINGOUT_API APropsGoalZone : public AActor
 {
@@ -23,24 +26,26 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor);
 	virtual void NotifyActorEndOverlap(AActor* OtherActor);
 
 public:
-	// Collision for PropsBase Detection
+	// Components
+	/** Box collision that defines the area where props can be placed.  */ 
 	UPROPERTY(VisibleAnywhere)
-	class UBoxComponent* OverlapCollision;
+	class UBoxComponent* DropZone;
 
-	// Highlight when prop BP in collision
+	/** Material applied to the object when it's inside the placement zone. */
 	UPROPERTY(VisibleAnywhere)
 	UMaterial* Highlight;
 
 protected:
-	// Count props in zone
+	// Count props
+	/** Total number of CountProps in DropZone */
 	int32 TotalProps = 0;
 
 public:
-	int32 GetTotalProps() {return TotalProps;}
-	void SetTotalProps(int32 InTotalProps) {TotalProps = InTotalProps;}
+	FORCEINLINE int32 GetTotalProps() {return TotalProps;}
+	FORCEINLINE void SetTotalProps(int32 InTotalProps) {TotalProps = InTotalProps;}
 };

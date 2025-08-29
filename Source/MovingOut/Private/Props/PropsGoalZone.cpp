@@ -3,6 +3,7 @@
 
 #include "Props/PropsGoalZone.h"
 
+#include "Character/EnemyMovingOutCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/MeshComponent.h"
 #include "Game/MovingOutGameState.h"
@@ -15,9 +16,9 @@ APropsGoalZone::APropsGoalZone()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	OverlapCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
+	DropZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DropZone"));
 	Highlight = CreateDefaultSubobject<UMaterial>(TEXT("HighlightMaterial"));
-	SetRootComponent((OverlapCollision));
+	SetRootComponent((DropZone));
 	
 	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialRef(TEXT("/Script/Engine.Material'/Game/Assets/Furniture_Free/Materials/M_GlowYellow.M_GlowYellow'"));
 	if (MaterialRef.Succeeded())
@@ -25,7 +26,7 @@ APropsGoalZone::APropsGoalZone()
 		Highlight = MaterialRef.Object;
 	}
 
-	OverlapCollision->SetCollisionResponseToChannel(Props, ECR_Overlap);
+	DropZone->SetCollisionResponseToChannel(Props, ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
@@ -46,25 +47,25 @@ void APropsGoalZone::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	/* While in
-	 * Change material to yellow
-	 * TotalProps++
-	 * 
-	 */
-	 
-	 UE_LOG(LogTemp, Warning, TEXT("Name : %s"), *OtherActor->GetName());
-	 
-	ACountProps* InProps = Cast<ACountProps>(OtherActor);
-	if (InProps)
+	AMovingOutGameState* GameState = GetWorld()->GetGameState<AMovingOutGameState>();
+	if (GameState)
 	{
-		InProps->ChangeMaterial(Highlight);
-		if (AMovingOutGameState* GS = GetWorld()->GetGameState<AMovingOutGameState>())
+		// If other actor is CountProps :
+		//		1. Change default material to Highlight
+		//		2. Item count + 1
+		if (ACountProps* InProps = Cast<ACountProps>(OtherActor))
 		{
-			GS->SetItemsDelivered(GS->GetItemsDelivered()+1);
+			InProps->ChangeMaterial(Highlight);
+			TotalProps++;
+			
+			GameState->SetItemsDelivered(GameState->GetItemsDelivered()+1);
 		}
-		TotalProps++;
 
-		UE_LOG(LogTemp, Warning, TEXT("In! Total: %d"), TotalProps);
+		// If other actor is AI EnemyPawn, check additional goal to true 
+		if (AEnemyMovingOutCharacter* Enemy = Cast<AEnemyMovingOutCharacter>(OtherActor))
+		{
+			GameState->AdditionalGoals[0].bCheck = true;
+		}
 	}
 }
 
@@ -72,17 +73,25 @@ void APropsGoalZone::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 
-	ACountProps* InProps = Cast<ACountProps>(OtherActor);
-	if (InProps)
+	AMovingOutGameState* GameState = GetWorld()->GetGameState<AMovingOutGameState>();
+	if (GameState)
 	{
-		InProps->SetDefaultMaterial();
-		if (AMovingOutGameState* GS = GetWorld()->GetGameState<AMovingOutGameState>())
+		// If other actor is CountProps :
+		//		1. Change Highlight to default material
+		//		2. Item count - 1
+		if (ACountProps* InProps = Cast<ACountProps>(OtherActor))
 		{
-			GS->SetItemsDelivered(GS->GetItemsDelivered()-1);
+			InProps->ChangeMaterial(Highlight);
+			TotalProps--;
+			
+			GameState->SetItemsDelivered(GameState->GetItemsDelivered()-1);
 		}
-		TotalProps--;
 
-		UE_LOG(LogTemp, Warning, TEXT("Out! Total: %d"), TotalProps);
+		// If other actor is AI EnemyPawn, check additional goal to false
+		if (AEnemyMovingOutCharacter* Enemy = Cast<AEnemyMovingOutCharacter>(OtherActor))
+		{
+			GameState->AdditionalGoals[0].bCheck = false;
+		}
 	}
 }
 
