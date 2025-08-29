@@ -31,6 +31,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* LeftHandIKTarget;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bLeftHandIK = false;
+
+	UPROPERTY()
+	bool bSlapped = false;
+
 	
 protected:
 	

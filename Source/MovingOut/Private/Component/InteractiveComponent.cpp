@@ -67,7 +67,7 @@ bool UInteractiveComponent::SphereTrace(const FVector& Start, FHitResult& OutHit
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(Character);
 	
-	return GetWorld()->SweepSingleByObjectType(HitResult, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params);
+	return GetWorld()->SweepSingleByObjectType(OutHit, Start, End, FQuat::Identity, Props, FCollisionShape::MakeSphere(100.f), Params);
 }
 
 void UInteractiveComponent::TryGrab()
@@ -78,7 +78,8 @@ void UInteractiveComponent::TryGrab()
 	FVector Start = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
 	
 	if (SphereTrace(Start, HitResult))
-	{
+	{	
+		
 		CurrentGrabbedComp = HitResult.GetComponent();
 		if (CurrentGrabbedComp && CurrentGrabbedComp->GetCollisionObjectType() == Props)
 		{
@@ -103,7 +104,7 @@ void UInteractiveComponent::TryGrab()
 				Character->LeftHandIKTarget->SetWorldLocationAndRotation(LeftHit.ImpactPoint, PalmRot);
 
 				// 4) IK 켜기(애님 그래프에서 쓸 Bool/Alpha)
-				//Character->bLeftHandIK = true;   // 캐릭터에 UPROPERTY(BlueprintReadOnly) bool 하나만 추가해두면 편함
+				Character->bLeftHandIK = true;   // 캐릭터에 UPROPERTY(BlueprintReadOnly) bool 하나만 추가해두면 편함
 			}
 			else
 			{
@@ -129,6 +130,7 @@ void UInteractiveComponent::GrabRelease()
 	if (IsHoldingObject())
 	{
 		Character->PhysicsHandle->ReleaseComponent();
+		Character->bLeftHandIK = false;
 		
 		//Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResult.GetActor(), false);
 		CurrentGrabbedComp->IgnoreActorWhenMoving(Character, false);

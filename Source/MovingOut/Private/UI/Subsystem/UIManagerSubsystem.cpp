@@ -535,7 +535,6 @@ void UUIManagerSubsystem::BindGameStateSignals()
 			{
 				EndingTruck->OnTruckDeparted.AddDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
 			}
-			//GS->OnMatchStopped.AddUniqueDynamic(this, &UUIManagerSubsystem::HandleMatchStopped);
 		}
 	}
 }

@@ -9,13 +9,6 @@ class APlayerMovingOutCharacter;
 class UCharacterMovementComponent;
 class UInteractiveComponent;
 
-UENUM(BlueprintType)
-enum class EIKProfile : uint8 {
-	None,
-	Light,
-	Heavy,
-	ArmsOnly
-};
 
 UCLASS()
 class MOVINGOUT_API UPlayerAnimInstance : public UAnimInstance
@@ -26,43 +19,17 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IK")
-	FTransform RHandTarget_CS = FTransform::Identity;
+	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
+	FTransform LeftHandTarget_CS;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IK")
-	FTransform LHandTarget_CS = FTransform::Identity;
+	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
+	float LeftHandIKAlpha;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IK")
-	float HandIKAlpha = 0.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IK")
-	FTransform HipsGoal_CS = FTransform::Identity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IK")
-	float HipsGoalPosAlpha = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="IK")
+	float IKBlendInSpeed  = 12.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IK")
-	float HipsGoalRotAlpha = 1.f;
-
-
-	UFUNCTION(BlueprintCallable, Category = "IK")
-	void SetRightHandTarget(const FTransform& InComponentSpace) { RHandTarget_CS = InComponentSpace; }
-	
-	UFUNCTION(BlueprintCallable, Category = "IK")
-	void SetLeftHandTarget(const FTransform& InComponentSpace) { LHandTarget_CS = InComponentSpace; }
-	
-	UFUNCTION(BlueprintCallable, Category = "IK")
-	void SetHandIKTargetsCS(const FTransform& RightCS, const FTransform& LeftCS, float Alpha = 1.f)
-	{
-		RHandTarget_CS = RightCS;
-		LHandTarget_CS = LeftCS;
-		HandIKAlpha = Alpha;
-	}
-
-	void SetHipsGoal(FTransform InTransform, float PosAlpha = 1.f, float RotAlpha = 1.f);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	EIKProfile CarryState = EIKProfile::None;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="IK")
+	float IKBlendOutSpeed = 12.f;
 	
 	
 protected:
@@ -86,7 +53,11 @@ protected:
 	FVector Velocity;
 
 private:
-
+	
+	UPROPERTY()
 	UInteractiveComponent* InteractiveComponent;
+
+	UPROPERTY()
+	UMeshComponent* Mesh;
 
 };
