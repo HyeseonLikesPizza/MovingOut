@@ -99,7 +99,7 @@ protected:
 	
 	/** How far will the truck move */
 	UPROPERTY(EditAnywhere, Category = TruckMovement)
-	float MoveDistance = 1200.f;
+	float MoveDistance = 1300.f;
 	
 	/**
 	* Easing function for truck to take off naturally
