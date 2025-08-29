@@ -31,11 +31,11 @@ void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		CarryState = EIKProfile::None;
 	}
-	else if (GroundSpeed == 0 && IsGrabbing && !InteractiveComponent->IsGrabbingSomething())
+	else if (GroundSpeed == 0 && IsGrabbing && !InteractiveComponent->IsHoldingObject())
 	{
 		CarryState = EIKProfile::None;
 	}
-	else if (GroundSpeed == 0 && IsGrabbing && InteractiveComponent->IsGrabbingSomething())
+	else if (GroundSpeed == 0 && IsGrabbing && InteractiveComponent->IsHoldingObject())
 	{
 		CarryState = EIKProfile::Light;
 	}
@@ -43,11 +43,11 @@ void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		CarryState = EIKProfile::None;
 	}
-	else if (GroundSpeed > 0 && IsGrabbing && InteractiveComponent->IsGrabbingSomething())
+	else if (GroundSpeed > 0 && IsGrabbing && InteractiveComponent->IsHoldingObject())
 	{
 		CarryState = EIKProfile::ArmsOnly;
 	}
-	else if (GroundSpeed > 0 && IsGrabbing && !InteractiveComponent->IsGrabbingSomething())
+	else if (GroundSpeed > 0 && IsGrabbing && !InteractiveComponent->IsHoldingObject())
 	{
 		CarryState = EIKProfile::None;
 	}

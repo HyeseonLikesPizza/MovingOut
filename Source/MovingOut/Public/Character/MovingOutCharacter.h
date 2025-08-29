@@ -30,6 +30,7 @@ public:
 	FORCEINLINE void SetGrabTraceDistance(const float& InDistance) { GrabTraceDistance = InDistance; }
 	FORCEINLINE void SetGrabDistance(const float& InDistance) { GrabDistance = InDistance; }
 	FORCEINLINE void SetIsGrabbing(const bool& InGrabbing) { bIsGrabbing = InGrabbing; }
+	FORCEINLINE FName GetFrontBoneName() const { return FrontBoneName; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* LightCone;
@@ -54,6 +55,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Grab)
 	FName RightHandBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grab)
+	FName FrontBoneName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsGrabbing;

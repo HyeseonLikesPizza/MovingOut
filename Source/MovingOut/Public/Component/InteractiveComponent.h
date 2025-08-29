@@ -9,17 +9,6 @@ class AMovingOutCharacter;
 class UPlayerAnimInstance;
 class APlayerMovingOutCharacter;
 
-struct FCarrySettings {
-	float CarryDist = 30.f; // 플레이어 앞 거리(캡슐 기준)
-	float CarryHeight = 10.f; // 손/상자 높이 보정
-	float MovePosSpeed = 5.f; // 위치 보간 속도
-	float MoveRotSpeed = 1.f; // 회전 보간 속도
-	float PosSpeed = 12.f;
-	float RotSpeed = 10.f;
-	float PushOut = 4.f; // 면 밖으로 살짝 띄우기
-	float ForwardAhead = 18.f; // 플레이어 앞쪽으로
-};
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MOVINGOUT_API UInteractiveComponent : public UActorComponent
 {
@@ -28,6 +17,8 @@ class MOVINGOUT_API UInteractiveComponent : public UActorComponent
 public:	
 	UInteractiveComponent();
 
+	bool ProjectToObjectSurface(UPrimitiveComponent* TargetComp, const FVector& Start,
+	FVector& OutPoint, FVector& OutNormal);
 	/* Grab, Throw */
 	void TryGrab();
 	void GrabRelease();
@@ -35,29 +26,34 @@ public:
 	void ThrowRelease();
 	void SetThrowIndicatorVisible(bool bVisible);
 	void CancelThrowAming();
-	bool PickFaceEdgesAndSetIK();
-	void SetGripMidPoint(FName RSock, FName LSock);
-	FTransform MakeCarryFrame();
 	
 	float ThrowAngle = 0.f;
 	float ThrowSpeed = 30.f;
 	float DesiredFlightTimeSeconds = 3.f;
 	float DesiredPitchDegrees = 30.f;
 
+	FORCEINLINE bool IsHoldingObject() const
+	{
+		if (CurrentGrabbedComp != nullptr) return true;
+		else return false;
+	}
+
 	/* Tick */
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void TickCarry_Light(float DeltaTime, const FCarrySettings& S);
-	void TickCarry_Heavy(float DeltaTime, const FCarrySettings& S);
-	void TickCarry_MoveCoupled(float DeltaTime, float posSpeed = 12.f, float rotSpeed = 10.f);
 
 	/* Getter, Setter */
 	FORCEINLINE bool GetIsAming() const { return IsAming; }
-	FORCEINLINE void SetIsAming(const bool& InAming) { IsAming = InAming; }
-	FORCEINLINE bool IsGrabbingSomething() 
-	{ 
-		if (HitResult.GetComponent()) return true;
-		else return false;
-	}
+
+	// 플레이어 소켓
+	UPROPERTY(EditAnywhere, Category="Grab|Hand")
+	FName RightHandSocketName = TEXT("RightHand");
+	
+	UPROPERTY(EditAnywhere, Category="Grab|Hand")
+	FName LeftHandSocketName  = TEXT("LeftHand");
+
+	UPROPERTY(EditAnywhere, Category="Grab|Hand")
+	FName PlayerFrontSocketName  = TEXT("");
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -65,17 +61,15 @@ protected:
 private:
 	UPROPERTY()
 	APlayerMovingOutCharacter* Character;
+	
 	FHitResult HitResult;
 	FVector AimPoint;
 	bool IsAming;
 	float CachedAimYaw;
+	
 
 	UPROPERTY()
 	UPlayerAnimInstance* AnimInstance;
-
-	FTransform GripLocal;
-	FCarrySettings Settings;
-	FTransform RelObjFromCarry;
 
 	FName LeftSocketName;
 	FName RightSocketName;
@@ -102,5 +96,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="IK")
 	float LeftHandIKAlpha = 0.f;    // 0~1
 
-	
+private:
+	bool SphereTrace(const FVector& Start, FHitResult& OutHit);
+	FQuat RHtoObjDeltaQ;
 };
