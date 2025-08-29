@@ -66,7 +66,6 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
     float AttackDistance;
-
     
 
     // 타겟 및 내부 변수
@@ -98,8 +97,7 @@ protected:
     void HandleGrabbing(float DeltaTime);
     void HandleHitReaction(float DeltaTime);
  
-   
-  
+    
     // 이벤트 바인딩
     UFUNCTION()
     void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -118,6 +116,4 @@ protected:
     void EndHitReaction();
     void AttemptToGrabObject();
     
-    
-   
 };

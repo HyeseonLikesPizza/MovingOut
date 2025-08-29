@@ -437,6 +437,8 @@ void AEnemyMovingOutCharacter::PerformThrow()
 
 void AEnemyMovingOutCharacter::HandleAttacking(float DeltaTime)
 {
+
+    
     //여기에 공격관련 애니 등등 다 써놓기
    // GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
 }
