@@ -109,7 +109,7 @@ void UInteractiveComponent::TryGrab()
 		
 		FHitResult HitRight;
 		if (!SphereTrace(Start,End,HitRight) || HitResultFront.GetActor() != HitRight.GetActor()) return;
-		DrawDebugSphere(GetWorld(), HitRight.ImpactPoint, 10.f, 12, FColor::Red, false, 3.f);
+		//DrawDebugSphere(GetWorld(), HitRight.ImpactPoint, 10.f, 12, FColor::Red, false, 3.f);
 		
 		const FRotator R_GripRotWS = Character->GetMesh()->GetSocketRotation(Character->GetRightHandBoneName());
 
@@ -124,7 +124,7 @@ void UInteractiveComponent::TryGrab()
 		
 		FHitResult HitLeft;
 		if (!SphereTrace(Start,End,HitLeft) || HitResultFront.GetActor() != HitLeft.GetActor()) return;
-		DrawDebugSphere(GetWorld(), HitLeft.ImpactPoint, 10.f, 12, FColor::Magenta, false, 2.f);
+		//DrawDebugSphere(GetWorld(), HitLeft.ImpactPoint, 10.f, 12, FColor::Magenta, false, 2.f);
 
 		const FVector P = HitLeft.ImpactPoint;
 		const FRotator GoalRot = Character->GetMesh()->GetSocketRotation(Character->GetLeftHandBoneName());
@@ -198,7 +198,7 @@ void UInteractiveComponent::ThrowAim()
 		FVector Start = Character->GetMesh()->GetSocketLocation(Character->GetRightHandBoneName());
 		FVector AimDir = Character->GetActorForwardVector() * 100.f;
 
-		DrawDebugLineTrace(GetWorld(), Start, Character->GetActorLocation() + AimDir);
+		//DrawDebugLineTrace(GetWorld(), Start, Character->GetActorLocation() + AimDir);
 
 		FPredictProjectilePathParams P;
 		P.StartLocation = Start;
@@ -229,9 +229,8 @@ void UInteractiveComponent::ThrowRelease()
 	{
 		Character->bIKActive = false;
 		Character->ProfileType = EIKProfileType::None;
-		Character->bIKActive = false;
-		if (Character->PhysicsHandle->GetGrabbedComponent())
-			Character->PhysicsHandle->ReleaseComponent();
+		//if (Character->PhysicsHandle->GetGrabbedComponent())
+		//	Character->PhysicsHandle->ReleaseComponent();
 		HoldingObjData.Component->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		HoldingObjData.Component->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		HoldingObjData.Component->SetEnableGravity(true);
@@ -312,7 +311,8 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		const FRotator AnchorRotWS = (CT.TransformRotation(RH_LocalRot.Quaternion())).Rotator();
 
 		// 2) 위치 타깃: 손 소켓(손이 물체를 끌고 다님)
-		const FVector HandPosWS = CT.TransformPosition(RH_LocalPos);
+		FVector HandPosWS = CT.TransformPosition(RH_LocalPos);
+		if (HoldingObjData.bIsHeavy) HandPosWS = Character->GetMesh()->GetSocketLocation(Character->GetFrontBoneName());
 
 		// 3) 물리 핸들 타깃(보간)
 		const float Follow = 12000.f;
