@@ -27,8 +27,8 @@ void AFootBallGoalGimmick::BeginPlay()
 void AFootBallGoalGimmick::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	APropsBase* Props = Cast<APropsBase>(OtherActor);
-	if (Props && Props->bIsBall)
+	APropsBase* Prop = Cast<APropsBase>(OtherActor);
+	if (Prop && Prop->bIsBall)
 	{
 		OnFootBallGoal.Broadcast();
 	}
