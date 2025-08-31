@@ -14,6 +14,8 @@ class AMovingOutCharacter : public ACharacter
 public:
 	UPROPERTY()
 	bool bSlapped = false;
+
+	bool bFootPin = false;
 	
 	AMovingOutCharacter();
 	
@@ -28,6 +30,9 @@ public:
 	FORCEINLINE float GetGrabDistance() const { return GrabDistance; }
 	FORCEINLINE FName GetRightHandBoneName() const { return RightHandBoneName; }
 	FORCEINLINE FName GetLeftHandBoneName() const { return LeftHandBoneName; }
+	FORCEINLINE FName GetLeftFootBoneName() const { return LeftFootBoneName; }
+	FORCEINLINE FName GetRightFootBoneName() const { return RightFootBoneName; }
+	FORCEINLINE FName GetHipsBoneName() const { return HipsBoneName; }
 	FORCEINLINE bool GetIsGrabbing() const { return bIsGrabbing; }
 
 	FORCEINLINE void SetGrabTraceDistance(const float& InDistance) { GrabTraceDistance = InDistance; }
@@ -58,6 +63,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Grab)
 	FName RightHandBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grab)
+	FName LeftFootBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grab)
+	FName RightFootBoneName;
+
+	UPROPERTY(EditDefaultsOnly, Category = Grab)
+	FName HipsBoneName;
 
 	UPROPERTY(EditDefaultsOnly, Category = Grab)
 	FName FrontBoneName;

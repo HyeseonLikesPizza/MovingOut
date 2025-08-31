@@ -22,11 +22,25 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	void HandleMove(const FInputActionValue& Value);
 
+	FVector LH_GoalPos_WS;
+	FRotator LH_GoalRot_WS;
+	FVector RH_GoalPos_WS;
+	FRotator RH_GoalRot_WS;
+	bool bIKActive = false;
+
 	UPROPERTY()
 	UInteractiveComponent* InteractiveComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float HandOffset = 20.f;
+
 	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle;
+
+	UPROPERTY()
+	UPhysicsHandleComponent* PhysicsHandle_Left;
+
+	FQuat HandsDeltaQ;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* LeftHandIKTarget;
@@ -34,6 +48,19 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bLeftHandIK = false;
 
+	UPROPERTY()
+	FVector GrabPivotWS;
+
+	UPROPERTY()
+	bool bAlignToPivot = false;
+
+	UPROPERTY()
+	float AlignTimer = 0.f;
+
+	void CacheFootPins();
+
+	FTransform LeftFootPin_CS;
+	FTransform RightFootPin_CS;
 	
 
 	

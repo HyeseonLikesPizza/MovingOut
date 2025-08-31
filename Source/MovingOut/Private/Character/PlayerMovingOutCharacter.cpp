@@ -12,8 +12,22 @@
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle"));
+	PhysicsHandle->InterpolationSpeed = 20.f;
+	PhysicsHandle->LinearStiffness     = 5000.f;
+	PhysicsHandle->LinearDamping      = 400.f;
+	PhysicsHandle->AngularStiffness  = 5000.f;
+	PhysicsHandle->AngularDamping     = 800.f;
+
+	
 	GrabTraceDistance = 200.f;
 	GrabDistance = 50.f;
+
+	PhysicsHandle_Left = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle_Left"));
+	PhysicsHandle_Left->InterpolationSpeed = 20.f;
+	PhysicsHandle_Left->LinearStiffness     = 5000.f;
+	PhysicsHandle_Left->LinearDamping      = 400.f;
+	PhysicsHandle_Left->AngularStiffness  = 6000.f;
+	PhysicsHandle_Left->AngularDamping     = 1000.f;
 
 	PrimaryActorTick.bCanEverTick = true;
 	SetActorTickEnabled(true);
@@ -39,19 +53,20 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	//const FRotator Rotation = GetControlRotation();
 	const FRotator Rotation = TopDownCameraComponent->GetForwardVector().Rotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	if (!InteractiveComponent->GetIsAming() && !InteractiveComponent->IsHoldingObject()) // 평소 입력
+	// 평상시 상태의 움직임 컨트롤 or 가벼운 물체를 들고 있을 때
+	if (!InteractiveComponent->GetIsAming() && !InteractiveComponent->HoldingObjData.bIsHeavy) 
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		
 		AddMovementInput(ForwardDirection, MovementVector.X);
 		AddMovementInput(RightDirection, MovementVector.Y);
 	}
+	// 물건을 들고 던지려고 할 때의 움직임 컨트롤
 	else if (InteractiveComponent->GetIsAming())
 	{
 		// 1. 입력 방향 벡터의 크기가 0이 아닐 때만 (즉, 키를 누르고 있을 때만) 회전 처리
@@ -76,7 +91,8 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 			
 		}
 	}
-	else if (InteractiveComponent->IsHoldingObject())
+	// 무거운 물건을 들고 있을 때
+	else if (!InteractiveComponent->HoldingObjData.IsEmpty() && InteractiveComponent->HoldingObjData.bIsHeavy)
 	{
 		if (!MovementVector.IsNearlyZero())
 		{
@@ -91,8 +107,16 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 			const FRotator NewRot = FMath::RInterpTo(GetActorRotation(), Target, DT, TurnSpeed);
 			SetActorRotation(NewRot);
 			
-			//SetActorRotation(MoveDir.Rotation());
 		}
 	}
 	
+}
+
+void APlayerMovingOutCharacter::CacheFootPins()
+{
+	if (GetMesh())
+	{
+		LeftFootPin_CS = GetMesh()->GetSocketTransform(LeftFootBoneName, RTS_Component);
+		RightFootPin_CS = GetMesh()->GetSocketTransform(RightFootBoneName, RTS_Component);
+	}
 }
