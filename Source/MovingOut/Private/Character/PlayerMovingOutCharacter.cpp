@@ -12,7 +12,7 @@
 APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 {
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle"));
-	PhysicsHandle->InterpolationSpeed = 20.f;
+	PhysicsHandle->InterpolationSpeed = 5000.f;
 	PhysicsHandle->LinearStiffness     = 5000.f;
 	PhysicsHandle->LinearDamping      = 400.f;
 	PhysicsHandle->AngularStiffness  = 5000.f;

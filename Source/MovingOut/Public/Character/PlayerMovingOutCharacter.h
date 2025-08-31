@@ -46,6 +46,9 @@ public:
 
 	UPROPERTY()
 	EIKProfileType ProfileType;
+
+	UPROPERTY()
+	UAnimMontage* WalkMontage;
 	
 protected:
 	

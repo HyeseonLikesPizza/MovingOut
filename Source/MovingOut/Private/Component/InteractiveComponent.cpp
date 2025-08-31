@@ -23,8 +23,16 @@ void UInteractiveComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	Character = Cast<APlayerMovingOutCharacter>(GetOwner());
-	if (Character) AddTickPrerequisiteActor(Character);
-	Character->PhysicsHandle->bInterpolateTarget = false;
+	if (Character)
+	{
+		AddTickPrerequisiteActor(Character);
+		if (Character->WalkMontage)
+		{
+			WalkMontage = Character->WalkMontage;
+		}
+	}
+	
+	
 }
 
 bool UInteractiveComponent::SphereTrace(const FVector& Start, const FVector& End, FHitResult& OutHit) 
@@ -142,12 +150,12 @@ void UInteractiveComponent::TryGrab()
 
 		HoldingObjData.Component->SetSimulatePhysics(false);
 		HoldingObjData.Component->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-		FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+		FAttachmentTransformRules Rules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 		Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitRight.GetActor(), true);
 	
 		HoldingObjData.Component->IgnoreActorWhenMoving(Character, true);
 		HoldingObjData.Component->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		HoldingObjData.Component->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::KeepWorldTransform, Character->GetFrontBoneName());
+		HoldingObjData.Component->AttachToComponent(Character->GetMesh(), Rules, Character->GetFrontBoneName());
 	}
 	
 }
@@ -315,7 +323,7 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		if (HoldingObjData.bIsHeavy) HandPosWS = Character->GetMesh()->GetSocketLocation(Character->GetFrontBoneName());
 
 		// 3) 물리 핸들 타깃(보간)
-		const float Follow = 12000.f;
+		const float Follow = 80.f;
 		const FVector NewLoc = FMath::VInterpTo(Character->RH_GoalPos_WS, HandPosWS, DeltaTime, Follow);
 		const FRotator NewRot = FMath::RInterpTo(Character->RH_GoalRot_WS, AnchorRotWS, DeltaTime, Follow);
 

@@ -58,6 +58,9 @@ public:
 	/* Getter, Setter */
 	FORCEINLINE bool GetIsAming() const { return IsAming; }
 
+	UPROPERTY()
+	UAnimMontage* WalkMontage;
+
 	
 	/* Grab, Throw */
 	void TryGrab();
