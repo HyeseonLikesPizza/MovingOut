@@ -9,6 +9,14 @@ class AMovingOutCharacter;
 class UPlayerAnimInstance;
 class APlayerMovingOutCharacter;
 
+UENUM(Blueprintable, BlueprintType)
+enum class EIKProfileType : uint8
+{
+	None,
+	Light,
+	Heavy
+};
+
 USTRUCT(BlueprintType)
 struct FHoldingObjectData
 {
@@ -19,6 +27,7 @@ struct FHoldingObjectData
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsHeavy = false;
+	EIKProfileType ProfileType = EIKProfileType::Light;
 
 	void Clear()
 	{

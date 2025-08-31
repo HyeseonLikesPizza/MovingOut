@@ -29,6 +29,7 @@ void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	if (OwningCharacter->bIKActive)
 	{
 		bIKActive = true;
+		ProfileType = OwningCharacter->ProfileType;
 		FVector Loc = OwningCharacter->LH_GoalPos_WS;
 		FRotator Rot = OwningCharacter->LH_GoalRot_WS;
 		LH_GoalTransform_WS.SetLocation(Loc);

@@ -22,12 +22,6 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 	GrabTraceDistance = 200.f;
 	GrabDistance = 50.f;
 
-	PhysicsHandle_Left = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Handle_Left"));
-	PhysicsHandle_Left->InterpolationSpeed = 20.f;
-	PhysicsHandle_Left->LinearStiffness     = 5000.f;
-	PhysicsHandle_Left->LinearDamping      = 400.f;
-	PhysicsHandle_Left->AngularStiffness  = 6000.f;
-	PhysicsHandle_Left->AngularDamping     = 1000.f;
 
 	PrimaryActorTick.bCanEverTick = true;
 	SetActorTickEnabled(true);
@@ -40,6 +34,8 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 	LeftHandIKTarget = CreateDefaultSubobject<USceneComponent>(TEXT("LeftHandIKTarget"));
 	LeftHandIKTarget->SetupAttachment(GetRootComponent());
 
+	CarryAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("CarryAnchor"));
+	CarryAnchor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform);
 }
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
@@ -110,13 +106,4 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 		}
 	}
 	
-}
-
-void APlayerMovingOutCharacter::CacheFootPins()
-{
-	if (GetMesh())
-	{
-		LeftFootPin_CS = GetMesh()->GetSocketTransform(LeftFootBoneName, RTS_Component);
-		RightFootPin_CS = GetMesh()->GetSocketTransform(RightFootBoneName, RTS_Component);
-	}
 }

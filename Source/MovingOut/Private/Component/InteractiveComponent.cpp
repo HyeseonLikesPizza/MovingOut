@@ -46,91 +46,109 @@ void UInteractiveComponent::TryGrab()
 	FHitResult HitResultFront;
 	FHitResult HitResultLeft;
 
-	// Front 부착 지점 찾기
+	// 1) Front 부착 지점 찾기
 	FVector Start = Character->GetMesh()->GetSocketLocation(Character->GetFrontBoneName());
 	FVector End = Start + Character->GetActorForwardVector() * Character->GetGrabTraceDistance();
+
+	if (!SphereTrace(Start,End,HitResultFront)) return;
 	
-	if (SphereTrace(Start, End, HitResultFront))
-	{	
-		if (HitResultFront.GetComponent() && HitResultFront.GetComponent()->GetCollisionObjectType() == Props)
-		{
-			HoldingObjData.Clear();
-			HoldingObjData.Component = HitResultFront.GetComponent();
-			HoldingObjData.bIsHeavy = Cast<APropsBase>(HitResultFront.GetActor())->bIsHeavy;
+	if (!HitResultFront.GetComponent() || HitResultFront.GetComponent()->GetCollisionObjectType() != Props) return;
 
-			// 무거운 물건일 때
-			
-			
+	HoldingObjData.Clear();
+	HoldingObjData.Component = HitResultFront.GetComponent();
+	HoldingObjData.bIsHeavy = Cast<APropsBase>(HitResultFront.GetActor())->bIsHeavy;
+	Character->bIKActive = true;
 
-			// 오른손 회전값 구하기
-			const FVector  Nr  = (-HitResultFront.ImpactNormal).GetSafeNormal();
-			FVector Up = FVector::CrossProduct(Nr, FVector::RightVector).GetSafeNormal();
-			const FRotator R_GripRotWS = UKismetMathLibrary::MakeRotFromXZ(Nr, Up);
-
-			const FTransform CT = HoldingObjData.Component->GetComponentTransform();
-			RH_LocalRot = (CT.InverseTransformRotation(R_GripRotWS.Quaternion())).Rotator();
-			RH_LocalPos = CT.InverseTransformPosition(HitResultFront.ImpactPoint);
+	if (HoldingObjData.bIsHeavy)
+	{
+		Character->ProfileType = EIKProfileType::Heavy;
+		// 오른손 회전값 구하기
 		
+		const FVector  Nr  = (-HitResultFront.ImpactNormal).GetSafeNormal();
+		FVector Up = FVector::CrossProduct(Nr, FVector::RightVector).GetSafeNormal();
+		const FRotator R_GripRotWS = UKismetMathLibrary::MakeRotFromXZ(Nr, Up);
+
+		const FTransform CT = HoldingObjData.Component->GetComponentTransform();
+		RH_LocalRot = (CT.InverseTransformRotation(R_GripRotWS.Quaternion())).Rotator();
+		RH_LocalPos = CT.InverseTransformPosition(HitResultFront.ImpactPoint);
+
+
+		// 2) impact point로 부터 HandOffset 만큼 왼쪽으로 떨어진 곳에서 왼손 부착 지점을 찾기
+
+		FVector StartLeft = HitResultFront.ImpactPoint + Character->GetActorRightVector() * -1 * Character->HandOffset;
+		FVector EndLeft = StartLeft + Character->GetActorRightVector() * -1 * Character->HandOffset;
+
+		if (!SphereTrace(StartLeft, EndLeft, HitResultLeft)) return;
+		if (HitResultLeft.GetComponent() != HoldingObjData.Component.Get()) return;
+
 		
-			// impact point로 부터 HandOffset 만큼 왼쪽으로 떨어진 곳에서 왼손 부착 지점을 찾기
-		
-			FVector StartLeft = HitResultFront.ImpactPoint + Character->GetActorRightVector() * -1 * Character->HandOffset;
-			FVector EndLeft = StartLeft + Character->GetActorRightVector() * -1 * Character->HandOffset;
+	
+	
+		const FVector P = HitResultLeft.ImpactPoint;
+		const FVector  N  = HitResultLeft.ImpactNormal.GetSafeNormal();
+		const FVector Forward = (-HitResultLeft.ImpactNormal).GetSafeNormal();
+		const FRotator GoalRot = UKismetMathLibrary::MakeRotFromXZ(Forward, FVector::UpVector);
 
-			if (!HoldingObjData.bIsHeavy)
-				StartLeft = HitResultFront.ImpactPoint + Character->GetActorRightVector() * -1 * 10.f;
+		Character->LH_GoalPos_WS = P;
+		Character->LH_GoalRot_WS = GoalRot;
 
-			if (SphereTrace(StartLeft, EndLeft, HitResultLeft))
-			{
-				Character->bIKActive = true;
-				if (HitResultLeft.GetComponent() != HoldingObjData.Component.Get()) return;
-			
-				const FVector P = HitResultLeft.ImpactPoint;
-				const FVector  N  = HitResultLeft.ImpactNormal.GetSafeNormal();
-				const FVector Forward = (-HitResultLeft.ImpactNormal).GetSafeNormal();
-				const FRotator GoalRot = UKismetMathLibrary::MakeRotFromXZ(Forward, FVector::UpVector);
+		const FRotator L_GripRotWS = UKismetMathLibrary::MakeRotFromXZ(-N, FVector::UpVector);
+		const FTransform CompWS = HoldingObjData.Component->GetComponentTransform();
+		LH_LocalPos = CompWS.InverseTransformPosition(P);
+		LH_LocalRot = CompWS.InverseTransformRotation(L_GripRotWS.Quaternion()).Rotator();
 
-				Character->LH_GoalPos_WS = P;
-				Character->LH_GoalRot_WS = GoalRot;
-
-				const FRotator L_GripRotWS = UKismetMathLibrary::MakeRotFromXZ(-N, FVector::UpVector);
-				const FTransform CompWS = HoldingObjData.Component->GetComponentTransform();
-				LH_LocalPos = CompWS.InverseTransformPosition(P);
-				LH_LocalRot = CompWS.InverseTransformRotation(L_GripRotWS.Quaternion()).Rotator();
-
-
-				// 오른손 피직스 핸들 설정
-				// 무거운 물건일 때
-				if (HoldingObjData.bIsHeavy)
-				{
-					
-					Character->PhysicsHandle->GrabComponentAtLocationWithRotation(HoldingObjData.Component, NAME_None, HitResultFront.ImpactPoint, R_GripRotWS);
-				}
-				else
-				{
-					// 가벼운 물건일 때
-					//Character->bIKActive = false;
-
-					HoldingObjData.Component->SetSimulatePhysics(false);
-					HoldingObjData.Component->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-					FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-					Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitResultFront.GetActor(), true);
-			
-					HoldingObjData.Component->IgnoreActorWhenMoving(Character, true);
-					HoldingObjData.Component->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-					HoldingObjData.Component->AttachToComponent(Character->GetMesh(), Rules, Character->GetRightHandBoneName());
-				}
-			}
-			
-			
-			
-
-			
-			
-			
-		}
+		Character->PhysicsHandle->GrabComponentAtLocationWithRotation(HoldingObjData.Component, NAME_None, HitResultFront.ImpactPoint, R_GripRotWS);
 	}
+	else
+	{
+		Character->ProfileType = EIKProfileType::Light;
+		Start = HitResultFront.GetComponent()->Bounds.Origin + Character->GetActorRightVector() * HitResultFront.GetComponent()->Bounds.BoxExtent;
+		End = HitResultFront.GetComponent()->Bounds.Origin;
 
+		// 오른손 값 구하기
+		
+		FHitResult HitRight;
+		if (!SphereTrace(Start,End,HitRight) || HitResultFront.GetActor() != HitRight.GetActor()) return;
+		DrawDebugSphere(GetWorld(), HitRight.ImpactPoint, 10.f, 12, FColor::Red, false, 3.f);
+		
+		const FRotator R_GripRotWS = Character->GetMesh()->GetSocketRotation(Character->GetRightHandBoneName());
+
+		const FTransform CT = HoldingObjData.Component->GetComponentTransform();
+		RH_LocalRot = (CT.InverseTransformRotation(R_GripRotWS.Quaternion())).Rotator();
+		RH_LocalPos = CT.InverseTransformPosition(HitRight.ImpactPoint + Character->GetActorRightVector() * 10.f);
+
+		// 왼손 값 구하기
+		
+		Start = HitResultFront.GetComponent()->Bounds.Origin + Character->GetActorRightVector() * -1 * HitResultFront.GetComponent()->Bounds.BoxExtent;
+		End = HitResultFront.GetComponent()->Bounds.Origin;
+		
+		FHitResult HitLeft;
+		if (!SphereTrace(Start,End,HitLeft) || HitResultFront.GetActor() != HitLeft.GetActor()) return;
+		DrawDebugSphere(GetWorld(), HitLeft.ImpactPoint, 10.f, 12, FColor::Magenta, false, 2.f);
+
+		const FVector P = HitLeft.ImpactPoint;
+		const FRotator GoalRot = Character->GetMesh()->GetSocketRotation(Character->GetLeftHandBoneName());
+		
+		Character->LH_GoalPos_WS = P + Character->GetActorRightVector() * -1 * 10.f;
+		Character->LH_GoalRot_WS = GoalRot;
+		
+		const FTransform CompWS = HoldingObjData.Component->GetComponentTransform();
+		LH_LocalPos = CompWS.InverseTransformPosition(P);
+		LH_LocalRot = CompWS.InverseTransformRotation(GoalRot.Quaternion()).Rotator();
+
+		
+		// 물체의 피직스 끄고 소켓에 붙이기
+		
+
+		HoldingObjData.Component->SetSimulatePhysics(false);
+		HoldingObjData.Component->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+		FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+		Character->GetCapsuleComponent()->IgnoreActorWhenMoving(HitRight.GetActor(), true);
+	
+		HoldingObjData.Component->IgnoreActorWhenMoving(Character, true);
+		HoldingObjData.Component->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		HoldingObjData.Component->AttachToComponent(Character->GetMesh(), FAttachmentTransformRules::KeepWorldTransform, Character->GetFrontBoneName());
+	}
 	
 }
 
@@ -140,9 +158,9 @@ void UInteractiveComponent::GrabRelease()
 	Character->SetIsGrabbing(false);
 	if (!HoldingObjData.IsEmpty())
 	{
+		Character->ProfileType = EIKProfileType::None;
 		Character->bIKActive = false;
 		Character->PhysicsHandle->ReleaseComponent();
-		Character->bLeftHandIK = false;
 		Character->LeftHandIKTarget->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		
 
@@ -171,7 +189,7 @@ void UInteractiveComponent::ThrowAim()
 {
 	bool bIsGrabbing = Character->GetIsGrabbing();
 	
-	if (bIsGrabbing)
+	if (bIsGrabbing && !HoldingObjData.bIsHeavy)
 	{
 		SetThrowIndicatorVisible(true);
 		IsAming = true;
@@ -209,6 +227,11 @@ void UInteractiveComponent::ThrowRelease()
 	
 	if (HoldingObjData.Component)
 	{
+		Character->bIKActive = false;
+		Character->ProfileType = EIKProfileType::None;
+		Character->bIKActive = false;
+		if (Character->PhysicsHandle->GetGrabbedComponent())
+			Character->PhysicsHandle->ReleaseComponent();
 		HoldingObjData.Component->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 		HoldingObjData.Component->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		HoldingObjData.Component->SetEnableGravity(true);
@@ -278,8 +301,9 @@ void UInteractiveComponent::CancelThrowAming()
 
 void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	if (HoldingObjData.IsEmpty()) return;
 	
-	if (!HoldingObjData.IsEmpty())
+	if (Character->bIKActive)
 	{
 		// 오른손
 		const FTransform CT = HoldingObjData.Component->GetComponentTransform();
@@ -288,8 +312,7 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		const FRotator AnchorRotWS = (CT.TransformRotation(RH_LocalRot.Quaternion())).Rotator();
 
 		// 2) 위치 타깃: 손 소켓(손이 물체를 끌고 다님)
-		const FVector HandPosWS = Character->GetMesh()
-			->GetSocketTransform(Character->GetFrontBoneName()).GetLocation();
+		const FVector HandPosWS = CT.TransformPosition(RH_LocalPos);
 
 		// 3) 물리 핸들 타깃(보간)
 		const float Follow = 12000.f;
@@ -303,20 +326,23 @@ void UInteractiveComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		
 		
 		// 왼손
-		if (Character->bIKActive)
-		{
-			const FTransform CompWS = HoldingObjData.Component->GetComponentTransform();
+		const FTransform CompWS = HoldingObjData.Component->GetComponentTransform();
 
-			// 로컬 -> 월드 변환
-			const FVector TargetPosWS = CompWS.TransformPosition(LH_LocalPos);
-			const FRotator TargetRotWS = (CompWS.TransformRotation(LH_LocalRot.Quaternion())).Rotator();
+		// 로컬 -> 월드 변환
+		const FVector TargetPosWS = CompWS.TransformPosition(LH_LocalPos);
+		const FRotator TargetRotWS = (CompWS.TransformRotation(LH_LocalRot.Quaternion())).Rotator();
 
-			// 부드럽게 보간
-			Character->LH_GoalPos_WS = FMath::VInterpTo(Character->LH_GoalPos_WS, TargetPosWS, DeltaTime, 30.f);
-			Character->LH_GoalRot_WS = FMath::RInterpTo(Character->LH_GoalRot_WS, TargetRotWS, DeltaTime, 30.f);
-		}
-		
+		// 부드럽게 보간
+		Character->LH_GoalPos_WS = FMath::VInterpTo(Character->LH_GoalPos_WS, TargetPosWS, DeltaTime, 30.f);
+		Character->LH_GoalRot_WS = FMath::RInterpTo(Character->LH_GoalRot_WS, TargetRotWS, DeltaTime, 30.f);
+	}
+	else
+	{
 		
 	}
+
+	
+		
+	
 		
 }

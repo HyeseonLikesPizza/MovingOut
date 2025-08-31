@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/MovingOutCharacter.h"
+#include "Component/InteractiveComponent.h"
 #include "PlayerMovingOutCharacter.generated.h"
 
 class UPhysicsHandleComponent;
@@ -37,32 +38,14 @@ public:
 	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle;
 
-	UPROPERTY()
-	UPhysicsHandleComponent* PhysicsHandle_Left;
-
-	FQuat HandsDeltaQ;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* LeftHandIKTarget;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool bLeftHandIK = false;
+	UPROPERTY(Transient)
+	USceneComponent* CarryAnchor;
 
 	UPROPERTY()
-	FVector GrabPivotWS;
-
-	UPROPERTY()
-	bool bAlignToPivot = false;
-
-	UPROPERTY()
-	float AlignTimer = 0.f;
-
-	void CacheFootPins();
-
-	FTransform LeftFootPin_CS;
-	FTransform RightFootPin_CS;
-	
-
+	EIKProfileType ProfileType;
 	
 protected:
 	

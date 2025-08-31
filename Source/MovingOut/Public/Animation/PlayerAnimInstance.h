@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Component/InteractiveComponent.h"
 #include "PlayerAnimInstance.generated.h"
 
 class APlayerMovingOutCharacter;
@@ -30,6 +31,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
 	bool bIKActive = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
+	EIKProfileType ProfileType;
 
 	
 protected:
