@@ -45,7 +45,7 @@ void ACountProps::Tick(float DeltaTime)
 	// If player character grabbing this prop, turn off stencil
 	if (bPlayerInBound)
 	{
-		if (CharacterRef->InteractiveComponent->IsGrabbingSomething())
+		if (CharacterRef->InteractiveComponent->IsHoldingObject())
 		{
 			Mesh->SetRenderCustomDepth(false);
 		}

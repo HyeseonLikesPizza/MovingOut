@@ -85,7 +85,7 @@ public:
 	void HandleRequestSelectStage(); // Intro -> SelectStage
 
 	UFUNCTION()
-	void HandleRequestStageInfo(); // [임시] SelectStage 10초 뒤 -> StageInfo 위젯 팝업
+	void HandleRequestStageInfo(); // SelectStage -> StageInfo
 
 	UFUNCTION()
 	void HandleRequestGameStart();

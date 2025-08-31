@@ -23,6 +23,9 @@ APlayerMovingOutCharacter::APlayerMovingOutCharacter()
 	LightCone->SetupAttachment(RootComponent);
 	LightCone->SetVisibility(false);
 
+	LeftHandIKTarget = CreateDefaultSubobject<USceneComponent>(TEXT("LeftHandIKTarget"));
+	LeftHandIKTarget->SetupAttachment(GetRootComponent());
+
 }
 
 void APlayerMovingOutCharacter::Tick(float DeltaSeconds)
@@ -42,7 +45,7 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	if (!InteractiveComponent->GetIsAming() && !InteractiveComponent->IsGrabbingSomething()) // 평소 입력
+	if (!InteractiveComponent->GetIsAming() && !InteractiveComponent->IsHoldingObject()) // 평소 입력
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		
@@ -73,7 +76,7 @@ void APlayerMovingOutCharacter::HandleMove(const FInputActionValue& Value)
 			
 		}
 	}
-	else if (InteractiveComponent->IsGrabbingSomething())
+	else if (InteractiveComponent->IsHoldingObject())
 	{
 		if (!MovementVector.IsNearlyZero())
 		{

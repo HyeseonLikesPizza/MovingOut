@@ -12,9 +12,8 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 	{
 		MovementComponent = OwningCharacter->GetCharacterMovement();
 		InteractiveComponent = OwningCharacter->InteractiveComponent;
+		Mesh = OwningCharacter->GetMesh();
 	}
-
-
 
 }
 
@@ -27,36 +26,10 @@ void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	IsGrabbing = OwningCharacter->GetIsGrabbing();
 	IsFalling = MovementComponent->IsFalling();
 
-	if (GroundSpeed == 0 && !IsGrabbing)
-	{
-		CarryState = EIKProfile::None;
-	}
-	else if (GroundSpeed == 0 && IsGrabbing && !InteractiveComponent->IsGrabbingSomething())
-	{
-		CarryState = EIKProfile::None;
-	}
-	else if (GroundSpeed == 0 && IsGrabbing && InteractiveComponent->IsGrabbingSomething())
-	{
-		CarryState = EIKProfile::Light;
-	}
-	else if (GroundSpeed > 0 && !IsGrabbing)
-	{
-		CarryState = EIKProfile::None;
-	}
-	else if (GroundSpeed > 0 && IsGrabbing && InteractiveComponent->IsGrabbingSomething())
-	{
-		CarryState = EIKProfile::ArmsOnly;
-	}
-	else if (GroundSpeed > 0 && IsGrabbing && !InteractiveComponent->IsGrabbingSomething())
-	{
-		CarryState = EIKProfile::None;
-	}
+	
+	FTransform MeshWorld = Mesh->GetComponentTransform();
+	FTransform TargetWorld = OwningCharacter->LeftHandIKTarget->GetComponentTransform();
+	
 
 }
 
-void UPlayerAnimInstance::SetHipsGoal(FTransform InTransform, float PosAlpha, float RotAlpha)
-{
-	HipsGoal_CS = InTransform;
-	HipsGoalPosAlpha = PosAlpha;
-	HipsGoalRotAlpha = RotAlpha;
-}
