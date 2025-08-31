@@ -15,7 +15,7 @@ enum class EEnemyState : uint8
     ES_Chasing UMETA(DisplayName = "Chasing"),
     ES_Grabbing UMETA(DisplayName = "Grabbing"),
     ES_HitReaction UMETA(DisplayName = "HitReaction"),
-    ES_Attacking UMETA(DisplayName= "Attack")
+    // ES_Attacking UMETA(DisplayName= "Attack")
 };
 
 
@@ -30,8 +30,8 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void PerformThrow();
-    UFUNCTION(BlueprintCallable)
-    void HandleAttacking(float DeltaTime);
+    // UFUNCTION(BlueprintCallable)
+    // void HandleAttacking(float DeltaTime);
 
 protected:
     virtual void BeginPlay() override;
@@ -64,9 +64,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
     float ThrowForce;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
-    float AttackDistance;
-    
+    // UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
+    // float AttackDistance;
+    //
 
     // 타겟 및 내부 변수
     UPROPERTY()
@@ -84,7 +84,7 @@ protected:
     FTimerHandle HitReactionTimer;
     FTimerHandle ThrowAttemptTimer;
     FTimerHandle ThrowActionTimer;
-    FTimerHandle AttactActionTimer;
+    // FTimerHandle AttactActionTimer;
 
     // 상태 관리 
     void SetEnemyState(EEnemyState NewState);
@@ -109,7 +109,7 @@ protected:
     void OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
     UFUNCTION()
-    void EndAttack();
+    // void EndAttack();
     // 행동 관련 함수
     void StartPatrolling();
     void FindAndMoveToNewPatrolDestination();

@@ -39,7 +39,7 @@ AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
     ThrowForce = 1500.f;
     TargetObject = nullptr;
     GrabbedObject = nullptr;
-    AttackDistance = 250.f;
+    // AttackDistance = 250.f;
 }
 
 // 게임 시작 시 호출
@@ -78,7 +78,7 @@ void AEnemyMovingOutCharacter::Tick(float DeltaTime)
     case EEnemyState::ES_Chasing: HandleChasing(DeltaTime); break;
     case EEnemyState::ES_HitReaction: HandleHitReaction(DeltaTime); break;
     case EEnemyState::ES_Grabbing: HandleGrabbing(DeltaTime); break;
-    case EEnemyState::ES_Attacking: HandleAttacking(DeltaTime); break;
+    // case EEnemyState::ES_Attacking: HandleAttacking(DeltaTime); break;
     default: break; // 혹시 모를 상황에 대비
     }
 }
@@ -130,9 +130,9 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
         case EEnemyState::ES_Idle:
         case EEnemyState::ES_HitReaction:
      
-        case EEnemyState::ES_Attacking:
-            MovementComponent->MaxWalkSpeed = 0.f;
-        GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
+        // case EEnemyState::ES_Attacking:
+        //     MovementComponent->MaxWalkSpeed = 0.f;
+        // GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
         break;
     default: MovementComponent->MaxWalkSpeed = 0.f;
         break;
@@ -176,12 +176,12 @@ void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
             // AIController를 사용해 플레이어에게 이동
             UAIBlueprintHelperLibrary::SimpleMoveToActor(AIController, PlayerTarget);
         }
-        // 추가로 플레이어가 attack dis 에 가까우면 attack state 활성화
-        if (DistanceToPlayer <= AttackDistance)
-        {
-            SetEnemyState(EEnemyState::ES_Attacking);
-            GetController()->StopMovement();
-        }
+        // // 추가로 플레이어가 attack dis 에 가까우면 attack state 활성화
+        // if (DistanceToPlayer <= AttackDistance)
+        // {
+        //     SetEnemyState(EEnemyState::ES_Attacking);
+        //     GetController()->StopMovement();
+        // }
         
     }
     else
@@ -435,17 +435,15 @@ void AEnemyMovingOutCharacter::PerformThrow()
     FindAndMoveToNewPatrolDestination();
 }
 
-void AEnemyMovingOutCharacter::HandleAttacking(float DeltaTime)
-{
-
-    
-    //여기에 공격관련 애니 등등 다 써놓기
-   // GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
-}
-
-void AEnemyMovingOutCharacter::EndAttack()
-{
-    SetEnemyState(EEnemyState::ES_Patrolling);
-    FindAndMoveToNewPatrolDestination();
-    
-}
+// void AEnemyMovingOutCharacter::HandleAttacking(float DeltaTime)
+// {
+//     //여기에 공격관련 애니 등등 다 써놓기
+//    // GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
+// }
+//
+// void AEnemyMovingOutCharacter::EndAttack()
+// {
+//     SetEnemyState(EEnemyState::ES_Patrolling);
+//     FindAndMoveToNewPatrolDestination();
+//     
+// }
