@@ -17,8 +17,15 @@
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/UI/Subsystem/UIManagerSubsystem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Subsystem/UIManagerSubsystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/UI/Subsystem/UIManagerSubsystem.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Meshes/SM_toy_001.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Meshes/SM_toy_001.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Meshes/goal1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Furniture_Free/Meshes/goal1.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Data/DA_AdditionalGoalName.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Data/DA_AdditionalGoalName.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameMode/BP_MovingOutGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameMode/BP_MovingOutGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Goose.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Props/CountProps/BP_Goose.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/SelectStageMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/SelectStageMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PropsGoalZone.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Props/PropsGoalZone.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Props/PropsBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Props/PropsBase.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +121,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Lauren",
+    "git-widget-placeholder": "EH",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "E:/UnrealProject/MovingOut/Source/MovingOut",
     "node.js.detected.package.eslint": "true",

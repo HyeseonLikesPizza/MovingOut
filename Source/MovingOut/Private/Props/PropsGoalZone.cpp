@@ -66,6 +66,14 @@ void APropsGoalZone::NotifyActorBeginOverlap(AActor* OtherActor)
 		{
 			GameState->AdditionalGoals[0].bCheck = true;
 		}
+
+		if (APropsBase* Prop = Cast<APropsBase>(OtherActor))
+		{
+			if (Prop->bIsGoose)
+			{
+				GameState->AdditionalGoals[2].bCheck = true;
+			}
+		}
 	}
 }
 
@@ -91,6 +99,14 @@ void APropsGoalZone::NotifyActorEndOverlap(AActor* OtherActor)
 		if (AEnemyMovingOutCharacter* Enemy = Cast<AEnemyMovingOutCharacter>(OtherActor))
 		{
 			GameState->AdditionalGoals[0].bCheck = false;
+		}
+
+		if (APropsBase* Prop = Cast<APropsBase>(OtherActor))
+		{
+			if (Prop->bIsGoose)
+			{
+				GameState->AdditionalGoals[2].bCheck = false;
+			}
 		}
 	}
 }

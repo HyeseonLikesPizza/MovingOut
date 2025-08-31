@@ -36,5 +36,12 @@ public:
 	void ChangeMaterial(UMaterial* NewMaterial);
 	// To default material
 	void SetDefaultMaterial();
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bIsBall = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bIsGoose = false;
 	
 };
