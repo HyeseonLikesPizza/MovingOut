@@ -35,11 +35,11 @@ AEnemyMovingOutCharacter::AEnemyMovingOutCharacter()
     PatrolSpeed = 150.f;
     ChaseSpeed = 450.f;
     PatrolRadius = 2500.f;
-    ObjectSearchRadius = 1800.f;
+    ObjectSearchRadius = 150.f;
     ThrowForce = 1500.f;
     TargetObject = nullptr;
     GrabbedObject = nullptr;
-    AttackDistance = 250.f;
+    // AttackDistance = 250.f;
 }
 
 // 게임 시작 시 호출
@@ -78,6 +78,7 @@ void AEnemyMovingOutCharacter::Tick(float DeltaTime)
     case EEnemyState::ES_Chasing: HandleChasing(DeltaTime); break;
     case EEnemyState::ES_HitReaction: HandleHitReaction(DeltaTime); break;
     case EEnemyState::ES_Grabbing: HandleGrabbing(DeltaTime); break;
+    // case EEnemyState::ES_Attacking: HandleAttacking(DeltaTime); break;
     default: break; // 혹시 모를 상황에 대비
     }
 }
@@ -117,7 +118,7 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
         case EEnemyState::ES_Patrolling:
             MovementComponent->MaxWalkSpeed = PatrolSpeed;
             // 10초마다 물건을 잡으려 시도하는 타이머를 설정해둠
-            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 10.0f, true);
+            GetWorldTimerManager().SetTimer(ThrowAttemptTimer, this, &AEnemyMovingOutCharacter::AttemptToGrabObject, 5.0f, true);
             FindAndMoveToNewPatrolDestination();
             break;
         case EEnemyState::ES_Chasing:
@@ -128,9 +129,13 @@ void AEnemyMovingOutCharacter::SetEnemyState(EEnemyState NewState)
             break;
         case EEnemyState::ES_Idle:
         case EEnemyState::ES_HitReaction:
-        default:
-            MovementComponent->MaxWalkSpeed = 0.f;
-            break;
+     
+        // case EEnemyState::ES_Attacking:
+        //     MovementComponent->MaxWalkSpeed = 0.f;
+        // GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
+        break;
+    default: MovementComponent->MaxWalkSpeed = 0.f;
+        break;
     }
 }
 
@@ -148,19 +153,36 @@ void AEnemyMovingOutCharacter::HandlePatrolling(float DeltaTime)
        // 목표에 도착했으니, 새로운 순찰 지점을 찾아서 이동 시!
        FindAndMoveToNewPatrolDestination();
     }
+    if (TargetObject && TargetObject->IsValidLowLevel())
+    {
+        const float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetObject->GetActorLocation());
+        if (DistanceToTarget< 220.f)
+        {
+            SetEnemyState(EEnemyState::ES_Grabbing);
+        }
+    }
 }
 
 void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
 {
+     //const float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerTarget->GetActorLocation());
     // 플레이어가 유효한지 확인
     if (PlayerTarget && PlayerTarget->IsValidLowLevel())
     {
-       AAIController* AIController = Cast<AAIController>(GetController());
-       if (AIController)
-       {
-           // AIController를 사용해 플레이어에게 이동
-           UAIBlueprintHelperLibrary::SimpleMoveToActor(AIController, PlayerTarget);
-       }
+        const float DistanceToPlayer = FVector::Dist(GetActorLocation(), PlayerTarget->GetActorLocation());
+        AAIController* AIController = Cast<AAIController>(GetController());
+        if (AIController)
+        {
+            // AIController를 사용해 플레이어에게 이동
+            UAIBlueprintHelperLibrary::SimpleMoveToActor(AIController, PlayerTarget);
+        }
+        // // 추가로 플레이어가 attack dis 에 가까우면 attack state 활성화
+        // if (DistanceToPlayer <= AttackDistance)
+        // {
+        //     SetEnemyState(EEnemyState::ES_Attacking);
+        //     GetController()->StopMovement();
+        // }
+        
     }
     else
     {
@@ -173,19 +195,25 @@ void AEnemyMovingOutCharacter::HandleChasing(float DeltaTime)
 // 물건을 잡기 위해 이동하고 잡는 로직
 void AEnemyMovingOutCharacter::HandleGrabbing(float DeltaTime)
 {
-    if (!TargetObject)
-    {
+    if (!TargetObject || !TargetObject->IsValidLowLevel())
+    {   
         // 목표가 사라지면 순찰 상태로 돌아가자
-        SetEnemyState(EEnemyState::ES_Patrolling);
+
+        TargetObject = nullptr;
+        SetEnemyState(EEnemyState::ES_Idle);
         return;
     }
-    const float DistanceToTarget = FVector::Dist(GetActorLocation(), TargetObject->GetActorLocation());
-    if (DistanceToTarget < 220.f)
+    // ai controller 추가 액터를 더 쉽게 찾음 이제
+    AAIController* AIController = Cast<AAIController>(GetController());
+    if (AIController)
     {
-        // 목표에 충분히 가까워지면 이동을 멈춤
-        GetController()->StopMovement();
-        UPrimitiveComponent* ObjectMesh = Cast<UPrimitiveComponent>(TargetObject->GetRootComponent());
-        if (ObjectMesh && ObjectMesh->IsSimulatingPhysics())
+        AIController->StopMovement();
+    }
+        
+    // 목표에 충분히 가까워지면 이동을 멈춤
+    // GetController()->StopMovement();
+    UPrimitiveComponent* ObjectMesh = Cast<UPrimitiveComponent>(TargetObject->GetRootComponent());
+    if (ObjectMesh && ObjectMesh->IsSimulatingPhysics())
         {
             GrabbedObject = TargetObject;
             TargetObject = nullptr;
@@ -204,7 +232,6 @@ void AEnemyMovingOutCharacter::HandleGrabbing(float DeltaTime)
             TargetObject = nullptr;
             SetEnemyState(EEnemyState::ES_Patrolling);
         }
-    }
 }
 
 void AEnemyMovingOutCharacter::HandleHitReaction(float DeltaTime)
@@ -275,7 +302,7 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
         FVector AwayFromPlayerDirection = (GetActorLocation() - Player->GetActorLocation()).GetSafeNormal();
 
         // 8만큼 밀어낼 위치 계산
-        FVector PushbackLocation = GetActorLocation() + AwayFromPlayerDirection * 8.0f;
+        FVector PushbackLocation = GetActorLocation() + AwayFromPlayerDirection * 15.0f;
 
         // 즉시 해당 위치로 캐릭터 이동
         SetActorLocation(PushbackLocation, true);
@@ -284,7 +311,7 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
 
     // 충돌한 오브젝트가 Props 채널이 아닐 때만 반응함
     UPrimitiveComponent* OtherPrimComp = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
-    if (OtherActor && OtherActor != this && OtherPrimComp && OtherPrimComp->GetCollisionObjectType() != COLLISION_CHANNEL_Probs)
+    if (OtherActor && OtherActor != this && OtherPrimComp && OtherPrimComp->GetCollisionObjectType() != COLLISION_CHANNEL_Props)
     {
        // 진행 방향과 충돌 지점의 법선 벡터를 통해 정면 충돌인지 확인
        float ForwardDot = FVector::DotProduct(GetActorForwardVector(), -Hit.ImpactNormal);
@@ -306,6 +333,8 @@ void AEnemyMovingOutCharacter::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* 
        }
     }
 }
+
+
 
 // 새로운 순찰 지점을 찾고 이동
 void AEnemyMovingOutCharacter::FindAndMoveToNewPatrolDestination()
@@ -341,37 +370,43 @@ void AEnemyMovingOutCharacter::EndHitReaction()
 }
 
 // 주변에 던질 수 있는 물건을 찾고 잡으러 가는 함수
+// + 주석 처리한거 확인
 void AEnemyMovingOutCharacter::AttemptToGrabObject()
 {
     if (CurrentState != EEnemyState::ES_Patrolling) return;
     
     TArray<AActor*> OverlappingActors;
-    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-    // Props 채널을 가진 오브젝트를 찾음
-    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(COLLISION_CHANNEL_Probs));
+        // TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+        // // Props 채널을 가진 오브젝트를 찾음
+        // ObjectTypes.Add(UEngineTypes::ConvertToObjectType(COLLISION_CHANNEL_Props));
+    //
+    // bFound = false;
     
-    bFound = false;
-    
-    if (UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), ObjectSearchRadius, ObjectTypes, AActor::StaticClass(), {}, OverlappingActors))
+    if (UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), ObjectSearchRadius,{}, AActor::StaticClass(), {}, OverlappingActors))
     {
         for (AActor* Actor : OverlappingActors)
         {
             UPrimitiveComponent* PrimComp = Cast<UPrimitiveComponent>(Actor->GetRootComponent());
-            // 물리 시뮬레이션 중인 오브젝트만 골라냄
-            if (PrimComp && PrimComp->IsSimulatingPhysics())
+            // Props 채널 + 시뮬레이션 피지크 체크
+            if (PrimComp && PrimComp->GetCollisionObjectType() == COLLISION_CHANNEL_Props && PrimComp->IsSimulatingPhysics())
             {
-                bFound = true;
                 TargetObject = Actor;
                 SetEnemyState(EEnemyState::ES_Grabbing);
-                UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), TargetObject);
-                return; // 가장 먼저 찾은 오브젝트로 이동!
+
+                AAIController* AIController = Cast<AAIController>(GetController());
+                if (AIController)
+                {
+                    UAIBlueprintHelperLibrary::SimpleMoveToActor(AIController, TargetObject);
+                }
+                return; 
             }
         }
     }
-    if (bFound==false)
+    FindAndMoveToNewPatrolDestination();
+    // if (bFound==false)
     {
-        FindAndMoveToNewPatrolDestination();
-        SetEnemyState(EEnemyState::ES_Patrolling);
+        // FindAndMoveToNewPatrolDestination();
+        // SetEnemyState(EEnemyState::ES_Patrolling);
     }
 }
 
@@ -397,5 +432,18 @@ void AEnemyMovingOutCharacter::PerformThrow()
     GrabbedObject = nullptr;
     // 다시 순찰 상태로 돌아감
     SetEnemyState(EEnemyState::ES_Patrolling);
+    FindAndMoveToNewPatrolDestination();
 }
 
+// void AEnemyMovingOutCharacter::HandleAttacking(float DeltaTime)
+// {
+//     //여기에 공격관련 애니 등등 다 써놓기
+//    // GetWorldTimerManager().SetTimer(AttactActionTimer, this,&AEnemyMovingOutCharacter::EndAttack,1.0f , false);
+// }
+//
+// void AEnemyMovingOutCharacter::EndAttack()
+// {
+//     SetEnemyState(EEnemyState::ES_Patrolling);
+//     FindAndMoveToNewPatrolDestination();
+//     
+// }

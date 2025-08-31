@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "EnemyMovingOutCharacter.generated.h"
 
-#define COLLISION_CHANNEL_Probs ECC_GameTraceChannel1
+#define COLLISION_CHANNEL_Props ECC_GameTraceChannel1
 
 // ai 상태 enum
 UENUM(BlueprintType)
@@ -15,7 +15,7 @@ enum class EEnemyState : uint8
     ES_Chasing UMETA(DisplayName = "Chasing"),
     ES_Grabbing UMETA(DisplayName = "Grabbing"),
     ES_HitReaction UMETA(DisplayName = "HitReaction"),
-    ES_Attacking UMETA(DisplayName= "Attack")
+    // ES_Attacking UMETA(DisplayName= "Attack")
 };
 
 
@@ -27,6 +27,11 @@ class MOVINGOUT_API AEnemyMovingOutCharacter : public ACharacter
 
 public:
     AEnemyMovingOutCharacter();
+
+    UFUNCTION(BlueprintCallable)
+    void PerformThrow();
+    // UFUNCTION(BlueprintCallable)
+    // void HandleAttacking(float DeltaTime);
 
 protected:
     virtual void BeginPlay() override;
@@ -59,8 +64,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
     float ThrowForce;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
-    float AttackDistance;
+    // UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI Behavior")
+    // float AttackDistance;
+    //
 
     // 타겟 및 내부 변수
     UPROPERTY()
@@ -72,12 +78,13 @@ protected:
     UPROPERTY()
     TObjectPtr<AActor> GrabbedObject;
 
-    bool bFound ;
+    // bool bFound ;
     FVector PatrolDestination;
     FRotator TargetRotation;
     FTimerHandle HitReactionTimer;
     FTimerHandle ThrowAttemptTimer;
     FTimerHandle ThrowActionTimer;
+    // FTimerHandle AttactActionTimer;
 
     // 상태 관리 
     void SetEnemyState(EEnemyState NewState);
@@ -89,7 +96,8 @@ protected:
     void HandleChasing(float DeltaTime);
     void HandleGrabbing(float DeltaTime);
     void HandleHitReaction(float DeltaTime);
-  
+ 
+    
     // 이벤트 바인딩
     UFUNCTION()
     void OnPlayerDetected(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -100,11 +108,12 @@ protected:
     UFUNCTION()
     void OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+    UFUNCTION()
+    // void EndAttack();
     // 행동 관련 함수
     void StartPatrolling();
     void FindAndMoveToNewPatrolDestination();
     void EndHitReaction();
     void AttemptToGrabObject();
-    void PerformThrow();
-   
+    
 };
