@@ -26,9 +26,9 @@ void UInteractiveComponent::BeginPlay()
 	if (Character)
 	{
 		AddTickPrerequisiteActor(Character);
-		if (Character->WalkMontage)
+		if (Character->GrabMontage)
 		{
-			WalkMontage = Character->WalkMontage;
+			GrabMontage = Character->GrabMontage;
 		}
 	}
 	
@@ -50,6 +50,7 @@ void UInteractiveComponent::TryGrab()
 	if (!Character) return;
 	
 	Character->SetIsGrabbing(true);
+	Character->GetMesh()->GetAnimInstance()->Montage_Play(GrabMontage, 0.5f);
 
 	FHitResult HitResultFront;
 	FHitResult HitResultLeft;
@@ -164,6 +165,7 @@ void UInteractiveComponent::GrabRelease()
 {
 	if (!Character) return;
 	Character->SetIsGrabbing(false);
+	Character->GetMesh()->GetAnimInstance()->Montage_Stop(0.5f);
 	if (!HoldingObjData.IsEmpty())
 	{
 		Character->ProfileType = EIKProfileType::None;

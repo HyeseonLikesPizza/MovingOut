@@ -32,6 +32,26 @@ void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 		ProfileType = OwningCharacter->ProfileType;
 		FVector Loc = OwningCharacter->LH_GoalPos_WS;
 		FRotator Rot = OwningCharacter->LH_GoalRot_WS;
+
+		float NewSpeed = 0.f;
+		const FVector PlayerLoc = OwningCharacter->GetActorLocation();
+		
+		if (OwningCharacter->InteractiveComponent->HoldingObjData.bIsHeavy)
+		{
+			if (bPrevLocValid)
+			{
+				const FVector Delta = Loc - PrevLoc;
+				GroundSpeed = Delta.Size2D() / DeltaSeconds; // cm/s
+			}
+			bPrevLocValid = true;
+			PrevLoc = Loc;
+		}
+		else
+		{
+			// 평소엔 이동 컴포넌트 속도 사용
+			GroundSpeed = OwningCharacter->GetVelocity().Size2D();
+			bPrevLocValid = false;
+		}
 		LH_GoalTransform_WS.SetLocation(Loc);
 		LH_GoalTransform_WS.SetRotation(Rot.Quaternion());
 		LH_GoalTransform_WS.SetScale3D(FVector(1.f));
