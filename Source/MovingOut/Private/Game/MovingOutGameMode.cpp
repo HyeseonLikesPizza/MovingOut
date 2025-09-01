@@ -46,7 +46,7 @@ void AMovingOutGameMode::BeginPlay()
 			//GS->ForceNetUpdate(); // 필요 시
 		}
 	}
-}
+} 
 
 void AMovingOutGameMode::StartPlay()
 {
