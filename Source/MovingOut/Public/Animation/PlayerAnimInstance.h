@@ -63,5 +63,7 @@ private:
 
 	UPROPERTY()
 	UMeshComponent* Mesh;
-
+	
+	bool  bPrevLocValid = false;
+	FVector PrevLoc = FVector::ZeroVector;
 };

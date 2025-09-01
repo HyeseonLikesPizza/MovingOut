@@ -59,7 +59,7 @@ public:
 	FORCEINLINE bool GetIsAming() const { return IsAming; }
 
 	UPROPERTY()
-	UAnimMontage* WalkMontage;
+	UAnimMontage* GrabMontage;
 
 	
 	/* Grab, Throw */
