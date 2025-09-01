@@ -36,6 +36,11 @@ void AMovingOutGameMode::BeginPlay()
 	{
 		if (MedalThresholdDA)
 		{
+			FailOverSec = MedalThresholdDA.Get()->Thresholds.FailOverSeconds;
+			BronzeSec = MedalThresholdDA.Get()->Thresholds.BronzeWithinSeconds;
+			SilverSec = MedalThresholdDA.Get()->Thresholds.SilverWithinSeconds;
+			GoldSec = MedalThresholdDA.Get()->Thresholds.GoldWithinSeconds;
+			
 			GS->MedalThresholds = MedalThresholdDA.Get()->Thresholds; // 값 복사
 			GS->AdditionalGoals = AdditionalGoalNameDA.Get()->AdditionalGoals;
 			//GS->ForceNetUpdate(); // 필요 시
