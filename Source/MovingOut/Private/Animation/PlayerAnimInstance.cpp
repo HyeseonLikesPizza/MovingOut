@@ -14,7 +14,7 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 		InteractiveComponent = OwningCharacter->InteractiveComponent;
 		Mesh = OwningCharacter->GetMesh();
 	}
-
+	
 }
 
 void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
@@ -26,9 +26,20 @@ void UPlayerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	IsGrabbing = OwningCharacter->GetIsGrabbing();
 	IsFalling = MovementComponent->IsFalling();
 
-	
-	FTransform MeshWorld = Mesh->GetComponentTransform();
-	FTransform TargetWorld = OwningCharacter->LeftHandIKTarget->GetComponentTransform();
+	if (OwningCharacter->bIKActive)
+	{
+		bIKActive = true;
+		ProfileType = OwningCharacter->ProfileType;
+		FVector Loc = OwningCharacter->LH_GoalPos_WS;
+		FRotator Rot = OwningCharacter->LH_GoalRot_WS;
+		LH_GoalTransform_WS.SetLocation(Loc);
+		LH_GoalTransform_WS.SetRotation(Rot.Quaternion());
+		LH_GoalTransform_WS.SetScale3D(FVector(1.f));
+		RH_GoalRot_WS = OwningCharacter->RH_GoalRot_WS;
+		RH_GoalPos_WS = OwningCharacter->RH_GoalPos_WS;
+	}
+	else bIKActive = false;
+
 	
 
 }

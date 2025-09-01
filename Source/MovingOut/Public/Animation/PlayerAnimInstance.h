@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Component/InteractiveComponent.h"
 #include "PlayerAnimInstance.generated.h"
 
 class APlayerMovingOutCharacter;
@@ -20,17 +21,20 @@ public:
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
-	FTransform LeftHandTarget_CS;
+	FTransform LH_GoalTransform_WS;
 
 	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
-	float LeftHandIKAlpha;
+	FRotator RH_GoalRot_WS;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="IK")
-	float IKBlendInSpeed  = 12.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="IK")
-	float IKBlendOutSpeed = 12.f;
-	
+	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
+	FVector RH_GoalPos_WS;
+
+	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
+	bool bIKActive = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "IK", meta=(AllowPrivateAccess="true"))
+	EIKProfileType ProfileType;
+
 	
 protected:
 	

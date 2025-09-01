@@ -9,6 +9,38 @@ class AMovingOutCharacter;
 class UPlayerAnimInstance;
 class APlayerMovingOutCharacter;
 
+UENUM(Blueprintable, BlueprintType)
+enum class EIKProfileType : uint8
+{
+	None,
+	Light,
+	Heavy
+};
+
+USTRUCT(BlueprintType)
+struct FHoldingObjectData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TObjectPtr<UPrimitiveComponent> Component = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsHeavy = false;
+	EIKProfileType ProfileType = EIKProfileType::Light;
+
+	void Clear()
+	{
+		Component = nullptr;
+		bIsHeavy = false;
+	}
+
+	bool IsEmpty() const
+	{
+		return Component.Get() == nullptr;
+	}
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MOVINGOUT_API UInteractiveComponent : public UActorComponent
 {
@@ -17,8 +49,19 @@ class MOVINGOUT_API UInteractiveComponent : public UActorComponent
 public:	
 	UInteractiveComponent();
 
-	bool ProjectToObjectSurface(UPrimitiveComponent* TargetComp, const FVector& Start,
-	FVector& OutPoint, FVector& OutNormal);
+	/* Tick */
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UPROPERTY(BlueprintReadOnly, Category="Grab")
+	FHoldingObjectData HoldingObjData; 
+	
+	/* Getter, Setter */
+	FORCEINLINE bool GetIsAming() const { return IsAming; }
+
+	UPROPERTY()
+	UAnimMontage* WalkMontage;
+
+	
 	/* Grab, Throw */
 	void TryGrab();
 	void GrabRelease();
@@ -26,77 +69,37 @@ public:
 	void ThrowRelease();
 	void SetThrowIndicatorVisible(bool bVisible);
 	void CancelThrowAming();
-	
-	float ThrowAngle = 0.f;
-	float ThrowSpeed = 30.f;
-	float DesiredFlightTimeSeconds = 3.f;
-	float DesiredPitchDegrees = 30.f;
+	bool SphereTrace(const FVector& Start, const FVector& End, FHitResult& OutHit);
 
-	FORCEINLINE bool IsHoldingObject() const
-	{
-		if (CurrentGrabbedComp != nullptr) return true;
-		else return false;
-	}
-
-	/* Tick */
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	/* Getter, Setter */
-	FORCEINLINE bool GetIsAming() const { return IsAming; }
-
-	// 플레이어 소켓
-	UPROPERTY(EditAnywhere, Category="Grab|Hand")
-	FName RightHandSocketName = TEXT("RightHand");
-	
-	UPROPERTY(EditAnywhere, Category="Grab|Hand")
-	FName LeftHandSocketName  = TEXT("LeftHand");
-
-	UPROPERTY(EditAnywhere, Category="Grab|Hand")
-	FName PlayerFrontSocketName  = TEXT("");
-	
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	
 	UPROPERTY()
 	APlayerMovingOutCharacter* Character;
+
 	
-	FHitResult HitResult;
+	/* Aim Variables */
 	FVector AimPoint;
 	bool IsAming;
-	float CachedAimYaw;
+
+	
+	/* Throw Variables */
+	float ThrowSpeed = 30.f;
+	float DesiredFlightTimeSeconds = 3.f;
+	float DesiredPitchDegrees = 30.f;
+	
+	
+	/* Grab Variables */
+
+	FVector LH_LocalPos;
+	FRotator LH_LocalRot;
+	FVector RH_LocalPos;
+	FRotator RH_LocalRot;
+
 	
 
-	UPROPERTY()
-	UPlayerAnimInstance* AnimInstance;
-
-	FName LeftSocketName;
-	FName RightSocketName;
-
-
-public:
-	// IK
-
-	UPROPERTY()
-	UPrimitiveComponent* CurrentGrabbedComp = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USceneComponent* LeftHandIKTarget;
-
-	UPROPERTY(EditDefaultsOnly, Category = "IK")
-	float IKBlendInSpeed = 10.f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "IK")
-	float IKBlendOutSpeed = 10.f;
-
-	// AnimBP로 넘길 값들
-	UPROPERTY(BlueprintReadOnly, Category="IK")
-	FTransform LeftHandTarget_CS;   // 컴포넌트 공간
-	UPROPERTY(BlueprintReadOnly, Category="IK")
-	float LeftHandIKAlpha = 0.f;    // 0~1
-
-private:
-	bool SphereTrace(const FVector& Start, FHitResult& OutHit);
-	FQuat RHtoObjDeltaQ;
+	
 };

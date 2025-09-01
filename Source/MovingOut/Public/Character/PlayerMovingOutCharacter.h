@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/MovingOutCharacter.h"
+#include "Component/InteractiveComponent.h"
 #include "PlayerMovingOutCharacter.generated.h"
 
 class UPhysicsHandleComponent;
@@ -22,8 +23,17 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	void HandleMove(const FInputActionValue& Value);
 
+	FVector LH_GoalPos_WS;
+	FRotator LH_GoalRot_WS;
+	FVector RH_GoalPos_WS;
+	FRotator RH_GoalRot_WS;
+	bool bIKActive = false;
+
 	UPROPERTY()
 	UInteractiveComponent* InteractiveComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float HandOffset = 20.f;
 
 	UPROPERTY()
 	UPhysicsHandleComponent* PhysicsHandle;
@@ -31,11 +41,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* LeftHandIKTarget;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool bLeftHandIK = false;
+	UPROPERTY(Transient)
+	USceneComponent* CarryAnchor;
 
-	
+	UPROPERTY()
+	EIKProfileType ProfileType;
 
+	UPROPERTY()
+	UAnimMontage* WalkMontage;
 	
 protected:
 	
