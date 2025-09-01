@@ -17,10 +17,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/BP_PlayerCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Data/DA_RankTimeConfig.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MovingOut.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/MovingOut.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Game/MovingOutGameMode.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +105,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Lauren",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "E:/UnrealProject/MovingOut/Source/MovingOut",
     "node.js.detected.package.eslint": "true",
