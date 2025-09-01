@@ -15,21 +15,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MovingOut/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Characters/Player/Animations/IKRigs/IKR_Heavy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Characters/Player/Animations/IKRigs/IKR_Heavy.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Characters/Player/Animations/IKRigs/IKR_LeftHand.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/ABP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/ABP_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/BP_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/Player/BP_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Maps/Stage1.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MovingOut.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/MovingOut.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Animation/PlayerAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Animation/PlayerAnimInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Character/PlayerMovingOutCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Character/PlayerMovingOutCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Private/Component/InteractiveComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Private/Component/InteractiveComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Animation/PlayerAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Animation/PlayerAnimInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Character/PlayerMovingOutCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Character/PlayerMovingOutCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/MovingOut/Public/Component/InteractiveComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/MovingOut/Public/Component/InteractiveComponent.h" afterDir="false" />
-    </list>
+    <list default="true" id="1445ad66-c016-4e8c-86bc-b13363ce6c6b" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -308,6 +294,9 @@
       <workItem from="1756425311663" duration="30305000" />
       <workItem from="1756474827955" duration="20512000" />
       <workItem from="1756598456708" duration="32365000" />
+      <workItem from="1756687213967" duration="193000" />
+      <workItem from="1756687458493" duration="61000" />
+      <workItem from="1756687575530" duration="230000" />
     </task>
     <servers />
   </component>
