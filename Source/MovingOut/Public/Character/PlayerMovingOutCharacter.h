@@ -47,8 +47,9 @@ public:
 	UPROPERTY()
 	EIKProfileType ProfileType;
 
-	UPROPERTY()
-	UAnimMontage* WalkMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* GrabMontage;
+
 	
 protected:
 	
